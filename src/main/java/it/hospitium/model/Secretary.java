@@ -1,8 +1,11 @@
 package it.hospitium.model;
 
-import lombok.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
+
 /**
  * Model for doctor.
  */
@@ -10,7 +13,7 @@ import javax.persistence.*;
 @Getter
 @Setter
 @NoArgsConstructor
-public class Medico {
+public class Secretary {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
@@ -18,7 +21,7 @@ public class Medico {
     @JoinColumn(name = "user_id")
     private User user;
 
-    public Medico( User user) {
+    public Secretary(User user) {
 
         this.user = user;
 

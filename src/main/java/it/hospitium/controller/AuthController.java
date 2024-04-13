@@ -75,7 +75,7 @@ public class AuthController {
 
         User user = null;
         try {
-            user = new User(firstName, lastName, email, password, role);
+            user = new User(firstName, lastName, email, password,"CODICE_FISCALE","00/00/0000" ,role);
             repoUser.save(user);
         } catch (Exception exc) {
             if (Utils.IsCause(exc, DataIntegrityViolationException.class)) {
