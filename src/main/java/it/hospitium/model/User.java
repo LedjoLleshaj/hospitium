@@ -26,16 +26,23 @@ public class User {
     private String email;
     @Column(nullable = false)
     private String pswHash;
+    @Column(nullable = false,unique = true)
+    private String CF;
+    @Column(nullable = false)
+    private String date;
     @Column(nullable = false)
     private Role role;
 
-    public User(String firstName, String lastName, String email, String psw, Role role) {
+    public User(String firstName, String lastName, String email, String psw,String CF,String date, Role role) {
         this.firstName = firstName;
         this.lastName = lastName;
         assertEmail(email);
         this.email = email;
         assertPassword(psw);
         this.pswHash = hashPsw(psw);
+        this.CF = CF;
+        assertDate(date);
+        this.date = date;
         this.role = role;
     }
 
@@ -64,6 +71,14 @@ public class User {
     static void assertPassword(String psw) {
         if (psw.length() < 8) {
             throw new IllegalArgumentException("Password is too short");
+        }
+    }
+
+    // date should be in the format dd/mm/yyyy  e.g. 01/01/2000
+    static void assertDate(String date) {
+        String regexPattern = "^[0-9]{2}/[0-9]{2}/[0-9]{4}$";
+        if (!Pattern.compile(regexPattern).matcher(date).matches()) {
+            throw new IllegalArgumentException("Invalid date format");
         }
     }
 
