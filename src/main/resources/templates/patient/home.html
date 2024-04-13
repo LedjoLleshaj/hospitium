@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Home</title>
+    <meta th:replace="common/meta"/>
+</head>
+<body>
+<div th:replace="common/errors"/>
+<!-- Header with logo, logout and breadcrumbs -->
+<div th:replace="common/header"></div>
+<!-- Content -->
+<div class="et-content">
+    <button id="btn-new-appointmet" class="et-button-primary w-full h-12" onclick="document.location='search'">new Appointmet
+    </button>
+
+
+
+     <form class="self-stretch" action="" method="get">
+            <div class="flex flex-row items-center gap-2 h-11 items-stretch">
+                <select class="text-xl font-medium flex-1 min-w-0" name="category">
+                    <option>
+                        <span>Hello</span>
+                    </option>
+                </select>
+                <input class="et-squared-input text-xl font-medium flex-2 min-w-0" name="text" type="text" placeholder="Type here to search..">
+            </div>
+        </form>
+        <!--
+        <span id="et-no-results" class="self-center text-xl text-semibold">No courses found matching the given criteria</span>
+         -->
+
+
+
+
+    <!-- TODO: Iterate over courses th:each="visit: ${visits}" -->
+    <div class="et-card p-5 w-100">
+        <div class="flex flex-row justify-items-center gap-5">
+            <!-- TODO: th:class="'et-icon-course fa-2x '+${course.getIcon()}" Icon -->
+            <i class="fa fa-book fa-2x"></i>
+            <!-- TODO: Title th:text="${course.getName()}" th:href="'/student/courses/'+${course.getId()}" -->
+            <a  class="et-name text-2xl font-bold">Sangue
+                </a>
+            <!-- TODO: Year th:text="${course.formatPeriod()}" -->
+            <p  class="et-period text-xl">(Data)</p>
+        </div>
+        <!-- TODO: Description th:text="${course.description}" -->
+        <p class="et-description mt-4">
+            Visita di come avere una vita piu lingha
+        </p>
+    </div>
+</div>
+</body>
+</html>

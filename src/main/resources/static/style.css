@@ -1,8 +1,8 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap');
 @layer base{
     :root {
-        --color-window: #FFFEF0;
-        --color-background: #FFF4CF;
+        --color-window: #ffffff;
+        --color-background: #dafbd3;
         --color-background-light: #E8E8E8;
         --color-secondary: #3C3C3C;
         --color-primary: #FED211;
@@ -22,11 +22,11 @@ body {
     color: var(--color-text);
 }
 
-h1.et-logo{
+h1.et-logo {
     font-size: 1.875rem;
     line-height: 2.25rem;
-    font-weight: 700;
-    letter-spacing: 0.275em;
+    font-weight: 600;
+    letter-spacing: -0.02em;
 }
 
 span.et-subtitle{
@@ -177,7 +177,7 @@ button.et-button-bad{
     color: var(--color-text);
 }
 
-.et-already-registered{
+already-registered{
     font-size: 0.938rem;
 }
 

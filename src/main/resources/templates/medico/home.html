@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Home</title>
+    <meta th:replace="common/meta"/>
+</head>
+<body>
+<div th:replace="common/errors"/>
+<!-- Header with logo, logout and breadcrumbs -->
+<div th:replace="common/header"></div>
+<!-- Content -->
+<div class="et-content">
+    <button id="btn-search-visit" class="et-button-primary w-full h-12" onclick="document.location='search'">Search Patient
+    </button>
+    <!-- TODO: Iterate over courses th:each="visit: ${visits}" -->
+    <div class="et-card p-5 w-100">
+        <div class="flex flex-row justify-items-center gap-5">
+            <!-- TODO: th:class="'et-icon-course fa-2x '+${course.getIcon()}" Icon -->
+            <i class="fa fa-book fa-2x"></i>
+            <!-- TODO: Title th:text="${course.getName()}" th:href="'/student/courses/'+${course.getId()}" -->
+            <a  class="et-name text-2xl font-bold">Kristi
+            </a>
+            <!-- TODO: Year th:text="${course.formatPeriod()}" -->
+            <p  class="et-period text-xl">(Data)</p>
+        </div>
+        <!-- TODO: Description th:text="${course.description}" -->
+        <p class="et-description mt-4">
+           visita della schiena
+        </p>
+    </div>
+</div>
+</body>
+</html>
