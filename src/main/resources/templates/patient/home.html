@@ -10,8 +10,28 @@
 <div th:replace="common/header"></div>
 <!-- Content -->
 <div class="et-content">
-    <button id="btn-search-visit" class="et-button-primary w-full h-12" onclick="document.location='search'">Search visit
+    <button id="btn-new-appointmet" class="et-button-primary w-full h-12" onclick="document.location='search'">new Appointmet
     </button>
+
+
+
+     <form class="self-stretch" action="" method="get">
+            <div class="flex flex-row items-center gap-2 h-11 items-stretch">
+                <select class="text-xl font-medium flex-1 min-w-0" name="category">
+                    <option>
+                        <span>Hello</span>
+                    </option>
+                </select>
+                <input class="et-squared-input text-xl font-medium flex-2 min-w-0" name="text" type="text" placeholder="Type here to search..">
+            </div>
+        </form>
+        <!--
+        <span id="et-no-results" class="self-center text-xl text-semibold">No courses found matching the given criteria</span>
+         -->
+
+
+
+
     <!-- TODO: Iterate over courses th:each="visit: ${visits}" -->
     <div class="et-card p-5 w-100">
         <div class="flex flex-row justify-items-center gap-5">
