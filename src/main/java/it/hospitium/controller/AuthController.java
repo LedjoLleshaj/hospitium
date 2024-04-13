@@ -107,11 +107,11 @@ public class AuthController {
     private String redirectToUserHomepage(User user) {
         switch (user.getRole()) {
             case MEDICO:
-                return "redirect:view/medico/home";
+                return "redirect:/medico/home";
             case PATIENT:
                 return "redirect:/patient/home";
             case SECRETARY:
-                return "redirect:view/secretary/home";
+                return "redirect:/secretary/home";
             default:
                 throw new IllegalStateException("Invalid user role");
         }

@@ -91,10 +91,10 @@ public class AuthInterceptor implements HandlerInterceptor {
             if (user.get().getRole() == pathRole) {
                 return HandlerInterceptor.super.preHandle(request, response, handler);
             } else if (user.get().getRole() == User.Role.MEDICO) {
-                response.sendRedirect("view/medico/home");
+                response.sendRedirect("/medico/home");
                 return false;
             } else {
-                response.sendRedirect("view/patient/home");
+                response.sendRedirect("/patient/home");
                 return false;
             }
         }
