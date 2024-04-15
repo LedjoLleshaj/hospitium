@@ -6,8 +6,8 @@ import java.util.Optional;
 
 public interface VisitaRepository extends CrudRepository<Visita, Long> {
     Optional<Visita> findById(long id);
-    Optional<Visita> findByPatient(Patient patient);
-    Optional<Visita> findByMedico(Medico medico);
-    Optional<Visita> findByNurse(Nurse nurse);
+    Iterable<Visita> findByPatient(Patient patient);
+    Iterable<Visita> findByMedico(Medico medico);
+    Iterable<Visita> findByNurse(Nurse nurse);
 
 }

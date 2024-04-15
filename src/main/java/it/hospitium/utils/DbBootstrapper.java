@@ -49,9 +49,9 @@ public class DbBootstrapper {
         User user9 = new User("User", "Nurse_Two", "user.nurse_two@hospitium.it", "user.nurse_two@hospitium.it","CODICE_FISCALE9","00/00/0000", User.Role.NURSE);
         User user10 = new User("User", "Nurse_Three", "user.nurse_three@hospitium.it", "user.nurse_three@hospitium.it", "CODICE_FISCALE10","00/00/0000",User.Role.NURSE);
 
-        for (User user : List.of(user1, user2, user3, user4, user5, user6, user7, user8, user9, user10)) {
-            System.out.println(user);
-        }
+//        for (User user : List.of(user1, user2, user3, user4, user5, user6, user7, user8, user9, user10)) {
+//            System.out.println(user);
+//        }
         repoUser.saveAll(List.of(user1, user2, user3, user4, user5, user6, user7, user8, user9, user10));
 
         // Create a couple of patients
@@ -60,9 +60,9 @@ public class DbBootstrapper {
         Patient patient3 = new Patient("CODICE_SANITARIO", user3);
         Patient patient4 = new Patient("CODICE_SANITARIO", user4);
         repoPatient.saveAll(List.of(patient1, patient2, patient3, patient4));
-        for (Patient patient : List.of(patient1, patient2, patient3, patient4)) {
-            System.out.println(patient);
-        }
+//        for (Patient patient : List.of(patient1, patient2, patient3, patient4)) {
+//            System.out.println(patient);
+//        }
 
 
         // Create a couple of doctors
@@ -70,17 +70,17 @@ public class DbBootstrapper {
         Medico doctor2 = new Medico(user6);
         Medico doctor3 = new Medico(user7);
         repoDoctor.saveAll(List.of(doctor1, doctor2, doctor3));
-        for (Medico doctor : List.of(doctor1, doctor2, doctor3)) {
-            System.out.println(doctor);
-        }
+//        for (Medico doctor : List.of(doctor1, doctor2, doctor3)) {
+//            System.out.println(doctor);
+//        }
         // Create a couple of nurses
         Nurse nurse1 = new Nurse(user8,doctor1);
         Nurse nurse2 = new Nurse(user9,doctor2);
         Nurse nurse3 = new Nurse(user10,doctor1);
         repoNurse.saveAll(List.of(nurse1, nurse2, nurse3));
-        for (Nurse nurse : List.of(nurse1, nurse2, nurse3)) {
-            System.out.println(nurse);
-        }
+//        for (Nurse nurse : List.of(nurse1, nurse2, nurse3)) {
+//            System.out.println(nurse);
+//        }
 
         // Create a couple of Appointments
         Appointment appointment1 = new Appointment("2021-06-01", Visita.VisitType.ROUTINE_CHECKUP, 5, 1, doctor1, patient1, nurse1);
@@ -88,9 +88,9 @@ public class DbBootstrapper {
         Appointment appointment3 = new Appointment("2021-06-03", Visita.VisitType.URGENT_VISIT, 7, 3, doctor1, patient3, nurse3);
         Appointment appointment4 = new Appointment("2021-06-04", Visita.VisitType.PEDIATRIC_VISIT, 8, 4, doctor2, patient4, nurse2);
         repoAppointment.saveAll(List.of(appointment1, appointment2, appointment3, appointment4));
-        for (Appointment appointment : List.of(appointment1, appointment2, appointment3, appointment4)) {
-            System.out.println(appointment);
-        }
+//        for (Appointment appointment : List.of(appointment1, appointment2, appointment3, appointment4)) {
+//            System.out.println(appointment);
+//        }
 
         // Create a couple of Visits
         Visita visit1 = new Visita("2021-06-01", "Result", Visita.VisitType.ROUTINE_CHECKUP, 5, doctor1, patient1, nurse1);
@@ -98,8 +98,8 @@ public class DbBootstrapper {
         Visita visit3 = new Visita("2021-06-03", "Result", Visita.VisitType.URGENT_VISIT, 5, doctor1, patient3, nurse3);
         Visita visit4 = new Visita("2021-06-04", "Result", Visita.VisitType.PEDIATRIC_VISIT, 6, doctor2, patient4, nurse2);
         repoVisita.saveAll(List.of(visit1, visit2, visit3, visit4));
-        for (Visita visit : List.of(visit1, visit2, visit3, visit4)) {
-            System.out.println(visit);
-        }
+//        for (Visita visit : List.of(visit1, visit2, visit3, visit4)) {
+//            System.out.println(visit);
+//        }
     }
 }
