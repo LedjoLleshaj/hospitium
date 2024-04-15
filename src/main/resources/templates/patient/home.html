@@ -10,7 +10,7 @@
 <div th:replace="common/header"></div>
 <!-- Content -->
 <div class="et-content">
-    <button id="btn-new-appointmet" class="et-button-primary w-full h-12" onclick="document.location='search'">new Appointmet
+    <button id="btn-new-appointment" class="et-button-primary w-full h-12" onclick="document.location='search'">New Appointment
     </button>
 
 
@@ -18,11 +18,10 @@
      <form class="self-stretch" action="" method="get">
             <div class="flex flex-row items-center gap-2 h-11 items-stretch">
                 <select class="text-xl font-medium flex-1 min-w-0" name="category">
-                    <option>
-                        <span>Hello</span>
+                    <option th:each="category : ${categories}" th:value="${category}" th:text="${category}">
                     </option>
                 </select>
-                <input class="et-squared-input text-xl font-medium flex-2 min-w-0" name="text" type="text" placeholder="Type here to search..">
+                <input class="et-squared-input text-xl font-medium flex-2 min-w-0" name="text" type="text" placeholder="Search by date...">
             </div>
         </form>
         <!--
@@ -33,18 +32,17 @@
 
 
     <!-- TODO: Iterate over courses th:each="visit: ${visits}" -->
-    <div class="et-card p-5 w-100">
+    <div th:each="visit: ${visits}" class="et-card p-5 w-100">
         <div class="flex flex-row justify-items-center gap-5">
             <!-- TODO: th:class="'et-icon-course fa-2x '+${course.getIcon()}" Icon -->
             <i class="fa fa-book fa-2x"></i>
-            <!-- TODO: Title th:text="${course.getName()}" th:href="'/student/courses/'+${course.getId()}" -->
-            <a  class="et-name text-2xl font-bold">Sangue
+            <a th:text="${visit.formattedType(visit.getType())}" th:href="'/patient/visit/'+${visit.getId()}" class="et-name text-2xl font-bold">Sangue
                 </a>
             <!-- TODO: Year th:text="${course.formatPeriod()}" -->
-            <p  class="et-period text-xl">(Data)</p>
+            <p th:text="'('+${visit.getData()}+')'" class="et-period text-xl">(00/00/0000)</p>
         </div>
         <!-- TODO: Description th:text="${course.description}" -->
-        <p class="et-description mt-4">
+        <p th:text="${visit.getResult()}" class="et-description mt-4">
             Visita di come avere una vita piu lingha
         </p>
     </div>

@@ -4,6 +4,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.persistence.*;
 
 /**
@@ -22,7 +25,7 @@ public class Visita {
     @Column(nullable = false)
     private String Result;
     @Column(nullable = false)
-    private VisitType visitType;
+    private VisitType type;
     @Column(nullable = false)
     private Integer insertedBy;
     @ManyToOne
@@ -35,10 +38,10 @@ public class Visita {
     @JoinColumn(name = "nurse_id")
     private Nurse nurse;
 
-    public Visita(String data, String Result, VisitType visitType, Integer insertedBy, Medico medico, Patient patient, Nurse nurse) {
+    public Visita(String data, String Result, VisitType type, Integer insertedBy, Medico medico, Patient patient, Nurse nurse) {
         this.data = data;
         this.Result = Result;
-        this.visitType = visitType;
+        this.type = type;
         this.insertedBy = insertedBy;
         this.medico = medico;
         this.patient = patient;
@@ -47,7 +50,7 @@ public class Visita {
 
     @Override
     public String toString() {
-        return String.format("Visit{id=%d, date=%s, medico=%s, patient=%s, nurse=%s, type=%s}", id, data, medico.fullName(), patient.fullName(), nurse.fullName(), visitType.toString());
+        return String.format("Visit{id=%d, date=%s, medico=%s, patient=%s, nurse=%s, type=%s}", id, data, medico.fullName(), patient.fullName(), nurse.fullName(), type.toString());
     }
 
     public enum VisitType {
@@ -57,5 +60,48 @@ public class Visita {
         PEDIATRIC_VISIT;
     }
 
+    public static String formattedType(VisitType type) {
+         switch (type) {
+             case ROUTINE_CHECKUP:
+                 return "Routine Checkup";
+             case SPECIALIST_CONSULTATION:
+                 return "Specialist Consultation";
+             case URGENT_VISIT:
+                 return "Urgent Visit";
+             case PEDIATRIC_VISIT:
+                 return "Pediatric Visit";
+             default:
+                 return "Unknown";
+         }
+    }
+
+    public static VisitType fromString(String type) {
+        switch (type) {
+            case "Routine Checkup":
+                return VisitType.ROUTINE_CHECKUP;
+            case "Specialist Consultation":
+                return VisitType.SPECIALIST_CONSULTATION;
+            case "Urgent Visit":
+                return VisitType.URGENT_VISIT;
+            case "Pediatric Visit":
+                return VisitType.PEDIATRIC_VISIT;
+            default:
+                return null;
+        }
+    }
+
+    public static List<String> getVisitCategories() {
+        List<String> enumStrings = new ArrayList<>();
+
+        // Iterate over enum constants and add their names to the list
+        for (VisitType value : VisitType.values()) {
+            enumStrings.add(formattedType(value));
+        }
+        for (String s : enumStrings) {
+            System.out.println(s);
+        }
+        return enumStrings;
+
+    }
 
 }
