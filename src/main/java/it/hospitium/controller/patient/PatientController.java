@@ -50,6 +50,6 @@ public class PatientController {
         return "/patient/home";
     }
 
-    @GetMapping("patient/search")
-    public String search() { return "/patient/search"; }
+    @GetMapping("patient/new_appointment")
+    public String new_appointment() { return "/patient/new_appointment"; }
 }

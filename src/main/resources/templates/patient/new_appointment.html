@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <title>Appointment</title>
+    <meta th:replace="common/meta" />
+  </head>
+
+  <body>
+    <div th:replace="common/errors" />
+    <!-- Header with logo, logout and breadcrumbs -->
+    <div th:replace="common/header"></div>
+    <!-- Content -->
+    <div class="et-content">
+      <div class="et-card p-5 w-100">
+        <h2 class="text-2xl font-semibold text-gray-800 mb-2">
+          Appointment Details
+        </h2>
+        <form action="#" method="post">
+          <div class="mb-4">
+            <label
+              for="title"
+              class="block text-gray-700 text-sm font-bold mb-2"
+              >Title:</label
+            >
+            <input
+              type="text"
+              name="title"
+              id="title"
+              placeholder="Enter appointment title"
+              class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring focus:border-blue-500"
+            />
+          </div>
+          <div class="mb-4">
+            <label for="date" class="block text-gray-700 text-sm font-bold mb-2"
+              >Date:</label
+            >
+            <input
+              type="date"
+              name="date"
+              id="date"
+              class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring focus:border-blue-500"
+            />
+          </div>
+          <div class="mb-4">
+            <label
+              for="description"
+              class="block text-gray-700 text-sm font-bold mb-2"
+              >Description:</label
+            >
+            <textarea
+              name="description"
+              id="description"
+              rows="3"
+              class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring focus:border-blue-500"
+              placeholder="Enter appointment description"
+            ></textarea>
+          </div>
+          <div class="flex justify-end">
+            <button type="submit" class="et-button-secondary w-full h-12">
+              Submit
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </body>
+</html>
