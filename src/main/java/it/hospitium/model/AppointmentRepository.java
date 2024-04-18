@@ -8,6 +8,5 @@ public interface AppointmentRepository extends CrudRepository<Appointment, Long>
     Optional<Appointment> findById(long id);
     Optional<Appointment> findByPatient(Patient patient);
     Optional<Appointment> findByMedico(Medico medico);
-    Optional<Appointment> findByNurse(Nurse nurse);
 
 }

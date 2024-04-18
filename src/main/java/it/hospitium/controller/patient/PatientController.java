@@ -1,6 +1,7 @@
 package it.hospitium.controller.patient;
 
 import it.hospitium.model.*;
+import it.hospitium.model.Visita.VisitType;
 import it.hospitium.utils.Breadcrumb;
 import it.hospitium.utils.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +28,8 @@ public class PatientController {
     private PatientRepository patientRepository;
     @Autowired
     private MedicoRepository medicoRepository;
+    @Autowired
+    private AppointmentRepository appointmentRepository;
 
     @GetMapping("patient/home")
     public String home(Model model, HttpServletRequest request, RedirectAttributes redirectAttributes) {
@@ -74,13 +77,27 @@ public class PatientController {
             @RequestParam("date") String date,
             @RequestParam("visitType") String visitType,
             @RequestParam("urgency") int urgency,
-            @RequestParam("medico") long medicoId) {
+            @RequestParam("medico") long medicoId, HttpServletRequest request, RedirectAttributes redirectAttributes) {
 
-        // Print the parameters
-        System.out.println("Date: " + date);
-        System.out.println("Visit Type: " + visitType);
-        System.out.println("Urgency: " + urgency);
-        System.out.println("Medico ID: " + medicoId);
+        User user = Utils.loggedUser(request);
+        Optional<Patient> maybe_patient = patientRepository.findByUser(user);
+        if (maybe_patient.isEmpty()) {
+            Utils.addRedirectionError(redirectAttributes, "No such patient");
+            return "redirect:/login";
+        }
+        Patient patient = maybe_patient.get();
+        Optional<Medico> maybe_medico = medicoRepository.findById(medicoId);
+        if (maybe_medico.isEmpty()) {
+            Utils.addRedirectionError(redirectAttributes, "No such medico");
+            return "redirect:/login";
+        }
+        Medico medico = maybe_medico.get();
+
+        // add the new appointment to the database
+        Appointment appointment = new Appointment(date, Visita.fromString(visitType) , urgency, medico, patient);
+
+        // Save the appointment
+        appointmentRepository.save(appointment);
 
         // Go to the profile page
         return "/patient/profile";
