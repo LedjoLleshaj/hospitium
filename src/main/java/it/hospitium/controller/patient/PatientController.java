@@ -70,11 +70,11 @@ public class PatientController {
     // Post the new appointment
     @PostMapping("patient/new_appointment")
     public String submitAppointment(
-        // get all the parameters from the form
-        @RequestParam("date") String date,
-        @RequestParam("visitType") String visitType,
-        @RequestParam("urgency") int urgency,
-        @RequestParam("medico") long medicoId) {
+            // get all the parameters from the form
+            @RequestParam("date") String date,
+            @RequestParam("visitType") String visitType,
+            @RequestParam("urgency") int urgency,
+            @RequestParam("medico") long medicoId) {
 
         // Print the parameters
         System.out.println("Date: " + date);
@@ -102,6 +102,31 @@ public class PatientController {
         model.addAttribute("visit", visit);
 
         return "/patient/visit";
+    }
+
+    @GetMapping("/patient/profile")
+    public String viewProfile(Model model, HttpServletRequest request) {
+        // Get the logged-in user
+        User user = Utils.loggedUser(request);
+
+        // Check authentication
+        if (user == null) {
+            return "redirect:/login";
+        }
+
+        // Get the patient
+        Optional<Patient> optionalPatient = patientRepository.findByUser(user);
+
+        if (optionalPatient.isEmpty()) {
+            // TODO: Redirect to error page
+            return "redirect:/error";
+        }
+
+        // Patient Data
+        model.addAttribute("patient", optionalPatient.get());
+
+        // Return the profile page
+        return "/patient/profile";
     }
 
 }
