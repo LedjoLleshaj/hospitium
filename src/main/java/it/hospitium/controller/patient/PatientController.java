@@ -8,6 +8,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
@@ -36,20 +37,38 @@ public class PatientController {
         // Retrieve all visits associated with the patient
         List<Visita> visits = (List<Visita>) visitaRepository.findByPatient(patient);
 
-
         // Add attributes
         model.addAllAttributes(
                 Map.of(
                         "user", patient,
                         "breadcrumbs", List.of(new Breadcrumb("home", "/patient/home")),
                         "visits", visits,
-                        "categories", Visita.getVisitCategories()
-                        )
-        );
+                        "categories", Visita.getVisitCategories()));
 
         return "/patient/home";
     }
 
     @GetMapping("patient/new_appointment")
-    public String new_appointment() { return "/patient/new_appointment"; }
+    public String new_appointment() {
+        return "/patient/new_appointment";
+    }
+
+    @GetMapping("patient/visit/{id}")
+    public String visit(@PathVariable Long id, Model model) {
+        // Retrieve the visit by id
+        Optional<Visita> maybeVisit = visitaRepository.findById(id);
+        if (maybeVisit.isEmpty()) {
+            // if the visit does not exist, redirect to home
+            return "redirect:/patient/home";
+        }
+
+        // Get the visit
+        Visita visit = maybeVisit.get();
+
+        // Add attributes
+        model.addAttribute("visit", visit);
+
+        return "/patient/visit";
+    }
+
 }
