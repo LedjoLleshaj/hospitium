@@ -9,6 +9,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.PostMapping;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
@@ -63,6 +65,25 @@ public class PatientController {
         model.addAttribute("visitTypes", categories);
 
         return "/patient/new_appointment";
+    }
+
+    // Post the new appointment
+    @PostMapping("patient/new_appointment")
+    public String submitAppointment(
+        // get all the parameters from the form
+        @RequestParam("date") String date,
+        @RequestParam("visitType") String visitType,
+        @RequestParam("urgency") int urgency,
+        @RequestParam("medico") long medicoId) {
+
+        // Print the parameters
+        System.out.println("Date: " + date);
+        System.out.println("Visit Type: " + visitType);
+        System.out.println("Urgency: " + urgency);
+        System.out.println("Medico ID: " + medicoId);
+
+        // Go to the profile page
+        return "/patient/profile";
     }
 
     @GetMapping("patient/visit/{id}")
