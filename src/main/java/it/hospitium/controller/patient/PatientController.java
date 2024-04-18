@@ -23,6 +23,8 @@ public class PatientController {
     private VisitaRepository visitaRepository;
     @Autowired
     private PatientRepository patientRepository;
+    @Autowired
+    private MedicoRepository medicoRepository;
 
     @GetMapping("patient/home")
     public String home(Model model, HttpServletRequest request, RedirectAttributes redirectAttributes) {
@@ -49,7 +51,17 @@ public class PatientController {
     }
 
     @GetMapping("patient/new_appointment")
-    public String new_appointment() {
+    public String new_appointment(Model model) {
+        // All medici
+        List<Medico> medici = (List<Medico>) medicoRepository.findAll();
+
+        // All visit types
+        List<String> categories = Visita.getVisitCategories();
+
+        // Add attributes
+        model.addAttribute("medici", medici);
+        model.addAttribute("visitTypes", categories);
+
         return "/patient/new_appointment";
     }
 

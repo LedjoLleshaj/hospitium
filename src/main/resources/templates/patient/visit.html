@@ -17,38 +17,38 @@
           <table class="w-full table-auto">
             <tbody>
               <tr>
-                <th class="text-left">Date</th>
+                <th class="text-left">Date:</th>
                 <td th:text="${visit.data}" class="text-left">Visit Date</td>
               </tr>
               <tr>
-                <th class="text-left">Result</th>
+                <th class="text-left">Result:</th>
                 <td th:text="${visit.Result}" class="text-left">
                   Visit Result
                 </td>
               </tr>
               <tr>
-                <th class="text-left">Type</th>
+                <th class="text-left">Type:</th>
                 <td
                   th:text="${visit.formattedType(visit.type)}"
                   class="text-left"
                 >
-                  Visit Type
+                  Visit Type:
                 </td>
               </tr>
               <tr>
-                <th class="text-left">Medico</th>
+                <th class="text-left">Medico:</th>
                 <td th:text="${visit.medico.fullName()}" class="text-left">
                   Medico
                 </td>
               </tr>
               <tr>
-                <th class="text-left">Patient</th>
+                <th class="text-left">Patient:</th>
                 <td th:text="${visit.patient.fullName()}" class="text-left">
                   Patient
                 </td>
               </tr>
               <tr>
-                <th class="text-left">Nurse</th>
+                <th class="text-left">Nurse:</th>
                 <td th:text="${visit.nurse.fullName()}" class="text-left">
                   Nurse
                 </td>
