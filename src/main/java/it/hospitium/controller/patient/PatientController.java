@@ -105,7 +105,7 @@ public class PatientController {
     }
 
     @GetMapping("/patient/profile")
-    public String viewProfile(Model model, HttpServletRequest request) {
+    public String viewProfile(Model model, HttpServletRequest request, RedirectAttributes redirectAttributes) {
         // Get the logged-in user
         User user = Utils.loggedUser(request);
 
@@ -118,8 +118,10 @@ public class PatientController {
         Optional<Patient> optionalPatient = patientRepository.findByUser(user);
 
         if (optionalPatient.isEmpty()) {
-            // TODO: Redirect to error page
-            return "redirect:/error";
+            // Error
+            Utils.addRedirectionError(redirectAttributes, "No such patient");
+            // Redirect to login
+            return "redirect:/login";
         }
 
         // Patient Data
