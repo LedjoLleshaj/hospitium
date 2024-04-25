@@ -63,17 +63,6 @@ public class DbBootstrapper {
 //        }
         repoUser.saveAll(List.of(user1, user2, user3, user4, user5, user6, user7, user8, user9, user10,user11,user12));
 
-        // Create a couple of patients
-        Patient patient1 = new Patient("CODICE_SANITARIO", user1);
-        Patient patient2 = new Patient("CODICE_SANITARIO", user2);
-        Patient patient3 = new Patient("CODICE_SANITARIO", user3);
-        Patient patient4 = new Patient("CODICE_SANITARIO", user4);
-        repoPatient.saveAll(List.of(patient1, patient2, patient3, patient4));
-//        for (Patient patient : List.of(patient1, patient2, patient3, patient4)) {
-//            System.out.println(patient);
-//        }
-
-
         // Create a couple of doctors
         Medico doctor1 = new Medico(user5);
         Medico doctor2 = new Medico(user6);
@@ -82,6 +71,18 @@ public class DbBootstrapper {
 //        for (Medico doctor : List.of(doctor1, doctor2, doctor3)) {
 //            System.out.println(doctor);
 //        }
+
+        // Create a couple of patients
+        Patient patient1 = new Patient("CODICE_SANITARIO", user1, doctor1);
+        Patient patient2 = new Patient("CODICE_SANITARIO", user2, doctor1);
+        Patient patient3 = new Patient("CODICE_SANITARIO", user3, doctor2);
+        Patient patient4 = new Patient("CODICE_SANITARIO", user4, doctor2);
+        repoPatient.saveAll(List.of(patient1, patient2, patient3, patient4));
+//        for (Patient patient : List.of(patient1, patient2, patient3, patient4)) {
+//            System.out.println(patient);
+//        }
+
+
         // Create a couple of nurses
         Nurse nurse1 = new Nurse(user8,doctor1);
         Nurse nurse2 = new Nurse(user9,doctor2);

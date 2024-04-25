@@ -17,6 +17,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 @Controller
 public class PatientController {
@@ -56,10 +57,24 @@ public class PatientController {
     }
 
     @GetMapping("patient/new_appointment")
-    public String new_appointment(Model model) {
-        // All medici
-        List<Medico> medici = (List<Medico>) medicoRepository.findAll();
+    public String new_appointment(Model model, HttpServletRequest request, RedirectAttributes redirectAttributes) {
+        User user = Utils.loggedUser(request);
+        Optional<Patient> maybe_patient = patientRepository.findByUser(user);
+        if (maybe_patient.isEmpty()) {
+            Utils.addRedirectionError(redirectAttributes, "No such patient");
+            return "redirect:/login";
+        }
+        Patient patient = maybe_patient.get();
+        Medico medico_di_base = patient.getMedico();
 
+        // Retrieve all medics
+        List<Medico> medici = (List<Medico>) medicoRepository.findAll();
+        //add medico di base in top of medici in a set
+        medici.add(0, medico_di_base);
+        Set<Medico> medici_set = Set.copyOf(medici);
+        for (Medico medico : medici_set) {
+            System.out.println(medico);
+        }
         // All visit types
         List<String> categories = Visita.getVisitCategories();
 
