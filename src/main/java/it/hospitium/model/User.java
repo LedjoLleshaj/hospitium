@@ -68,14 +68,14 @@ public class User {
         }
     }
 
-    static void assertPassword(String psw) {
+    public static void assertPassword(String psw) {
         if (psw.length() < 8) {
             throw new IllegalArgumentException("Password is too short");
         }
     }
 
     // date should be in the format dd/mm/yyyy  e.g. 01/01/2000
-    static void assertDate(String date) {
+    public static void assertDate(String date) {
         String regexPattern = "^[0-9]{2}/[0-9]{2}/[0-9]{4}$";
         if (!Pattern.compile(regexPattern).matcher(date).matches()) {
             throw new IllegalArgumentException("Invalid date format");
