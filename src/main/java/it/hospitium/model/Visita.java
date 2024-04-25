@@ -50,7 +50,7 @@ public class Visita {
 
     @Override
     public String toString() {
-        return String.format("Visit{id=%d, date=%s, medico=%s, patient=%s, nurse=%s, type=%s}", id, data, medico.fullName(), patient.fullName(), nurse.fullName(), type.toString());
+        return String.format("Visit{id=%d, data_di_nascita=%s, medico=%s, patient=%s, nurse=%s, type=%s}", id, data, medico.fullName(), patient.fullName(), nurse.fullName(), type.toString());
     }
 
     public enum VisitType {

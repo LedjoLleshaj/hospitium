@@ -44,7 +44,7 @@ public class Appointment {
 
     @Override
     public String toString() {
-        return String.format("Visit{id=%d, date=%s, medico=%s, patient=%s, type=%s}", id, data,
+        return String.format("Visit{id=%d, data_di_nascita=%s, medico=%s, patient=%s, type=%s}", id, data,
                 medico.fullName(), patient.fullName(), visitType.toString());
     }
 

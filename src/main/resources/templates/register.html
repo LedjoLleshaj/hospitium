@@ -22,51 +22,92 @@
             <label class="text-sm">Email</label>
             <input type="text" name="email" oninput="updateForm()">
         </div>
+        <span style="display: none" class="text-red-700 self-start"
+              id="invalid-email-format">Invalid email format</span>
         <div class="flex flex-col mt-2">
-            <label class="text-sm">Password</label>
-            <input type="password" name="password" oninput="updateForm()">
+            <label class="text-sm">Codice Fiscale</label>
+            <input type="text" name="codice_fiscale" oninput="updateForm()">
+        </div>
+        <span style="display: none" class="text-red-700 self-start"
+              id="invalid-cf-format">Invalid Codice Fiscale format</span>
+        <div class="flex flex-col mt-2">
+            <label class="text-sm">Data di nascita</label>
+            <input type="date" name="data_di_nascita" oninput="updateForm()">
         </div>
         <div class="flex flex-col mt-2">
-            <label class="text-sm">Confirm password</label>
-            <input type="password" name="confirm_password" oninput="updateForm()">
+            <label class="text-sm">Luogo di Nascita</label>
+            <input type="text" name="luogo_di_nascita" oninput="updateForm()">
         </div>
-        <div class="flex flex-col w-full mt-2">
-            <label class="text-sm">I'm a</label>
-            <div class="flex flex-row items-center">
+
+        <div id="patient" class="flex flex-row w-full mt-2">
+            <div class="flex flex-row items-center mr-4">
                 <input class="mr-2" type="radio" name="role" value="patient" checked>
                 <span>Patient</span>
             </div>
-            <div class="flex flex-row items-center">
+            <div class="flex flex-row items-center mr-4">
                 <input class="mr-2" type="radio" name="role" value="medico">
                 <span>Medico</span>
             </div>
+            <div class="flex flex-row items-center mr-4">
+                <input class="mr-2" type="radio" name="role" value="nurse">
+                <span>Nurse</span>
+            </div>
+        </div>
+
+        <div id="codiceSanitario" class="flex flex-col mt-2">
+            <label class="text-sm">Codice Sanitario</label>
+            <input type="text" name="codice_sanitario" oninput="updateForm()">
         </div>
         <span style="display: none" class="text-red-700 self-start"
-              id="invalid-email-format">Invalid email format</span>
-        <span style="display: none" class="text-red-700 self-start" id="password-too-short">Password is too short</span>
-        <span style="display: none" class="text-red-700 self-start"
-              id="passwords-dont-match">Password don't match</span>
+              id="invalid-cs-format">Invalid Codice Sanitario format</span>
+
+
+        <hr class="w-2/3 my-8 bg-text-light"/>
+
         <button class="et-button-primary et-button-disabled w-full h-12 mt-2" id="btn-register">Register</button>
     </form>
-    <div class="flex-row w-full et-already-registered mt-6">
-        <span>Already a member?</span>
-        <a href="/login" id="btn-goto-login">Go back to login</a>
-    </div>
+
 
     <script>
-        // Don't show password error if password never been edited so far
-        let isPasswordUntouched = true;
+
+        let patient = document.getElementById("patient");
+        function isPatient() {
+            return document.querySelector("input[name='role']:checked").value === "patient";
+        }
+        let codiceSanitario = document.getElementById("codiceSanitario");
+        patient.addEventListener("change", function() {
+            if (isPatient()) {
+                codiceSanitario.style = "";
+            } else {
+                codiceSanitario.style = "display: none";
+            }
+        });
+    </script>
+
+
+    <script>
+
         // Don't show email error if email has never been edited so far
         let isEmailUntouched = true;
+        let isCFUntouched = true;
+        let isCSUntouched = true;
+
 
         // Updates the clickable status of the register button and the visibility of the error messages
         function updateForm() {
-            if (document.querySelector("input[name='password']").value !== "") {
-                isPasswordUntouched = false;
-            }
+
             if (document.querySelector("input[name='email']").value !== "") {
                 isEmailUntouched = false;
             }
+
+            if (document.querySelector("input[name='codice_fiscale']").value !== "") {
+                isCFUntouched = false;
+            }
+
+            if (document.querySelector("input[name='codice_sanitario']").value !== "") {
+                isCSUntouched = false;
+            }
+
 
             let registerButton = document.querySelector("#btn-register");
             if (canRegister()) {
@@ -77,55 +118,59 @@
 
             // This check is also done server-side, but we do it client-side first for better interactivity
             let invalidEmailFormatMsg = document.querySelector("#invalid-email-format");
+            let invalidCFFormatMsg = document.querySelector("#invalid-cf-format");
+            let invalidCSFormatMsg = document.querySelector("#invalid-cs-format");
+
             if (isEmailUntouched || isEmailFormatOk()) {
                 invalidEmailFormatMsg.style = "display: none";
             } else {
                 invalidEmailFormatMsg.style = "";
             }
 
-            // This check is also done server-side, but we do it client-side first for better interactivity
-            let passwordTooShortMsg = document.querySelector("#password-too-short");
-            if (isPasswordUntouched || isPasswordLongEnough()) {
-                passwordTooShortMsg.style = "display: none";
+            if (isCFUntouched || isCFValid()) {
+                invalidCFFormatMsg.style = "display: none";
             } else {
-                passwordTooShortMsg.style = "";
+                invalidCFFormatMsg.style = "";
             }
 
-            let passwordsDontMatchMsg = document.querySelector("#passwords-dont-match");
-            if (doPasswordsMatch()) {
-                passwordsDontMatchMsg.style = "display: none";
+            if (isCSUntouched || isCSValid()) {
+                invalidCSFormatMsg.style = "display: none";
             } else {
-                passwordsDontMatchMsg.style = "";
+                invalidCSFormatMsg.style = "";
             }
+
+
         }
 
         // Returns true if the register button should be clickable
         function canRegister() {
             // These must have a non-empty value
-            let textInputs = ["first_name", "last_name", "email", "password", "confirm_password"];
+            let textInputs = ["first_name", "last_name", "email"];
             for (let i = 0; i < textInputs.length; i++) {
                 if (document.querySelector("input[name='" + textInputs[i] + "']").value === "") {
                     return false;
                 }
             }
-            return isEmailFormatOk() && isPasswordLongEnough() && doPasswordsMatch();
+            return isEmailFormatOk() && isCFValid() && isCSValid();
         }
+
+        function isCFValid() {
+            let value = document.querySelector("input[name='codice_fiscale']").value;
+            return /^[A-Z]{6}\d{2}[A-Z]\d{2}[A-Z]\d{3}[A-Z]$/.test(value);
+        }
+
+        function isCSValid() {
+            let value = document.querySelector("input[name='codice_sanitario']").value;
+            return /^\d{20}$/.test(value)  && isPatient();
+        }
+
 
         function isEmailFormatOk() {
             let value = document.querySelector("input[name='email']").value;
             return /^[\w.]+@[\w.]+$/.test(value);
         }
-
-        function isPasswordLongEnough() {
-            let value = document.querySelector("input[name='password']").value;
-            return value.length >= 8;
-        }
-
-        function doPasswordsMatch() {
-            return document.querySelector("input[name='password']").value ===
-                document.querySelector("input[name='confirm_password']").value;
-        }
     </script>
 </div>
 </body>
+</html>
 </html>

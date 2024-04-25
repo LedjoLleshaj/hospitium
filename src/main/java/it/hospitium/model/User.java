@@ -29,11 +29,11 @@ public class User {
     @Column(nullable = false,unique = true)
     private String CF;
     @Column(nullable = false)
-    private String date;
+    private String data_di_nascita;
     @Column(nullable = false)
     private Role role;
 
-    public User(String firstName, String lastName, String email, String psw,String CF,String date, Role role) {
+    public User(String firstName, String lastName, String email, String psw,String CF,String data_di_nascita, Role role) {
         this.firstName = firstName;
         this.lastName = lastName;
         assertEmail(email);
@@ -41,8 +41,8 @@ public class User {
         assertPassword(psw);
         this.pswHash = hashPsw(psw);
         this.CF = CF;
-        assertDate(date);
-        this.date = date;
+        assertDate(data_di_nascita);
+        this.data_di_nascita = data_di_nascita;
         this.role = role;
     }
 
@@ -74,11 +74,11 @@ public class User {
         }
     }
 
-    // date should be in the format dd/mm/yyyy  e.g. 01/01/2000
+    // data_di_nascita should be in the format dd/mm/yyyy  e.g. 01/01/2000
     static void assertDate(String date) {
         String regexPattern = "^[0-9]{2}/[0-9]{2}/[0-9]{4}$";
         if (!Pattern.compile(regexPattern).matcher(date).matches()) {
-            throw new IllegalArgumentException("Invalid date format");
+            throw new IllegalArgumentException("Invalid data_di_nascita format");
         }
     }
 
