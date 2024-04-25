@@ -8,5 +8,6 @@ public interface PatientRepository extends CrudRepository<Patient, Long> {
     Optional<Patient> findById(long id);
     Optional<Patient> findByCS(String CS);
     Optional<Patient> findByUser(User user);
-
+    Optional<Patient> findByMedico(Medico medico);
+    Optional<Medico> findByMedico_Id(long id);
 }

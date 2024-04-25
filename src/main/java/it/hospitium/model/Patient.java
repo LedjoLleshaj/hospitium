@@ -22,10 +22,15 @@ public class Patient {
     @OneToOne
     @JoinColumn(name = "user_id")
     private User user;
+    @ManyToOne
+    @JoinColumn(name = "medico_id")
+    private Medico medico;
 
-    public Patient(String CS,User user) {
+
+    public Patient(String CS,User user,Medico medico) {
         this.CS = CS;
         this.user = user;
+        this.medico = medico;
     }
 
     public String fullName() {
