@@ -18,7 +18,6 @@
         New Appointment
       </button>
 
-      <form class="self-stretch" action="" method="get">
         <div class="flex flex-row items-center gap-2 h-11 items-stretch">
           <select
             id="categorySelect"
@@ -42,7 +41,6 @@
             oninput="filterElements()"
           />
         </div>
-      </form>
 
       <!--
     <span id="et-no-results" class="self-center text-xl text-semibold">No courses found matching the given criteria</span>
@@ -66,7 +64,7 @@
         </div>
         <!-- TODO: Description th:text="${course.description}" -->
         <p th:text="${visit.getResult()}" class="et-description mt-4">
-          Visita di come avere una vita piu lingha
+          Visita di come avere una vita piu lunga
         </p>
       </div>
     </div>
@@ -74,6 +72,7 @@
     <!-- script for filtering the data -->
     <script>
       function filterElements() {
+        console.log("Filtering elements");
         let input, category, filter, visits, visit, name, data, i;
         input = document.getElementById("searchInput");
         category = document
