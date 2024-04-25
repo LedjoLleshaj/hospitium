@@ -1,0 +1,18 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Home</title>
+    <meta th:replace="common/meta"/>
+</head>
+<body>
+<div th:replace="common/errors"/>
+<!-- Header with logo, logout and breadcrumbs -->
+<div th:replace="common/header"></div>
+<!-- Content -->
+<div class="et-content">
+    <button id="btn-search-visit" class="et-button-primary w-full h-12" onclick="document.location='search'">Search Patient
+    </button>
+    <button class="et-button-secondary w-full h-12" id="btn-goto-register" onclick="document.location = '/secretary/register'">Register</button>
+</div>
+</body>
+</html>

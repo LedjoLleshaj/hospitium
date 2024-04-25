@@ -17,6 +17,4 @@ public class MedicoController {
         return "/medico/home";
     }
 
-    @GetMapping("medico/search")
-    public String search() { return "/patient/search"; }
 }

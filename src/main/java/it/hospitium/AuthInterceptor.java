@@ -81,7 +81,12 @@ public class AuthInterceptor implements HandlerInterceptor {
                 pathRole = User.Role.MEDICO;
             } else if (request.getServletPath().startsWith("/patient")) {
                 pathRole = User.Role.PATIENT;
+            } else if (request.getServletPath().startsWith("/nurse")) {
+                pathRole = User.Role.NURSE;
+            } else if (request.getServletPath().startsWith("/secretary")) {
+                pathRole = User.Role.SECRETARY;
             } else {
+
                 // This is not equal to User.Role.MEDICO nor User.Role.PATIENT so it can never be equal to
                 // user.get().getRole() which means the user is redirected to its homepage. This happens i.e. when going
                 // to /login or /register when already authenticated
@@ -93,9 +98,18 @@ public class AuthInterceptor implements HandlerInterceptor {
             } else if (user.get().getRole() == User.Role.MEDICO) {
                 response.sendRedirect("/medico/home");
                 return false;
-            } else {
+            } else if (user.get().getRole() == User.Role.PATIENT) {
                 response.sendRedirect("/patient/home");
                 return false;
+            } else if (user.get().getRole() == User.Role.NURSE) {
+                response.sendRedirect("/nurse/home");
+                return false;
+            } else if (user.get().getRole() == User.Role.SECRETARY) {
+                response.sendRedirect("/secretary/home");
+                return false;
+            } else {
+                // This should never happen
+                throw new RuntimeException("Unknown user role: " + user.get().getRole());
             }
         }
     }
