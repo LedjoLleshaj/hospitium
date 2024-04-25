@@ -7,6 +7,8 @@ import it.hospitium.model.Visita.VisitType;
 
 import javax.persistence.*;
 
+import org.hibernate.annotations.ManyToAny;
+
 /**
  * Model for an appointment in the hospital.
  */
@@ -23,8 +25,6 @@ public class Appointment {
     @Column(nullable = false)
     private VisitType visitType;
     @Column(nullable = false)
-    private Integer insertedBy;
-    @Column(nullable = false)
     private Integer urgenza;
     @ManyToOne
     @JoinColumn(name = "medico_id")
@@ -32,24 +32,20 @@ public class Appointment {
     @ManyToOne
     @JoinColumn(name = "patient_id")
     private Patient patient;
-    @ManyToOne
-    @JoinColumn(name = "nurse_id")
-    private Nurse nurse;
 
-
-    public Appointment(String data, VisitType visitType, Integer insertedBy,Integer urgenza , Medico medico, Patient patient, Nurse nurse) {
+    public Appointment(String data, VisitType visitType, Integer urgenza, Medico medico,
+            Patient patient) {
         this.data = data;
         this.visitType = visitType;
-        this.insertedBy = insertedBy;
         this.urgenza = urgenza;
         this.medico = medico;
         this.patient = patient;
-        this.nurse = nurse;
     }
 
     @Override
     public String toString() {
-        return String.format("Visit{id=%d, date=%s, medico=%s, patient=%s, nurse=%s, type=%s}", id, data, medico.fullName(), patient.fullName(), nurse.fullName(), visitType.toString());
+        return String.format("Visit{id=%d, date=%s, medico=%s, patient=%s, type=%s}", id, data,
+                medico.fullName(), patient.fullName(), visitType.toString());
     }
 
 }

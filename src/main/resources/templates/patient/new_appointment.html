@@ -15,45 +15,79 @@
         <h2 class="text-2xl font-semibold text-gray-800 mb-2">
           Appointment Details
         </h2>
-        <form action="#" method="post">
+        <!-- Form that ridiract to /appointments page -->
+        <form action="/patient/new_appointment" method="post">
           <div class="mb-4">
-            <label
-              for="title"
-              class="block text-gray-700 text-sm font-bold mb-2"
-              >Title:</label
-            >
-            <input
-              type="text"
-              name="title"
-              id="title"
-              placeholder="Enter appointment title"
-              class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring focus:border-blue-500"
-            />
-          </div>
-          <div class="mb-4">
+            <!-- Data Fild //// TODO: Check medico di base which date is available and if not can select another medico -->
             <label for="date" class="block text-gray-700 text-sm font-bold mb-2"
-              >Date:</label
+              >Date and Time:</label
             >
-            <input
-              type="date"
+            <input 
+              type="datetime-local"
               name="date"
               id="date"
               class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring focus:border-blue-500"
             />
           </div>
+
+          <!-- Visit types -->
           <div class="mb-4">
             <label
-              for="description"
+              for="visitType"
               class="block text-gray-700 text-sm font-bold mb-2"
-              >Description:</label
+              >Visit Type:</label
             >
-            <textarea
-              name="description"
-              id="description"
-              rows="3"
+            <select
+              name="visitType"
+              id="visitType"
               class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring focus:border-blue-500"
-              placeholder="Enter appointment description"
-            ></textarea>
+            >
+              <option
+                th:each="category : ${visitTypes}"
+                th:value="${category}"
+                th:text="${category}"
+              >
+                Visit Type
+              </option>
+            </select>
+          </div>
+          <!-- Urgency -->
+          <div class="mb-4">
+            <label
+              for="urgency"
+              class="block text-gray-700 text-sm font-bold mb-2"
+              >Urgency:</label
+            >
+            <select
+              name="urgency"
+              id="urgency"
+              class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring focus:border-blue-500"
+            >
+              <option value="1">Low</option>
+              <option value="2">Medium</option>
+              <option value="3">High</option>
+            </select>
+          </div>
+          <!-- Medico //// TODO: to take the medico base and to be first seleted -->
+          <div class="mb-4">
+            <label
+              for="medico"
+              class="block text-gray-700 text-sm font-bold mb-2"
+              >Medico:</label
+            >
+            <select
+              name="medico"
+              id="medico"
+              class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring focus:border-blue-500"
+            >
+              <option
+                th:each="medico : ${medici}"
+                th:value="${medico.id}"
+                th:text="${medico.fullName()}"
+              >
+                Medico
+              </option>
+            </select>
           </div>
           <div class="flex justify-end">
             <button type="submit" class="et-button-secondary w-full h-12">

@@ -18,9 +18,14 @@
         New Appointment
       </button>
 
-      <form class="self-stretch" action="" method="get">
         <div class="flex flex-row items-center gap-2 h-11 items-stretch">
-          <select class="text-xl font-medium flex-1 min-w-0" name="category">
+          <select
+            id="categorySelect"
+            class="text-xl font-medium flex-1 min-w-0"
+            name="category"
+            onchange="filterElements()"
+          >
+            <option value="">All Categories</option>
             <option
               th:each="category : ${categories}"
               th:value="${category}"
@@ -28,16 +33,18 @@
             ></option>
           </select>
           <input
+            id="searchInput"
             class="et-squared-input text-xl font-medium flex-2 min-w-0"
             name="text"
             type="text"
-            placeholder="Search by date..."
+            placeholder="Search by name/data ..."
+            oninput="filterElements()"
           />
         </div>
-      </form>
+
       <!--
-        <span id="et-no-results" class="self-center text-xl text-semibold">No courses found matching the given criteria</span>
-         -->
+    <span id="et-no-results" class="self-center text-xl text-semibold">No courses found matching the given criteria</span>
+     -->
 
       <!-- TODO: Iterate over courses th:each="visit: ${visits}" -->
       <div th:each="visit: ${visits}" class="et-card p-5 w-100">
@@ -57,9 +64,41 @@
         </div>
         <!-- TODO: Description th:text="${course.description}" -->
         <p th:text="${visit.getResult()}" class="et-description mt-4">
-          Visita di come avere una vita piu lingha
+          Visita di come avere una vita piu lunga
         </p>
       </div>
     </div>
+
+    <!-- script for filtering the data -->
+    <script>
+      function filterElements() {
+        console.log("Filtering elements");
+        let input, category, filter, visits, visit, name, data, i;
+        input = document.getElementById("searchInput");
+        category = document
+          .getElementById("categorySelect")
+          .value.toUpperCase();
+        filter = input.value.toUpperCase();
+        visits = document.getElementsByClassName("et-card");
+
+        for (i = 0; i < visits.length; i++) {
+          visit = visits[i];
+          name = visit
+            .getElementsByClassName("et-name")[0]
+            .innerText.toUpperCase();
+          data = visit
+            .getElementsByClassName("et-period")[0]
+            .innerText.toUpperCase();
+          if (
+            (category === "" || name.indexOf(category) > -1) &&
+            (name.indexOf(filter) > -1 || data.indexOf(filter) > -1)
+          ) {
+            visit.style.display = "";
+          } else {
+            visit.style.display = "none";
+          }
+        }
+      }
+    </script>
   </body>
 </html>

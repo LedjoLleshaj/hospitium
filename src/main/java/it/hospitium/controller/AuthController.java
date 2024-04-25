@@ -46,54 +46,6 @@ public class AuthController {
         return redirectToUserHomepage(user);
     }
 
-    @GetMapping("/register")
-    public String registerPage() {
-        return "register";
-    }
-
-    @PostMapping("/register")
-    public String register(
-            @RequestParam(name = "first_name", required = true) String firstName,
-            @RequestParam(name = "last_name", required = true) String lastName,
-            @RequestParam(name = "email", required = true) String email,
-            @RequestParam(name = "password", required = true) String password,
-            @RequestParam(name = "role", required = true) String stringRole,
-            Model model,
-            HttpServletRequest request
-    ) {
-        User.Role role = null;
-        switch (stringRole) {
-            case "patient":
-                role = User.Role.PATIENT;
-                break;
-            case "medico":
-                role = User.Role.MEDICO;
-                break;
-            case "secretary":
-                role = User.Role.SECRETARY;
-        }
-
-        User user = null;
-        try {
-            user = new User(firstName, lastName, email, password,"CODICE_FISCALE","00/00/0000" ,role);
-            repoUser.save(user);
-        } catch (Exception exc) {
-            if (Utils.IsCause(exc, DataIntegrityViolationException.class)) {
-                Utils.addError(model, "Email already taken");
-                return "register";
-            }
-            // Unhandled exception
-            throw exc;
-        }
-
-        // So he/she is logged in for future requests
-        request.getSession().setAttribute("HOSPITIUM_EMAIL", user.getEmail());
-        request.getSession().setAttribute("HOSPITIUM_PSW_HASH", user.getPswHash());
-        model.addAttribute("user", user);
-
-        return redirectToUserHomepage(user);
-    }
-
     @GetMapping("/logout")
     public String logout(HttpServletRequest request) {
         request.getSession().removeAttribute("HOSPITIUM_EMAIL");
@@ -110,6 +62,8 @@ public class AuthController {
                 return "redirect:/medico/home";
             case PATIENT:
                 return "redirect:/patient/home";
+            case NURSE:
+                return "redirect:/nurse/home";
             case SECRETARY:
                 return "redirect:/secretary/home";
             default:
