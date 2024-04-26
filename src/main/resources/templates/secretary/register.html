@@ -46,7 +46,7 @@
         <form
           class="et-flex-centered flex-col mt-8"
           method="post"
-          action="/register"
+          action="/secretary/register"
         >
           <div class="flex flex-col">
             <label class="text-sm">First name</label>
@@ -128,6 +128,10 @@
         </form>
 
         <script>
+          // Don't show email error if email has never been edited so far
+          let isEmailUntouched = true;
+          let isCFUntouched = true;
+          let isCSUntouched = true;
           let patient = document.getElementById("patient");
           function isPatient() {
             return (
@@ -141,16 +145,13 @@
               codiceSanitario.style = "";
             } else {
               codiceSanitario.style = "display: none";
+              codiceSanitario.querySelector("input").value = "";
+              isCSUntouched = true;
             }
           });
         </script>
 
         <script>
-          // Don't show email error if email has never been edited so far
-          let isEmailUntouched = true;
-          let isCFUntouched = true;
-          let isCSUntouched = true;
-
           // Updates the clickable status of the register button and the visibility of the error messages
           function updateForm() {
             if (document.querySelector("input[name='email']").value !== "") {

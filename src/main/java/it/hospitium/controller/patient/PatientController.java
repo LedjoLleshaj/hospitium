@@ -69,7 +69,7 @@ public class PatientController {
 
         // Retrieve all medics
         List<Medico> medici = (List<Medico>) medicoRepository.findAll();
-        //add medico di base in top of medici in a set
+        // add medico di base in top of medici in a set
         medici.add(0, medico_di_base);
         Set<Medico> medici_set = Set.copyOf(medici);
         for (Medico medico : medici_set) {
@@ -109,13 +109,13 @@ public class PatientController {
         Medico medico = maybe_medico.get();
 
         // add the new appointment to the database
-        Appointment appointment = new Appointment(date, Visita.fromString(visitType) , urgency, medico, patient);
+        Appointment appointment = new Appointment(date, Visita.fromString(visitType), urgency, medico, patient);
 
         // Save the appointment
         appointmentRepository.save(appointment);
 
         // Go to the profile page
-        return "/patient/profile";
+        return "redirect:/patient/profile";
     }
 
     @GetMapping("patient/visit/{id}")
@@ -156,8 +156,18 @@ public class PatientController {
             return "redirect:/login";
         }
 
-        // Patient Data
-        model.addAttribute("patient", optionalPatient.get());
+        // Retrieve the patient's appointments
+        Patient patient = optionalPatient.get();
+        List<Appointment> appointments = appointmentRepository.findByPatient(patient);
+
+        // Patient Data and Appointments
+        model.addAttribute("patient", patient);
+        model.addAttribute("appointments", appointments);
+
+        System.out.println("--------------------");
+        System.out.println(patient);
+        System.out.println(appointments);
+        System.out.println("--------------------");
 
         // Return the profile page
         return "/patient/profile";

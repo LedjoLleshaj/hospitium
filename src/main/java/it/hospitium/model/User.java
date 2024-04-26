@@ -31,18 +31,24 @@ public class User {
     @Column(nullable = false)
     private String data_di_nascita;
     @Column(nullable = false)
+    private String luogo_di_nascita;
+    @Column(nullable = false)
     private Role role;
 
-    public User(String firstName, String lastName, String email, String psw,String CF,String data_di_nascita, Role role) {
+    public User(String firstName, String lastName, String email,String psw ,String CF,String data_di_nascita,String luogo_di_nascita, Role role) {
         this.firstName = firstName;
         this.lastName = lastName;
         assertEmail(email);
         this.email = email;
-        assertPassword(psw);
-        this.pswHash = hashPsw(psw);
+        if (psw == "") {
+            this.pswHash = hashPsw(generatePsw());
+        }else{
+            assertPassword(psw);
+            this.pswHash = hashPsw(psw);
+        }
         this.CF = CF;
-        assertDate(data_di_nascita);
         this.data_di_nascita = data_di_nascita;
+        this.luogo_di_nascita = luogo_di_nascita;
         this.role = role;
     }
 
@@ -72,6 +78,15 @@ public class User {
         if (psw.length() < 8) {
             throw new IllegalArgumentException("Password is too short");
         }
+    }
+
+
+    public static String generatePsw () {
+        String psw = "";
+        for (int i = 0; i < 8; i++) {
+            psw += (char) (Math.random() * 26 + 'a');
+        }
+        return psw;
     }
 
     // data_di_nascita should be in the format dd/mm/yyyy  e.g. 01/01/2000

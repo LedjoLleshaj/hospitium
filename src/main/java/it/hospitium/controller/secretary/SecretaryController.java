@@ -26,7 +26,7 @@ public class SecretaryController {
 
     @GetMapping("/secretary/register")
     public String registerPage() {
-        return "register";
+        return "secretary/register";
     }
 
     @PostMapping("/secretary/register")
@@ -34,11 +34,17 @@ public class SecretaryController {
             @RequestParam(name = "first_name", required = true) String firstName,
             @RequestParam(name = "last_name", required = true) String lastName,
             @RequestParam(name = "email", required = true) String email,
-            @RequestParam(name = "password", required = true) String password,
+            @RequestParam(name = "codice_fiscale", required = true) String codice_fiscale,
+            @RequestParam(name = "data_di_nascita", required = true) String data_di_nascita,
+            @RequestParam(name = "luogo_di_nascita", required = true) String luogo_di_nascita,
             @RequestParam(name = "role", required = true) String stringRole,
+            @RequestParam(name = "codice_sanitario", required = false) String codice_sanitario,
             Model model,
             HttpServletRequest request
     ) {
+
+        System.out.println("data di nascita:"+data_di_nascita);
+
         User.Role role = null;
         switch (stringRole) {
             case "patient":
@@ -56,21 +62,18 @@ public class SecretaryController {
 
         User user = null;
         try {
-            user = new User(firstName, lastName, email, password,"CODICE_FISCALE","00/00/0000" ,role);
+            user = new User(firstName, lastName, email,"", codice_fiscale,data_di_nascita,luogo_di_nascita,role);
+            System.out.println(user);
             repoUser.save(user);
         } catch (Exception exc) {
             if (Utils.IsCause(exc, DataIntegrityViolationException.class)) {
                 Utils.addError(model, "Email already taken");
-                return "register";
+                return "secretary/register";
             }
             // Unhandled exception
             throw exc;
         }
 
-        // return secretary to homepage
-        request.getSession().setAttribute("HOSPITIUM_EMAIL", user.getEmail());
-        request.getSession().setAttribute("HOSPITIUM_PSW_HASH", user.getPswHash());
-        model.addAttribute("user", user);
         return "redirect:/secretary/home";
     }
 }

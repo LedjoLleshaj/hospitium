@@ -39,21 +39,21 @@ public class DbBootstrapper {
     @PostConstruct
     public void bootstrap() {
         // Create a couple of users that are patients
-        User user1 = new User("User", "Patient_One", "user.patient_one@hospitium.it", "user.patient_one@hospitium.it","CODICE_FISCALE1","29/08/2000", User.Role.PATIENT);
-        User user2 = new User("User", "Patient_Two", "user.patient_two@hospitium.it", "user.patient_two@hospitium.it","CODICE_FISCALE2","00/00/0000", User.Role.PATIENT);
-        User user3 = new User("User", "Patient_Three", "user.patient_three@hospitium.it", "user.patient_three@hospitium.it","CODICE_FISCALE3","00/00/0000", User.Role.PATIENT);
-        User user4 = new User("User", "Patient_Four", "user.patient_four@hospitium.it", "user.patient_four@hospitium-it","CODICE_FISCALE4","00/00/0000", User.Role.PATIENT);
-        // Create a couple of users that are doctors
-        User user5 = new User("User", "Doctor_One", "user.doctor_one@hospitium.it", "user.doctor_one@hospitium.it","CODICE_FISCALE5","00/00/0000", User.Role.MEDICO);
-        User user6 = new User("User", "Doctor_Two", "user.doctor_two@hospitium.it", "user.doctor_two@hospitium.it","CODICE_FISCALE6","00/00/0000", User.Role.MEDICO);
-        User user7 = new User("User", "Doctor_Three", "user.doctor_three@hospitium.it", "user.doctor_three@hospitium.it","CODICE_FISCALE7","00/00/0000", User.Role.MEDICO);
+        User user1 = new User("User", "Patient_One", "user.patient_one@hospitium.it", "user.patient_one@hospitium.it","CODICE_FISCALE1","29/08/2000","Bota me rrota", User.Role.PATIENT);
+        User user2 = new User("User", "Patient_Two", "user.patient_two@hospitium.it", "user.patient_two@hospitium.it","CODICE_FISCALE2","00/00/0000","Bota me rrota", User.Role.PATIENT);
+        User user3 = new User("User", "Patient_Three", "user.patient_three@hospitium.it", "user.patient_three@hospitium.it","CODICE_FISCALE3","00/00/0000","Bota me rrota", User.Role.PATIENT);
+        User user4 = new User("User", "Patient_Four", "user.patient_four@hospitium.it", "user.patient_four@hospitium-it","CODICE_FISCALE4","00/00/0000","Bota me rrota", User.Role.PATIENT);
+        // Create a couple of users that are doctors"Bota me rrota",
+        User user5 = new User("User", "Doctor_One", "user.doctor_one@hospitium.it", "user.doctor_one@hospitium.it","CODICE_FISCALE5","00/00/0000","Bota me rrota", User.Role.MEDICO);
+        User user6 = new User("User", "Doctor_Two", "user.doctor_two@hospitium.it", "user.doctor_two@hospitium.it","CODICE_FISCALE6","00/00/0000","Bota me rrota", User.Role.MEDICO);
+        User user7 = new User("User", "Doctor_Three", "user.doctor_three@hospitium.it", "user.doctor_three@hospitium.it","CODICE_FISCALE7","00/00/0000","Bota me rrota", User.Role.MEDICO);
         // Create nurses
-        User user8 = new User("User", "Nurse_One", "user.nurse_one@hospitium.it", "user.nurse_one@hospitium.it","CODICE_FISCALE8","00/00/0000", User.Role.NURSE);
-        User user9 = new User("User", "Nurse_Two", "user.nurse_two@hospitium.it", "user.nurse_two@hospitium.it","CODICE_FISCALE9","00/00/0000", User.Role.NURSE);
-        User user10 = new User("User", "Nurse_Three", "user.nurse_three@hospitium.it", "user.nurse_three@hospitium.it", "CODICE_FISCALE10","00/00/0000",User.Role.NURSE);
+        User user8 = new User("User", "Nurse_One", "user.nurse_one@hospitium.it", "user.nurse_one@hospitium.it","CODICE_FISCALE8","00/00/0000","Bota me rrota", User.Role.NURSE);
+        User user9 = new User("User", "Nurse_Two", "user.nurse_two@hospitium.it", "user.nurse_two@hospitium.it","CODICE_FISCALE9","00/00/0000","Bota me rrota", User.Role.NURSE);
+        User user10 = new User("User", "Nurse_Three", "user.nurse_three@hospitium.it", "user.nurse_three@hospitium.it", "CODICE_FISCALE10","00/00/0000","Bota me rrota",User.Role.NURSE);
         // Create secretaries
-        User user11 = new User("User", "Secretary_One", "user.secretary_one@hospitium.it", "user.secretary_one@hospitium.it","CODICE_FISCALE11","00/00/0000", User.Role.SECRETARY);
-        User user12 = new User("User", "Secretary_Two", "user.secretary_two@hospitium.it", "user.secretary_two@hospitium.it","CODICE_FISCALE12","00/00/0000", User.Role.SECRETARY);
+        User user11 = new User("User", "Secretary_One", "user.secretary_one@hospitium.it", "user.secretary_one@hospitium.it","CODICE_FISCALE11","00/00/0000","Bota me rrota", User.Role.SECRETARY);
+        User user12 = new User("User", "Secretary_Two", "user.secretary_two@hospitium.it", "user.secretary_two@hospitium.it","CODICE_FISCALE12","00/00/0000","Bota me rrota", User.Role.SECRETARY);
 
 
 
@@ -98,8 +98,6 @@ public class DbBootstrapper {
         for (Secretary secretary : List.of(secretary1, secretary2)) {
             System.out.println(secretary);
         }
-
-
 
 
         // Create a couple of Appointments
