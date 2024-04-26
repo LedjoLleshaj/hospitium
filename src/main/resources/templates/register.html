@@ -1,176 +1,246 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-<head>
+  <head>
     <title>Register</title>
-    <meta th:replace="common/meta"/>
-</head>
-<body class="et-flex-centered flex-col h-screen" onload="updateForm()">
-<div th:replace="common/errors"/>
-<div class="et-card et-flex-centered flex-col p-12">
-    <h1 class="et-logo">Hospitium</h1>
-    <span class="et-subtitle">REGISTER</span>
-    <form class="et-flex-centered flex-col mt-8" method="post" action="/register">
-        <div class="flex flex-col">
+    <meta th:replace="common/meta" />
+
+    <style>
+      .flex {
+        display: flex;
+      }
+
+      .flex-col {
+        flex-direction: column;
+      }
+
+      .mt-2 {
+        margin-top: 8px;
+      }
+
+      .text-sm {
+        font-size: 14px;
+        color: #333;
+      }
+
+      input[type="date"] {
+        width: 345px;
+        padding: 8px;
+        border-radius: 4px;
+        border: 1px solid #ccc;
+        box-sizing: border-box; /* Include padding and border in the element's total width */
+      }
+    </style>
+  </head>
+
+  <body>
+    <div th:replace="common/header"></div>
+    <div
+      style="margin-top: 100px"
+      class="et-flex-centered flex-col h-screen"
+      onload="updateForm()"
+    >
+      <div th:replace="common/errors" />
+      <div class="et-card et-flex-centered flex-col p-12">
+        <h1 class="et-logo">Hospitium</h1>
+        <span class="et-subtitle">REGISTER</span>
+        <form
+          class="et-flex-centered flex-col mt-8"
+          method="post"
+          action="/register"
+        >
+          <div class="flex flex-col">
             <label class="text-sm">First name</label>
-            <input type="text" name="first_name" oninput="updateForm()">
-        </div>
-        <div class="flex flex-col mt-2">
+            <input type="text" name="first_name" oninput="updateForm()" />
+          </div>
+          <div class="flex flex-col mt-2">
             <label class="text-sm">Last name</label>
-            <input type="text" name="last_name" oninput="updateForm()">
-        </div>
-        <div class="flex flex-col mt-2">
+            <input type="text" name="last_name" oninput="updateForm()" />
+          </div>
+          <div class="flex flex-col mt-2">
             <label class="text-sm">Email</label>
-            <input type="text" name="email" oninput="updateForm()">
-        </div>
-        <span style="display: none" class="text-red-700 self-start"
-              id="invalid-email-format">Invalid email format</span>
-        <div class="flex flex-col mt-2">
+            <input type="text" name="email" oninput="updateForm()" />
+          </div>
+          <span
+            style="display: none"
+            class="text-red-700 self-start"
+            id="invalid-email-format"
+            >Invalid email format</span
+          >
+          <div class="flex flex-col mt-2">
             <label class="text-sm">Codice Fiscale</label>
-            <input type="text" name="codice_fiscale" oninput="updateForm()">
-        </div>
-        <span style="display: none" class="text-red-700 self-start"
-              id="invalid-cf-format">Invalid Codice Fiscale format</span>
-        <div class="flex flex-col mt-2">
+            <input type="text" name="codice_fiscale" oninput="updateForm()" />
+          </div>
+          <span
+            style="display: none"
+            class="text-red-700 self-start"
+            id="invalid-cf-format"
+            >Invalid Codice Fiscale format</span
+          >
+          <div class="flex flex-col mt-2">
             <label class="text-sm">Data di nascita</label>
-            <input type="date" name="data_di_nascita" oninput="updateForm()">
-        </div>
-        <div class="flex flex-col mt-2">
+            <input type="date" name="data_di_nascita" oninput="updateForm()" />
+          </div>
+          <div class="flex flex-col mt-2">
             <label class="text-sm">Luogo di Nascita</label>
-            <input type="text" name="luogo_di_nascita" oninput="updateForm()">
-        </div>
+            <input type="text" name="luogo_di_nascita" oninput="updateForm()" />
+          </div>
 
-        <div id="patient" class="flex flex-row w-full mt-2">
+          <div id="patient" class="flex flex-row w-full mt-2">
             <div class="flex flex-row items-center mr-4">
-                <input class="mr-2" type="radio" name="role" value="patient" checked>
-                <span>Patient</span>
+              <input
+                class="mr-2"
+                type="radio"
+                name="role"
+                value="patient"
+                checked
+              />
+              <span>Patient</span>
             </div>
             <div class="flex flex-row items-center mr-4">
-                <input class="mr-2" type="radio" name="role" value="medico">
-                <span>Medico</span>
+              <input class="mr-2" type="radio" name="role" value="medico" />
+              <span>Medico</span>
             </div>
             <div class="flex flex-row items-center mr-4">
-                <input class="mr-2" type="radio" name="role" value="nurse">
-                <span>Nurse</span>
+              <input class="mr-2" type="radio" name="role" value="nurse" />
+              <span>Nurse</span>
             </div>
-        </div>
+          </div>
 
-        <div id="codiceSanitario" class="flex flex-col mt-2">
+          <div id="codiceSanitario" class="flex flex-col mt-2">
             <label class="text-sm">Codice Sanitario</label>
-            <input type="text" name="codice_sanitario" oninput="updateForm()">
-        </div>
-        <span style="display: none" class="text-red-700 self-start"
-              id="invalid-cs-format">Invalid Codice Sanitario format</span>
+            <input type="text" name="codice_sanitario" oninput="updateForm()" />
+          </div>
+          <span
+            style="display: none"
+            class="text-red-700 self-start"
+            id="invalid-cs-format"
+            >Invalid Codice Sanitario format</span
+          >
 
+          <hr class="w-2/3 my-8 bg-text-light" />
 
-        <hr class="w-2/3 my-8 bg-text-light"/>
+          <button
+            class="et-button-primary et-button-disabled w-full h-12 mt-2"
+            id="btn-register"
+          >
+            Register
+          </button>
+        </form>
 
-        <button class="et-button-primary et-button-disabled w-full h-12 mt-2" id="btn-register">Register</button>
-    </form>
-
-
-    <script>
-
-        let patient = document.getElementById("patient");
-        function isPatient() {
-            return document.querySelector("input[name='role']:checked").value === "patient";
-        }
-        let codiceSanitario = document.getElementById("codiceSanitario");
-        patient.addEventListener("change", function() {
+        <script>
+          let patient = document.getElementById("patient");
+          function isPatient() {
+            return (
+              document.querySelector("input[name='role']:checked").value ===
+              "patient"
+            );
+          }
+          let codiceSanitario = document.getElementById("codiceSanitario");
+          patient.addEventListener("change", function () {
             if (isPatient()) {
-                codiceSanitario.style = "";
+              codiceSanitario.style = "";
             } else {
-                codiceSanitario.style = "display: none";
+              codiceSanitario.style = "display: none";
             }
-        });
-    </script>
+          });
+        </script>
 
+        <script>
+          // Don't show email error if email has never been edited so far
+          let isEmailUntouched = true;
+          let isCFUntouched = true;
+          let isCSUntouched = true;
 
-    <script>
-
-        // Don't show email error if email has never been edited so far
-        let isEmailUntouched = true;
-        let isCFUntouched = true;
-        let isCSUntouched = true;
-
-
-        // Updates the clickable status of the register button and the visibility of the error messages
-        function updateForm() {
-
+          // Updates the clickable status of the register button and the visibility of the error messages
+          function updateForm() {
             if (document.querySelector("input[name='email']").value !== "") {
-                isEmailUntouched = false;
+              isEmailUntouched = false;
             }
 
-            if (document.querySelector("input[name='codice_fiscale']").value !== "") {
-                isCFUntouched = false;
+            if (
+              document.querySelector("input[name='codice_fiscale']").value !==
+              ""
+            ) {
+              isCFUntouched = false;
             }
 
-            if (document.querySelector("input[name='codice_sanitario']").value !== "") {
-                isCSUntouched = false;
+            if (
+              document.querySelector("input[name='codice_sanitario']").value !==
+              ""
+            ) {
+              isCSUntouched = false;
             }
-
 
             let registerButton = document.querySelector("#btn-register");
             if (canRegister()) {
-                registerButton.classList.remove("et-button-disabled");
+              registerButton.classList.remove("et-button-disabled");
             } else {
-                registerButton.classList.add("et-button-disabled");
+              registerButton.classList.add("et-button-disabled");
             }
 
             // This check is also done server-side, but we do it client-side first for better interactivity
-            let invalidEmailFormatMsg = document.querySelector("#invalid-email-format");
-            let invalidCFFormatMsg = document.querySelector("#invalid-cf-format");
-            let invalidCSFormatMsg = document.querySelector("#invalid-cs-format");
+            let invalidEmailFormatMsg = document.querySelector(
+              "#invalid-email-format"
+            );
+            let invalidCFFormatMsg =
+              document.querySelector("#invalid-cf-format");
+            let invalidCSFormatMsg =
+              document.querySelector("#invalid-cs-format");
 
             if (isEmailUntouched || isEmailFormatOk()) {
-                invalidEmailFormatMsg.style = "display: none";
+              invalidEmailFormatMsg.style = "display: none";
             } else {
-                invalidEmailFormatMsg.style = "";
+              invalidEmailFormatMsg.style = "";
             }
 
             if (isCFUntouched || isCFValid()) {
-                invalidCFFormatMsg.style = "display: none";
+              invalidCFFormatMsg.style = "display: none";
             } else {
-                invalidCFFormatMsg.style = "";
+              invalidCFFormatMsg.style = "";
             }
 
             if (isCSUntouched || isCSValid()) {
-                invalidCSFormatMsg.style = "display: none";
+              invalidCSFormatMsg.style = "display: none";
             } else {
-                invalidCSFormatMsg.style = "";
+              invalidCSFormatMsg.style = "";
             }
+          }
 
-
-        }
-
-        // Returns true if the register button should be clickable
-        function canRegister() {
+          // Returns true if the register button should be clickable
+          function canRegister() {
             // These must have a non-empty value
             let textInputs = ["first_name", "last_name", "email"];
             for (let i = 0; i < textInputs.length; i++) {
-                if (document.querySelector("input[name='" + textInputs[i] + "']").value === "") {
-                    return false;
-                }
+              if (
+                document.querySelector("input[name='" + textInputs[i] + "']")
+                  .value === ""
+              ) {
+                return false;
+              }
             }
             return isEmailFormatOk() && isCFValid() && isCSValid();
-        }
+          }
 
-        function isCFValid() {
-            let value = document.querySelector("input[name='codice_fiscale']").value;
+          function isCFValid() {
+            let value = document.querySelector(
+              "input[name='codice_fiscale']"
+            ).value;
             return /^[A-Z]{6}\d{2}[A-Z]\d{2}[A-Z]\d{3}[A-Z]$/.test(value);
-        }
+          }
 
-        function isCSValid() {
-            let value = document.querySelector("input[name='codice_sanitario']").value;
-            return /^\d{20}$/.test(value)  && isPatient();
-        }
+          function isCSValid() {
+            let value = document.querySelector(
+              "input[name='codice_sanitario']"
+            ).value;
+            return /^\d{20}$/.test(value) && isPatient();
+          }
 
-
-        function isEmailFormatOk() {
+          function isEmailFormatOk() {
             let value = document.querySelector("input[name='email']").value;
             return /^[\w.]+@[\w.]+$/.test(value);
-        }
-    </script>
-</div>
-</body>
-</html>
+          }
+        </script>
+      </div>
+    </div>
+  </body>
 </html>
