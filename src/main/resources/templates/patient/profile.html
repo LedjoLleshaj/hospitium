@@ -3,41 +3,96 @@
   <head>
     <title>Profile</title>
     <meta th:replace="common/meta" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"
+      rel="stylesheet"
+    />
+    <!-- Include Tailwind CSS -->
   </head>
 
-  <body>
+  <body class="bg-gray-100">
     <div th:replace="common/errors"></div>
     <!-- Header with logo, logout, and breadcrumbs -->
     <div th:replace="common/header"></div>
     <!-- Content -->
-    <div class="et-content">
+    <div class="max-w-4xl mx-auto mt-8 px-4">
       <!-- Patient Data Card -->
-      <div class="et-card">
-        <a class="et-name text-2xl font-bold">Patient Data:</a>
+      <div class="et-card mb-8 text-center">
+        <div class="et-name text-2xl font-bold mb-4">Patient Data:</div>
         <div class="et-card-body">
-          <p th:text="'Name: ' + ${user.fullName()}"></p>
-          <p th:text="'Email: ' + ${patient.user.email}"></p>
+          <p th:text="'Name: ' + ${user.fullName()}" class="mb-2"></p>
+          <p th:text="'Email: ' + ${patient.user.email}" class="mb-2"></p>
         </div>
       </div>
 
-      <!-- Appointment Cards -->
+      <div class="flex items-center justify-center mb-4">
+        <hr class="border-gray-400 border-solid border-t-2 flex-grow mr-4">
+        <span class="text-2xl font-bold text-gray-700">Appointments</span>
+        <hr class="border-gray-400 border-solid border-t-2 flex-grow ml-4">
+    </div>
+
+      <!-- Search for Appointments -->
+      <div class="mb-4">
+        <input
+          type="text"
+          style="width:100%;"
+          id="searchInput"
+          placeholder="Search appointments..."
+          class="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500"
+        />
+      </div>
+
       <!-- Loop through appointments -->
-      <div th:each="appointment : ${appointments}">
-        <div class="et-card">
-          <div class="et-card-body">
-            <a
-              class="et-name text-2xl font-bold"
+      <div th:each="appointment : ${appointments}" class="appointment-card">
+        <div class="et-card mb-4">
+          <div style="padding-left: 10px" class="et-card-body">
+            <div
+              class="et-name text-2xl font-bold text-center mb-4"
               th:text="${appointment.visitType}"
-            ></a>
-            <p th:text="'Data: ' + ${appointment.data}"></p>
-            <p th:text="'Medico: ' + ${appointment.medico.user.fullName()}"></p>
-            <p
-              th:text="'Medico email: ' + ${appointment.medico.user.email}"
-            ></p>
-            <p th:text="'Urgenza: ' + ${appointment.urgenza}"></p>
+            ></div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <p th:text="'Data: ' + ${appointment.data}" class="mb-2"></p>
+                <p
+                  th:text="'Medico: ' + ${appointment.medico.user.fullName()}"
+                  class="mb-2"
+                ></p>
+              </div>
+              <div>
+                <p
+                  th:text="'Medico email: ' + ${appointment.medico.user.email}"
+                  class="mb-2"
+                ></p>
+                <p
+                  th:text="'Urgenza: ' + ${appointment.urgenza}"
+                  class="mb-2"
+                ></p>
+              </div>
+            </div>
           </div>
         </div>
       </div>
     </div>
+
+    <script>
+      // Get the input field
+      var input = document.getElementById("searchInput");
+
+      input.addEventListener("input", function () {
+        var filter, cards, appointment, i, txtValue;
+        filter = input.value.toUpperCase();
+        cards = document.querySelectorAll(".appointment-card");
+
+        for (i = 0; i < cards.length; i++) {
+          appointment = cards[i];
+          txtValue = appointment.textContent || appointment.innerText;
+          if (txtValue.toUpperCase().indexOf(filter) > -1) {
+            appointment.style.display = "";
+          } else {
+            appointment.style.display = "none";
+          }
+        }
+      });
+    </script>
   </body>
 </html>

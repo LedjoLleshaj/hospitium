@@ -138,7 +138,7 @@ public class PatientController {
 
     @GetMapping("/patient/profile")
     public String viewProfile(Model model, HttpServletRequest request, RedirectAttributes redirectAttributes) {
-        // Get the logged-in user
+        // Get the logged user
         User user = Utils.loggedUser(request);
 
         // Check authentication
@@ -156,18 +156,13 @@ public class PatientController {
             return "redirect:/login";
         }
 
-        // Retrieve the patient's appointments
+        // Get the patient
         Patient patient = optionalPatient.get();
         List<Appointment> appointments = appointmentRepository.findByPatient(patient);
 
         // Patient Data and Appointments
         model.addAttribute("patient", patient);
         model.addAttribute("appointments", appointments);
-
-        System.out.println("--------------------");
-        System.out.println(patient);
-        System.out.println(appointments);
-        System.out.println("--------------------");
 
         // Return the profile page
         return "/patient/profile";
