@@ -3,6 +3,11 @@
   <head>
     <title>Details</title>
     <meta th:replace="common/meta" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"
+      rel="stylesheet"
+    />
+    <!-- Include Tailwind CSS -->
   </head>
 
   <body>
@@ -11,50 +16,52 @@
     <div th:replace="common/header"></div>
     <!-- Content -->
     <div class="et-content">
-      <div class="et-card p-5 w-100">
-        <h2 class="text-2xl font-semibold text-gray-800 mb-2">Visit Details</h2>
-        <div class="overflow-x-auto">
-          <table class="w-full table-auto">
-            <tbody>
-              <tr>
-                <th class="text-left">Date:</th>
-                <td th:text="${visit.data}" class="text-left">Visit Date</td>
-              </tr>
-              <tr>
-                <th class="text-left">Result:</th>
-                <td th:text="${visit.Result}" class="text-left">
-                  Visit Result
-                </td>
-              </tr>
-              <tr>
-                <th class="text-left">Type:</th>
-                <td
-                  th:text="${visit.formattedType(visit.type)}"
-                  class="text-left"
-                >
-                  Visit Type:
-                </td>
-              </tr>
-              <tr>
-                <th class="text-left">Medico:</th>
-                <td th:text="${visit.medico.fullName()}" class="text-left">
-                  Medico
-                </td>
-              </tr>
-              <tr>
-                <th class="text-left">Patient:</th>
-                <td th:text="${visit.patient.fullName()}" class="text-left">
-                  Patient
-                </td>
-              </tr>
-              <tr>
-                <th class="text-left">Nurse:</th>
-                <td th:text="${visit.nurse.fullName()}" class="text-left">
-                  Nurse
-                </td>
-              </tr>
-            </tbody>
-          </table>
+      <div class="et-card p-5 w-full">
+        <h2 class="text-2xl font-semibold text-gray-800 mb-4">Visit Details</h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div class="flex items-center">
+            <div class="w-full">
+              <div class="font-semibold text-gray-600">Date:</div>
+              <div th:text="${visit.data}" class="text-gray-800">
+                Visit Date
+              </div>
+            </div>
+          </div>
+          <div class="flex items-center">
+            <div class="w-full">
+              <div class="font-semibold text-gray-600">Result:</div>
+              <div th:text="${visit.Result}" class="text-gray-800">
+                Visit Result
+              </div>
+            </div>
+          </div>
+          <div class="flex items-center">
+            <div class="w-full">
+              <div class="font-semibold text-gray-600">Type:</div>
+              <div
+                th:text="${visit.formattedType(visit.type)}"
+                class="text-gray-800"
+              >
+                Visit Type
+              </div>
+            </div>
+          </div>
+          <div class="flex items-center">
+            <div class="w-full">
+              <div class="font-semibold text-gray-600">Medico:</div>
+              <div th:text="${visit.medico.fullName()}" class="text-gray-800">
+                Medico
+              </div>
+            </div>
+          </div>
+          <div class="flex items-center">
+            <div class="w-full">
+              <div class="font-semibold text-gray-600">Patient:</div>
+              <div th:text="${visit.patient.fullName()}" class="text-gray-800">
+                Patient
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
