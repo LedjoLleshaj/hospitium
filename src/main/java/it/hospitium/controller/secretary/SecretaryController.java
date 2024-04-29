@@ -1,7 +1,6 @@
 package it.hospitium.controller.secretary;
 
-import it.hospitium.model.User;
-import it.hospitium.model.UserRepository;
+import it.hospitium.model.*;
 import it.hospitium.utils.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -10,13 +9,26 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
+import java.awt.desktop.SystemSleepEvent;
+import java.util.Optional;
 
 @Controller
 public class SecretaryController {
     @Autowired
     private UserRepository repoUser;
+
+    @Autowired
+    private SecretaryRepository repoSecretary;
+
+    @Autowired
+    private MedicoRepository repoMedico;
+
+    @Autowired
+    private PatientRepository repoPatient;
+
 
     @GetMapping("/secretary/home")
     public String home(Model model) {
@@ -25,7 +37,9 @@ public class SecretaryController {
     }
 
     @GetMapping("/secretary/register")
-    public String registerPage() {
+    public String registerPage(Model model, HttpServletRequest request, RedirectAttributes redirectAttributes) {
+        // get all medico
+        model.addAttribute("medici", repoMedico.findAll());
         return "secretary/register";
     }
 
@@ -38,6 +52,7 @@ public class SecretaryController {
             @RequestParam(name = "data_di_nascita", required = true) String data_di_nascita,
             @RequestParam(name = "luogo_di_nascita", required = true) String luogo_di_nascita,
             @RequestParam(name = "role", required = true) String stringRole,
+            @RequestParam(name = "medico_di_base", required = false) Long medico_id,
             @RequestParam(name = "codice_sanitario", required = false) String codice_sanitario,
             Model model,
             HttpServletRequest request
@@ -72,6 +87,23 @@ public class SecretaryController {
             }
             // Unhandled exception
             throw exc;
+        }
+
+        switch (role) {
+            case PATIENT:
+                Optional<Medico> maybeMedico = repoMedico.findById(medico_id);
+                if (maybeMedico.isEmpty()) {
+                    Utils.addError(model, "No such medico");
+                    return "secretary/register";
+                }
+                Patient patient = new Patient(codice_sanitario, user, maybeMedico.get());
+                repoPatient.save(patient);
+                System.out.println("Patient Saved"+patient.fullName());
+                break;
+            case MEDICO:
+                Medico medico = new Medico(user);
+                repoMedico.save(medico);
+                break;
         }
 
         return "redirect:/secretary/home";

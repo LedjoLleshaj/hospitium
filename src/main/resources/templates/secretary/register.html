@@ -118,6 +118,26 @@
           >
 
           <hr class="w-2/3 my-8 bg-text-light" />
+          <!-- Medico di base -->
+          <div class="mb-4" id="medico_di_base">
+            <label
+                    for="medic"
+                    class="block text-gray-700 text-sm font-bold mb-2"
+            >Medico di base:</label>
+            <select
+                    name="medico_di_base"
+                    id="medic"
+                    class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring focus:border-blue-500"
+            >
+              <option
+                      th:each="medico : ${medici}"
+                      th:value="${medico.getId()}"
+                      th:text="${medico.fullName()}"
+              >
+                Medico di base
+              </option>
+            </select>
+          </div>
 
           <button
             class="et-button-primary et-button-disabled w-full h-12 mt-2"
@@ -133,6 +153,7 @@
           let isCFUntouched = true;
           let isCSUntouched = true;
           let patient = document.getElementById("patient");
+
           function isPatient() {
             return (
               document.querySelector("input[name='role']:checked").value ===
@@ -140,18 +161,20 @@
             );
           }
           let codiceSanitario = document.getElementById("codiceSanitario");
+          let medicoDiBase = document.getElementById("medico_di_base");
           patient.addEventListener("change", function () {
             if (isPatient()) {
               codiceSanitario.style = "";
+              medicoDiBase.style = "";
             } else {
               codiceSanitario.style = "display: none";
+              medicoDiBase.style = "display: none";
               codiceSanitario.querySelector("input").value = "";
+              medicoDiBase.querySelector("input").value = "";
               isCSUntouched = true;
             }
           });
-        </script>
 
-        <script>
           // Updates the clickable status of the register button and the visibility of the error messages
           function updateForm() {
             if (document.querySelector("input[name='email']").value !== "") {
@@ -200,7 +223,7 @@
               invalidCFFormatMsg.style = "";
             }
 
-            if (isCSUntouched || isCSValid()) {
+            if (isCSUntouched || isCSValid() || !isPatient()) {
               invalidCSFormatMsg.style = "display: none";
             } else {
               invalidCSFormatMsg.style = "";
@@ -219,7 +242,7 @@
                 return false;
               }
             }
-            return isEmailFormatOk() && isCFValid() && isCSValid();
+            return isEmailFormatOk() && isCFValid();
           }
 
           function isCFValid() {
@@ -233,7 +256,7 @@
             let value = document.querySelector(
               "input[name='codice_sanitario']"
             ).value;
-            return /^\d{20}$/.test(value) && isPatient();
+            return isPatient() && /^\d{20}$/.test(value);
           }
 
           function isEmailFormatOk() {
