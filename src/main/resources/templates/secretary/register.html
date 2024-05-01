@@ -126,7 +126,8 @@
           >
           <!-- Medico di base -->
           <div class="flex flex-col mt-2" id="medico_di_base">
-            <label id="textMedic"
+            <label
+              id="textMedic"
               for="medic"
               class="block text-gray-700 text-sm font-bold mb-2"
               >Medico di base:</label
@@ -157,16 +158,14 @@
         </form>
 
         <script>
-          // Don't show email error if email has never been edited so far
+          // validation
           let isEmailUntouched = true;
           let isCFUntouched = true;
           let isCSUntouched = true;
-          let isMedicoUntouched = true;
 
           // error
           let invalidCFFormatMsg = document.querySelector("#invalid-cf-format");
           let invalidCSFormatMsg = document.querySelector("#invalid-cs-format");
-          let invalidMedicoMsg = document.querySelector("#invalid-medico");
           let textMedic = document.getElementById("textMedic");
 
           let roles = document.getElementById("roles");
@@ -182,21 +181,18 @@
               textMedic.innerText = "Medico di base"; // change the label
               codiceSanitario.style.display = "";
               medicoDiBase.style.display = "";
-              isCSUntouched = true;
-              isMedicoUntouched = true;
-            }else if(role == "nurse"){
+            } else if (role == "nurse") {
               textMedic.innerText = "Medico"; // change the label
               codiceSanitario.style.display = "none";
               medicoDiBase.style.display = "";
-              isCSUntouched = true;
-              isMedicoUntouched = true;
-            }else{
-              invalidCSFormatMsg.style.display = "none";
+            } else {
+              textMedic.innerText = "Medico"; // change the label
               codiceSanitario.style.display = "none";
               medicoDiBase.style.display = "none";
-              isCSUntouched = true;
-              isMedicoUntouched = true;
+              invalidCSFormatMsg.style.display = "none";
+              isCSUntouched = true; // Reset CS validation for non-patient roles
             }
+            updateForm();
           });
 
           // Updates the clickable status of the register button and the visibility of the error messages
@@ -204,7 +200,6 @@
             if (document.querySelector("input[name='email']").value !== "") {
               isEmailUntouched = false;
             }
-
             if (
               document.querySelector("input[name='codice_fiscale']").value !==
               ""
@@ -243,16 +238,14 @@
               invalidCFFormatMsg.style.display = "";
             }
 
-            if (isCSUntouched || isCSValid() || !isPatient()) {
+            if (isPatient()) {
+              if (isCSUntouched || !isCSValid()) {
+                invalidCSFormatMsg.style.display = "";
+              } else {
+                invalidCSFormatMsg.style.display = "none";
+              }
+            } else {
               invalidCSFormatMsg.style.display = "none";
-            } else {
-              invalidCSFormatMsg.style.display = "";
-            }
-
-            if (isMedicoUntouched || !isMedicoSelected()) {
-              invalidMedicoMsg.style.display = "none";
-            } else {
-              invalidMedicoMsg.style.display = "";
             }
           }
 
@@ -269,10 +262,7 @@
               }
             }
             return (
-              isEmailFormatOk() &&
-              isCFValid() &&
-              isCSValid() &&
-              isMedicoSelected()
+              isEmailFormatOk() && isCFValid() && (isCSValid() || !isPatient())
             );
           }
 
@@ -300,11 +290,6 @@
               "input[name='role']:checked"
             ).value;
             return role === "patient";
-          }
-
-          function isMedicoSelected() {
-            let selectedMedico = document.getElementById("medic").value;
-            return selectedMedico !== "";
           }
         </script>
       </div>
