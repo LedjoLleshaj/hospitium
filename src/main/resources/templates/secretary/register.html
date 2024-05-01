@@ -29,6 +29,14 @@
         border: 1px solid #ccc;
         box-sizing: border-box; /* Include padding and border in the element's total width */
       }
+
+      #medic {
+        width: 345px;
+        padding: 8px;
+        border-radius: 4px;
+        border: 1px solid #ccc;
+        box-sizing: border-box; /* Include padding and border in the element's total width */
+      }
     </style>
   </head>
 
@@ -116,28 +124,29 @@
             id="invalid-cs-format"
             >Invalid Codice Sanitario format</span
           >
-
-          <hr class="w-2/3 my-8 bg-text-light" />
           <!-- Medico di base -->
-          <div class="mb-4" id="medico_di_base">
-            <label
-                    for="medic"
-                    class="block text-gray-700 text-sm font-bold mb-2"
-            >Medico di base:</label>
+          <div class="flex flex-col mt-2" id="medico_di_base">
+            <label id="textMedic"
+              for="medic"
+              class="block text-gray-700 text-sm font-bold mb-2"
+              >Medico di base:</label
+            >
             <select
-                    name="medico_di_base"
-                    id="medic"
-                    class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring focus:border-blue-500"
+              name="medico_di_base"
+              id="medic"
+              class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring focus:border-blue-500"
             >
               <option
-                      th:each="medico : ${medici}"
-                      th:value="${medico.getId()}"
-                      th:text="${medico.fullName()}"
+                th:each="medico : ${medici}"
+                th:value="${medico.getId()}"
+                th:text="${medico.fullName()}"
               >
                 Medico di base
               </option>
             </select>
           </div>
+
+          <hr class="w-2/3 my-8 bg-text-light" />
 
           <button
             class="et-button-primary et-button-disabled w-full h-12 mt-2"
@@ -152,31 +161,42 @@
           let isEmailUntouched = true;
           let isCFUntouched = true;
           let isCSUntouched = true;
+          let isMedicoUntouched = true;
+
+          // error
+          let invalidCFFormatMsg = document.querySelector("#invalid-cf-format");
+          let invalidCSFormatMsg = document.querySelector("#invalid-cs-format");
+          let invalidMedicoMsg = document.querySelector("#invalid-medico");
+          let textMedic = document.getElementById("textMedic");
+
           let roles = document.getElementById("roles");
-          let role = document.querySelector("input[name='role']:checked").value;
 
-          function isPatient() {
-            return ( role === "patient");
-          }
-          function isNurse() {
-            return ( role === "nurse");
-          }
-          let codiceSanitario = document.getElementById("codiceSanitario");
-          let medicoDiBase = document.getElementById("medico_di_base");
           roles.addEventListener("change", function () {
-            if (isPatient()) {
-              codiceSanitario.style = "";
-              medicoDiBase.style = "";
-            } else if (isNurse()) {
-              medicoDiBase.style = "";
-            } else {
-              codiceSanitario.style = "display: none";
-              medicoDiBase.style = "display: none";
-              codiceSanitario.querySelector("input").value = "";
-              medicoDiBase.querySelector("input").value = "";
-              isCSUntouched = true;
-            }
+            let role = document.querySelector(
+              "input[name='role']:checked"
+            ).value;
+            let codiceSanitario = document.getElementById("codiceSanitario");
+            let medicoDiBase = document.getElementById("medico_di_base");
 
+            if (role === "patient") {
+              textMedic.innerText = "Medico di base"; // change the label
+              codiceSanitario.style.display = "";
+              medicoDiBase.style.display = "";
+              isCSUntouched = true;
+              isMedicoUntouched = true;
+            }else if(role == "nurse"){
+              textMedic.innerText = "Medico"; // change the label
+              codiceSanitario.style.display = "none";
+              medicoDiBase.style.display = "";
+              isCSUntouched = true;
+              isMedicoUntouched = true;
+            }else{
+              invalidCSFormatMsg.style.display = "none";
+              codiceSanitario.style.display = "none";
+              medicoDiBase.style.display = "none";
+              isCSUntouched = true;
+              isMedicoUntouched = true;
+            }
           });
 
           // Updates the clickable status of the register button and the visibility of the error messages
@@ -210,27 +230,29 @@
             let invalidEmailFormatMsg = document.querySelector(
               "#invalid-email-format"
             );
-            let invalidCFFormatMsg =
-              document.querySelector("#invalid-cf-format");
-            let invalidCSFormatMsg =
-              document.querySelector("#invalid-cs-format");
 
             if (isEmailUntouched || isEmailFormatOk()) {
-              invalidEmailFormatMsg.style = "display: none";
+              invalidEmailFormatMsg.style.display = "none";
             } else {
-              invalidEmailFormatMsg.style = "";
+              invalidEmailFormatMsg.style.display = "";
             }
 
             if (isCFUntouched || isCFValid()) {
-              invalidCFFormatMsg.style = "display: none";
+              invalidCFFormatMsg.style.display = "none";
             } else {
-              invalidCFFormatMsg.style = "";
+              invalidCFFormatMsg.style.display = "";
             }
 
             if (isCSUntouched || isCSValid() || !isPatient()) {
-              invalidCSFormatMsg.style = "display: none";
+              invalidCSFormatMsg.style.display = "none";
             } else {
-              invalidCSFormatMsg.style = "";
+              invalidCSFormatMsg.style.display = "";
+            }
+
+            if (isMedicoUntouched || !isMedicoSelected()) {
+              invalidMedicoMsg.style.display = "none";
+            } else {
+              invalidMedicoMsg.style.display = "";
             }
           }
 
@@ -246,7 +268,12 @@
                 return false;
               }
             }
-            return isEmailFormatOk() && isCFValid();
+            return (
+              isEmailFormatOk() &&
+              isCFValid() &&
+              isCSValid() &&
+              isMedicoSelected()
+            );
           }
 
           function isCFValid() {
@@ -266,6 +293,18 @@
           function isEmailFormatOk() {
             let value = document.querySelector("input[name='email']").value;
             return /^[\w.]+@[\w.]+$/.test(value);
+          }
+
+          function isPatient() {
+            let role = document.querySelector(
+              "input[name='role']:checked"
+            ).value;
+            return role === "patient";
+          }
+
+          function isMedicoSelected() {
+            let selectedMedico = document.getElementById("medic").value;
+            return selectedMedico !== "";
           }
         </script>
       </div>
