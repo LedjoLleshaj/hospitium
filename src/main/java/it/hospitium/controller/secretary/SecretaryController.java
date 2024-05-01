@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
-import java.awt.desktop.SystemSleepEvent;
 import java.util.Optional;
 
 @Controller
@@ -28,6 +27,9 @@ public class SecretaryController {
 
     @Autowired
     private PatientRepository repoPatient;
+
+    @Autowired
+    private NurseRepository repoNurse;
 
 
     @GetMapping("/secretary/home")
@@ -89,9 +91,11 @@ public class SecretaryController {
             throw exc;
         }
 
+
+        Optional<Medico> maybeMedico = repoMedico.findById(medico_id);
+
         switch (role) {
             case PATIENT:
-                Optional<Medico> maybeMedico = repoMedico.findById(medico_id);
                 if (maybeMedico.isEmpty()) {
                     Utils.addError(model, "No such medico");
                     return "secretary/register";
@@ -103,7 +107,18 @@ public class SecretaryController {
             case MEDICO:
                 Medico medico = new Medico(user);
                 repoMedico.save(medico);
+                System.out.println("Medico Saved"+medico.fullName());
                 break;
+            case NURSE:
+                if (maybeMedico.isEmpty()) {
+                    Utils.addError(model, "No such medico");
+                    return "secretary/register";
+                }
+                Nurse nurse = new Nurse(user, maybeMedico.get());
+                repoNurse.save(nurse);
+                System.out.println("Nurse Saved"+nurse.fullName());
+                break;
+
         }
 
         return "redirect:/secretary/home";

@@ -85,7 +85,7 @@
             <input type="text" name="luogo_di_nascita" oninput="updateForm()" />
           </div>
 
-          <div id="patient" class="flex flex-row w-full mt-2">
+          <div id="roles" class="flex flex-row w-full mt-2">
             <div class="flex flex-row items-center mr-4">
               <input
                 class="mr-2"
@@ -152,19 +152,22 @@
           let isEmailUntouched = true;
           let isCFUntouched = true;
           let isCSUntouched = true;
-          let patient = document.getElementById("patient");
+          let roles = document.getElementById("roles");
+          let role = document.querySelector("input[name='role']:checked").value;
 
           function isPatient() {
-            return (
-              document.querySelector("input[name='role']:checked").value ===
-              "patient"
-            );
+            return ( role === "patient");
+          }
+          function isNurse() {
+            return ( role === "nurse");
           }
           let codiceSanitario = document.getElementById("codiceSanitario");
           let medicoDiBase = document.getElementById("medico_di_base");
-          patient.addEventListener("change", function () {
+          roles.addEventListener("change", function () {
             if (isPatient()) {
               codiceSanitario.style = "";
+              medicoDiBase.style = "";
+            } else if (isNurse()) {
               medicoDiBase.style = "";
             } else {
               codiceSanitario.style = "display: none";
@@ -173,6 +176,7 @@
               medicoDiBase.querySelector("input").value = "";
               isCSUntouched = true;
             }
+
           });
 
           // Updates the clickable status of the register button and the visibility of the error messages
