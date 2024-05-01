@@ -57,9 +57,9 @@ public class SecretaryController {
             @RequestParam(name = "medico_di_base", required = false) Long medico_id,
             @RequestParam(name = "codice_sanitario", required = false) String codice_sanitario,
             Model model,
-            HttpServletRequest request
+            HttpServletRequest request,RedirectAttributes redirectAttributes
     ) {
-
+        model.addAttribute("medici", repoMedico.findAll());
         System.out.println("data di nascita:"+data_di_nascita);
 
         User.Role role = null;
@@ -84,7 +84,10 @@ public class SecretaryController {
             repoUser.save(user);
         } catch (Exception exc) {
             if (Utils.IsCause(exc, DataIntegrityViolationException.class)) {
-                Utils.addError(model, "Email already taken");
+                Utils.addError(model, "User could not be saved!");
+                //pass the data back to the form
+
+
                 return "secretary/register";
             }
             // Unhandled exception
