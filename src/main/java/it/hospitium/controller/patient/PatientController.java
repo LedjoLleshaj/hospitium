@@ -90,9 +90,12 @@ public class PatientController {
     public String submitAppointment(
             // get all the parameters from the form
             @RequestParam("date") String date,
+            @RequestParam("time") String time,
+            @RequestParam("note") String note,
             @RequestParam("visitType") String visitType,
             @RequestParam("urgency") int urgency,
-            @RequestParam("medico") long medicoId, HttpServletRequest request, RedirectAttributes redirectAttributes) {
+            @RequestParam("medico") long medicoId,
+            HttpServletRequest request, RedirectAttributes redirectAttributes) {
 
         User user = Utils.loggedUser(request);
         Optional<Patient> maybe_patient = patientRepository.findByUser(user);
@@ -109,7 +112,7 @@ public class PatientController {
         Medico medico = maybe_medico.get();
 
         // add the new appointment to the database
-        Appointment appointment = new Appointment(date, Visita.fromString(visitType), urgency, medico, patient);
+        Appointment appointment = new Appointment(date, time, note, Visita.fromString(visitType), urgency, medico, patient);
 
         // Save the appointment
         appointmentRepository.save(appointment);

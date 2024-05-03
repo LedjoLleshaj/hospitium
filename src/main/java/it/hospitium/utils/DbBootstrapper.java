@@ -101,11 +101,11 @@ public class DbBootstrapper {
 
 
         // Create a couple of Appointments
-        Appointment appointment1 = new Appointment("2021-06-01", Visita.VisitType.ROUTINE_CHECKUP, 1, doctor1, patient1);
-        Appointment appointment2 = new Appointment("2021-06-02", Visita.VisitType.SPECIALIST_CONSULTATION, 2, doctor2, patient2);
-        Appointment appointment3 = new Appointment("2021-06-03", Visita.VisitType.URGENT_VISIT, 3, doctor1, patient3);
-        Appointment appointment4 = new Appointment("2021-06-04", Visita.VisitType.PEDIATRIC_VISIT, 4, doctor2, patient4);
-        Appointment appointment5 = new Appointment("2021-06-04", Visita.VisitType.ROUTINE_CHECKUP, 4, doctor2, patient1);
+        Appointment appointment1 = new Appointment("2021-06-01","20:00","Headache Controll", Visita.VisitType.ROUTINE_CHECKUP, 1, doctor1, patient1);
+        Appointment appointment2 = new Appointment("2021-06-02", "15:00", "Stomac Controll", Visita.VisitType.SPECIALIST_CONSULTATION, 2, doctor2, patient2);
+        Appointment appointment3 = new Appointment("2021-06-03","12:30", "Muscle Controll", Visita.VisitType.URGENT_VISIT, 3, doctor1, patient3);
+        Appointment appointment4 = new Appointment("2021-06-04","14:00", "Skin Contoll", Visita.VisitType.PEDIATRIC_VISIT, 4, doctor2, patient4);
+        Appointment appointment5 = new Appointment("2021-06-04","09:00", "Heair Controll", Visita.VisitType.ROUTINE_CHECKUP, 4, doctor2, patient1);
         repoAppointment.saveAll(List.of(appointment1, appointment2, appointment3, appointment4, appointment5));
         for (Appointment appointment : List.of(appointment1, appointment2, appointment3, appointment4, appointment5)) {
             System.out.println(appointment);

@@ -23,6 +23,10 @@ public class Appointment {
     @Column(nullable = false)
     private String data;
     @Column(nullable = false)
+    private String time;
+    @Column(nullable = false)
+    private String note;
+    @Column(nullable = false)
     private VisitType visitType;
     @Column(nullable = false)
     private Integer urgenza;
@@ -33,9 +37,11 @@ public class Appointment {
     @JoinColumn(name = "patient_id")
     private Patient patient;
 
-    public Appointment(String data, VisitType visitType, Integer urgenza, Medico medico,
+    public Appointment(String data, String time, String note, VisitType visitType, Integer urgenza, Medico medico,
             Patient patient) {
         this.data = data;
+        this.time = time;
+        this.note = note;
         this.visitType = visitType;
         this.urgenza = urgenza;
         this.medico = medico;

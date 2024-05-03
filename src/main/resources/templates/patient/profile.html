@@ -53,6 +53,7 @@
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <p th:text="'Data: ' + ${appointment.data}" class="mb-2"></p>
+                <p th:text="'Ora: ' + ${appointment.time}" class="mb-2"></p>
                 <p
                   th:text="'Medico: ' + ${appointment.medico.user.fullName()}"
                   class="mb-2"
@@ -61,6 +62,10 @@
               <div>
                 <p
                   th:text="'Medico email: ' + ${appointment.medico.user.email}"
+                  class="mb-2"
+                ></p>
+                <p
+                  th:text="'Note: ' + ${appointment.note}"
                   class="mb-2"
                 ></p>
                 <p
