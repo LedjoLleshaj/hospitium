@@ -1,5 +1,6 @@
 package it.hospitium.controller.secretary;
 
+import it.hospitium.controller.EmailService;
 import it.hospitium.model.*;
 import it.hospitium.utils.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +11,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Optional;
@@ -31,6 +35,8 @@ public class SecretaryController {
     @Autowired
     private NurseRepository repoNurse;
 
+    @Autowired
+    private EmailService emailService;
 
     @GetMapping("/secretary/home")
     public String home(Model model) {
@@ -79,9 +85,15 @@ public class SecretaryController {
 
         User user = null;
         try {
-            user = new User(firstName, lastName, email,"", codice_fiscale,data_di_nascita,luogo_di_nascita,role);
+            String tempo_psw = User.generatePsw();
+            user = new User(firstName, lastName, email,tempo_psw, codice_fiscale,data_di_nascita,luogo_di_nascita,role);
             System.out.println(user);
             repoUser.save(user);
+
+            String emailSubject = "Registration Confirmation";
+            String emailText = "Dear " + firstName + ",\n\nYour registration was successful.\nPassword: "+ tempo_psw + "\n\nBest regards,\nHospitium Team";
+            emailService.sendSimpleMessage(email, emailSubject, emailText);
+
         } catch (Exception exc) {
             if (Utils.IsCause(exc, DataIntegrityViolationException.class)) {
                 Utils.addError(model, "User could not be saved!");
