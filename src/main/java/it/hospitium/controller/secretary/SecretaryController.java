@@ -1,7 +1,7 @@
 package it.hospitium.controller.secretary;
 
-import it.hospitium.model.User;
-import it.hospitium.model.UserRepository;
+import it.hospitium.controller.EmailService;
+import it.hospitium.model.*;
 import it.hospitium.utils.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -10,13 +10,33 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Optional;
 
 @Controller
 public class SecretaryController {
     @Autowired
     private UserRepository repoUser;
+
+    @Autowired
+    private SecretaryRepository repoSecretary;
+
+    @Autowired
+    private MedicoRepository repoMedico;
+
+    @Autowired
+    private PatientRepository repoPatient;
+
+    @Autowired
+    private NurseRepository repoNurse;
+
+    @Autowired
+    private EmailService emailService;
 
     @GetMapping("/secretary/home")
     public String home(Model model) {
@@ -25,7 +45,9 @@ public class SecretaryController {
     }
 
     @GetMapping("/secretary/register")
-    public String registerPage() {
+    public String registerPage(Model model, HttpServletRequest request, RedirectAttributes redirectAttributes) {
+        // get all medico
+        model.addAttribute("medici", repoMedico.findAll());
         return "secretary/register";
     }
 
@@ -38,11 +60,12 @@ public class SecretaryController {
             @RequestParam(name = "data_di_nascita", required = true) String data_di_nascita,
             @RequestParam(name = "luogo_di_nascita", required = true) String luogo_di_nascita,
             @RequestParam(name = "role", required = true) String stringRole,
+            @RequestParam(name = "medico_di_base", required = false) Long medico_id,
             @RequestParam(name = "codice_sanitario", required = false) String codice_sanitario,
             Model model,
-            HttpServletRequest request
+            HttpServletRequest request,RedirectAttributes redirectAttributes
     ) {
-
+        model.addAttribute("medici", repoMedico.findAll());
         System.out.println("data di nascita:"+data_di_nascita);
 
         User.Role role = null;
@@ -62,16 +85,55 @@ public class SecretaryController {
 
         User user = null;
         try {
-            user = new User(firstName, lastName, email,"", codice_fiscale,data_di_nascita,luogo_di_nascita,role);
+            String tempo_psw = User.generatePsw();
+            user = new User(firstName, lastName, email,tempo_psw, codice_fiscale,data_di_nascita,luogo_di_nascita,role);
             System.out.println(user);
             repoUser.save(user);
+
+            String emailSubject = "Registration Confirmation";
+            String emailText = "Dear " + firstName + ",\n\nYour registration was successful.\nPassword: "+ tempo_psw + "\n\nBest regards,\nHospitium Team";
+            emailService.sendSimpleMessage(email, emailSubject, emailText);
+
         } catch (Exception exc) {
             if (Utils.IsCause(exc, DataIntegrityViolationException.class)) {
-                Utils.addError(model, "Email already taken");
+                Utils.addError(model, "User could not be saved!");
+                //pass the data back to the form
+
+
                 return "secretary/register";
             }
             // Unhandled exception
             throw exc;
+        }
+
+
+        Optional<Medico> maybeMedico = repoMedico.findById(medico_id);
+
+        switch (role) {
+            case PATIENT:
+                if (maybeMedico.isEmpty()) {
+                    Utils.addError(model, "No such medico");
+                    return "secretary/register";
+                }
+                Patient patient = new Patient(codice_sanitario, user, maybeMedico.get());
+                repoPatient.save(patient);
+                System.out.println("Patient Saved"+patient.fullName());
+                break;
+            case MEDICO:
+                Medico medico = new Medico(user);
+                repoMedico.save(medico);
+                System.out.println("Medico Saved"+medico.fullName());
+                break;
+            case NURSE:
+                if (maybeMedico.isEmpty()) {
+                    Utils.addError(model, "No such medico");
+                    return "secretary/register";
+                }
+                Nurse nurse = new Nurse(user, maybeMedico.get());
+                repoNurse.save(nurse);
+                System.out.println("Nurse Saved"+nurse.fullName());
+                break;
+
         }
 
         return "redirect:/secretary/home";
