@@ -157,7 +157,80 @@
       </div>
     </div>
 
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
+    <script>
+      $(document).ready(function () {
+        // Function to fetch orari data based on selected medico
+        function fetchOrariData(medicoId) {
+          $.ajax({
+            url: "/patient/orari", // Endpoint to fetch orari data
+            type: "GET",
+            data: {
+              medicoId: medicoId,
+            },
+            success: function (data) {
+              // Extract the available dates and times for the selected medico
+              orari = Object.entries(data)
+                .filter(([key, value]) => key.includes(`id=${medicoId}`))
+                .map(([key, value]) => value);
+            },
+            error: function (xhr, status, error) {
+              // Handle errors
+              console.error(error);
+            },
+          });
+        }
 
+        // Event listener for medico selection change
+        $("#medico").change(function () {
+          // Get the selected medico ID
+          medicoId = $(this).val();
+
+          // Fetch orari data for the selected medico
+          fetchOrariData(medicoId);
+        });
+
+        // Event listener for date input change
+        $("#date").change(function () {
+          getDate = $(this).val();
+
+          // Empty the time array
+          time = [];
+
+          // Iterate over each entry in the orari array
+          orari.forEach((entry) => {
+            // Iterate over the keys and values of each entry
+            Object.entries(entry).forEach(([date, times]) => {
+              // If the date matches the selected date, add the times to the time array
+              if (date === getDate) {
+                time.push(...times);
+              }
+            });
+          });
+
+          // Get the select element
+          const timeSelect = $("#time")[0];
+
+          // Iterate through each option in the select element
+          for (let i = 0; i < time.length; i++) {
+            const timeValue = time[i];
+            // Iterate through each option in the select element
+            for (let j = 0; j < timeSelect.options.length; j++) {
+              const option = timeSelect.options[j];
+              // Check if the value of the option matches the time value
+              if (option.value === timeValue) {
+                option.style.display = "none";
+              }
+            }
+          }
+          fetchOrariData(medicoId);
+        });
+
+        // Fetch orari data for the initially selected medico when the page loads
+        medicoId = $("#medico").val();
+        fetchOrariData(medicoId);
+      });
+    </script>
   </body>
 </html>

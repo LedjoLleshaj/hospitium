@@ -4,6 +4,8 @@ import it.hospitium.model.*;
 import it.hospitium.utils.Breadcrumb;
 import it.hospitium.utils.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -74,16 +76,18 @@ public class PatientController {
         // All visit types
         List<String> categories = Visita.getVisitCategories();
 
-        //get from database all the datetimes of the appointments of all the medics and save it in a hashset where the key is the medico id
-        //as value ts another hashset that has the key as the date and the value as a set of the times in string
-        Map<Medico,Map<String,ArrayList<String>>> orari = new HashMap<>();
+        // get from database all the datetimes of the appointments of all the medics and
+        // save it in a hashset where the key is the medico id
+        // as value ts another hashset that has the key as the date and the value as a
+        // set of the times in string
+        Map<Medico, Map<String, ArrayList<String>>> orari = new HashMap<>();
         for (Medico medico : medici_set) {
             System.out.println("medico: " + medico);
             List<String> allDates = appointmentRepository.findDataByMedico(medico);
             System.out.println(allDates);
             // separate the date and time by using the "T" char as separator
-            //and save it in a hashmap with date as key and time as value
-            Map<String,ArrayList<String>> date_time = new HashMap<>();
+            // and save it in a hashmap with date as key and time as value
+            Map<String, ArrayList<String>> date_time = new HashMap<>();
             for (String date_time_str : allDates) {
                 String[] date_time_arr = date_time_str.split("T");
                 String date = date_time_arr[0];
@@ -99,7 +103,7 @@ public class PatientController {
             }
             System.out.println("HashMap of date and time:");
             System.out.println(date_time);
-            orari.put(medico,date_time);
+            orari.put(medico, date_time);
         }
 
         System.out.println("HashMap of medico and date and time:");
@@ -110,6 +114,34 @@ public class PatientController {
         model.addAttribute("visitTypes", categories);
 
         return "/patient/new_appointment";
+    }
+
+    // New API endpoint to retrieve only the 'orari' data
+    @GetMapping("/patient/orari")
+    public ResponseEntity<?> getOrari(HttpServletRequest request, RedirectAttributes redirectAttributes) {
+
+        List<Medico> medici = (List<Medico>) medicoRepository.findAll();
+
+        Set<Medico> medici_set = Set.copyOf(medici);
+
+        // Your logic to fetch 'orari' data
+        // This will return only the 'orari' data in JSON format
+        // You can reuse the logic used in the previous endpoint to fetch 'orari' data
+
+        Map<Medico, Map<String, ArrayList<String>>> orari = new HashMap<>();
+        for (Medico medico : medici_set) {
+            List<String> allDates = appointmentRepository.findDataByMedico(medico);
+            Map<String, ArrayList<String>> date_time = new HashMap<>();
+            for (String date_time_str : allDates) {
+                String[] date_time_arr = date_time_str.split("T");
+                String date = date_time_arr[0];
+                String time = date_time_arr[1];
+                date_time.computeIfAbsent(date, k -> new ArrayList<>()).add(time);
+            }
+            orari.put(medico, date_time);
+        }
+
+        return ResponseEntity.ok(orari);
     }
 
     // Post the new appointment
@@ -138,8 +170,11 @@ public class PatientController {
         }
         Medico medico = maybe_medico.get();
 
+        date = date + "T" + time;
+
         // add the new appointment to the database
-        Appointment appointment = new Appointment(date, time, note, Visita.fromString(visitType), urgency, medico, patient);
+        Appointment appointment = new Appointment(date, time, note, Visita.fromString(visitType), urgency, medico,
+                patient);
 
         // Save the appointment
         appointmentRepository.save(appointment);
