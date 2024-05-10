@@ -161,6 +161,37 @@
 
     <script>
       $(document).ready(function () {
+        // Get the select element
+        const timeSelect = $("#time");
+
+        // Function to disable time options if date is not selected
+        function disableTimeOptions() {
+          const dateInput = $("#date");
+          const selectedDate = dateInput.val();
+
+          if (!selectedDate) {
+            // If date is not selected, disable time options and make them transparent
+            timeSelect.prop("disabled", true);
+            timeSelect.css("color", "transparent");
+          } else {
+            // If date is selected, enable time options and reset their style
+            timeSelect.prop("disabled", false);
+            timeSelect.css("color", ""); // Reset color to default
+          }
+        }
+
+        // Call the function initially to set the state based on the date input
+        disableTimeOptions();
+
+        // Event listener for date input change
+        $("#date").change(function () {
+          disableTimeOptions();
+        });
+      });
+    </script>
+
+    <script>
+      $(document).ready(function () {
         let orari = [];
         let medicoId = null;
         let getDate = null;
