@@ -214,11 +214,8 @@
               orari = Object.entries(data)
                 .filter(([key, value]) => key.includes(`id=${medicoId}`))
                 .map(([key, value]) => value);
-              if (!initialized) {
-                // Ensure functionality is triggered for initial load
-                triggerFunctionality();
-                initialized = true;
-              }
+              // Ensure functionality is triggered for initial load
+              triggerFunctionality();
             },
             error: function (xhr, status, error) {
               // Handle errors
@@ -265,7 +262,6 @@
 
         // Event listener for medico selection change
         $("#medico").change(function () {
-          getDate = $(this).val();
           medicoId = $(this).val();
           fetchOrariData(medicoId);
         });

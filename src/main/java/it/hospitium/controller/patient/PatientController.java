@@ -69,47 +69,10 @@ public class PatientController {
         List<Medico> medici = (List<Medico>) medicoRepository.findAll();
         // add medico di base in top of medici in a set
         medici.add(0, medico_di_base);
-        Set<Medico> medici_set = Set.copyOf(medici);
-        for (Medico medico : medici_set) {
-            System.out.println(medico);
-        }
+
         // All visit types
         List<String> categories = Visita.getVisitCategories();
 
-        // get from database all the datetimes of the appointments of all the medics and
-        // save it in a hashset where the key is the medico id
-        // as value ts another hashset that has the key as the date and the value as a
-        // set of the times in string
-        Map<Medico, Map<String, ArrayList<String>>> orari = new HashMap<>();
-        for (Medico medico : medici_set) {
-            System.out.println("medico: " + medico);
-            List<String> allDates = appointmentRepository.findDataByMedico(medico);
-            System.out.println(allDates);
-            // separate the date and time by using the "T" char as separator
-            // and save it in a hashmap with date as key and time as value
-            Map<String, ArrayList<String>> date_time = new HashMap<>();
-            for (String date_time_str : allDates) {
-                String[] date_time_arr = date_time_str.split("T");
-                String date = date_time_arr[0];
-                String time = date_time_arr[1];
-                if (date_time.containsKey(date)) {
-                    System.out.println("date_time.get(date): " + date_time.get(date));
-
-                    date_time.get(date).add(time);
-                } else {
-                    date_time.put(date, new ArrayList<String>());
-                    date_time.get(date).add(time);
-                }
-            }
-            System.out.println("HashMap of date and time:");
-            System.out.println(date_time);
-            orari.put(medico, date_time);
-        }
-
-        System.out.println("HashMap of medico and date and time:");
-        System.out.println(orari);
-        // Add attributes
-        model.addAttribute("orari", orari);
         model.addAttribute("medici", medici);
         model.addAttribute("visitTypes", categories);
 
