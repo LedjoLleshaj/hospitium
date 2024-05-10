@@ -212,6 +212,12 @@
           // Get the select element
           const timeSelect = $("#time")[0];
 
+          // Show all options in the select element
+          for (let i = 0; i < timeSelect.options.length; i++) {
+            const option = timeSelect.options[i];
+            option.style.display = "block";
+          }
+
           // Iterate through each option in the select element
           for (let i = 0; i < time.length; i++) {
             const timeValue = time[i];
