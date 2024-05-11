@@ -48,7 +48,7 @@
           <div style="padding-left: 10px" class="et-card-body">
             <div
               class="et-name text-2xl font-bold text-center mb-4"
-              th:text="${appointment.visitType}"
+              th:text="${appointment.formattedType(appointment.visitType)}"
             ></div>
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
