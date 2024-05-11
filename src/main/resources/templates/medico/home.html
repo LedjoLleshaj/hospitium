@@ -15,13 +15,30 @@
     <!-- Content -->
     <div class="et-content">
       <!-- Search input -->
-      <input
-        id="searchInput"
-        class="et-squared-input text-xl font-medium flex-2 min-w-0"
-        type="text"
-        placeholder="Search appointments..."
-        oninput="filterAppointments()"
-      />
+      <div class="flex flex-row items-center gap-2 h-11 items-stretch">
+        <select
+          id="categorySelect"
+          class="text-xl font-medium flex-1 min-w-0"
+          name="category"
+          onchange="filterElements()"
+        >
+          <option value="">All Categories</option>
+          <option
+            th:each="category : ${categories}"
+            th:value="${category}"
+            th:text="${category}"
+          ></option>
+        </select>
+
+        <input
+          id="searchInput"
+          class="et-squared-input text-xl font-medium flex-2 min-w-0"
+          name="text"
+          type="text"
+          placeholder="Search by name/data ..."
+          oninput="filterElements()"
+        />
+      </div>
       <!-- Appointments -->
       <div th:each="appointment: ${appointments}" class="et-card p-5 w-100">
         <div class="flex flex-row justify-items-center gap-5">
@@ -36,37 +53,50 @@
             class="et-period text-xl"
           ></p>
         </div>
-        <div class="flex flex-row">
-            <div class="felx flex-col">
-                <!-- Patient name 
-                <p th:text="${appointment.patientName}" class="et-description mt-4"></p> -->
-            </div>
-            <div class="felx flex-col">
-                <p th:text="${appointment.note}" class="et-description mt-4"></p>
-            </div>
+        <div class="flex flex-row justify-between">
+          <div class="flex flex-col">
+            <!-- Displaying patient's username -->
+            <p
+              th:text="${appointment.patient.user.fullName()}"
+              class="et-description mt-4"
+            ></p>
+          </div>
+          <div class="flex flex-col items-center">
+            <!-- Displaying appointment note -->
+            <p th:text="${appointment.note}" class="et-description mt-4"></p>
+          </div>
         </div>
       </div>
     </div>
     <!-- Script for filtering appointments -->
     <script>
-      function filterAppointments() {
-        var input, filter, appointments, appointment, name, data, i;
+      function filterElements() {
+        let input, category, filter, visits, visit, name, data, i;
         input = document.getElementById("searchInput");
-        filter = input.value.toUpperCase();
-        appointments = document.getElementsByClassName("et-card");
+        category = document
+          .getElementById("categorySelect")
+          .value.trim()
+          .toLowerCase(); // Convert to lowercase for case-insensitive comparison
+        filter = input.value.trim().toLowerCase(); // Convert to lowercase for case-insensitive comparison
+        visits = document.getElementsByClassName("et-card");
 
-        for (i = 0; i < appointments.length; i++) {
-          appointment = appointments[i];
-          name = appointment
+        for (i = 0; i < visits.length; i++) {
+          visit = visits[i];
+          name = visit
             .getElementsByClassName("et-name")[0]
-            .innerText.toUpperCase();
-          data = appointment
+            .innerText.trim()
+            .toLowerCase(); // Convert to lowercase for case-insensitive comparison
+          data = visit
             .getElementsByClassName("et-period")[0]
-            .innerText.toUpperCase();
-          if (name.indexOf(filter) > -1 || data.indexOf(filter) > -1) {
-            appointment.style.display = "";
+            .innerText.trim()
+            .toLowerCase(); // Convert to lowercase for case-insensitive comparison
+          let categoryMatch = category === "" || name.includes(category);
+          let filterMatch = name.includes(filter) || data.includes(filter);
+
+          if (categoryMatch && filterMatch) {
+            visit.style.display = ""; // Display the appointment
           } else {
-            appointment.style.display = "none";
+            visit.style.display = "none"; // Hide the appointment
           }
         }
       }

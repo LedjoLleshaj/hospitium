@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <title>Appointment Details</title>
+    <meta th:replace="common/meta" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"
+      rel="stylesheet"
+    />
+    <!-- Include Tailwind CSS -->
+  </head>
+
+  <body>
+    <div th:replace="common/errors" />
+    <!-- Header with logo, logout, and breadcrumbs -->
+    <div th:replace="common/header"></div>
+    <!-- Content -->
+    <div class="et-content">
+      <div class="et-card p-5 w-full">
+        <h2 class="text-2xl font-semibold text-gray-800 mb-4">
+          Appointment Details
+        </h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div class="flex items-center">
+            <div class="w-full">
+              <div class="font-semibold text-gray-600">Date:</div>
+              <div th:text="${appointment.data}" class="text-gray-800">
+                <!-- Appointment Date -->
+              </div>
+            </div>
+          </div>
+          <div class="flex items-center">
+            <div class="w-full">
+              <div class="font-semibold text-gray-600">Time:</div>
+              <div th:text="${appointment.time}" class="text-gray-800">
+                <!-- Appointment Time -->
+              </div>
+            </div>
+          </div>
+          <div class="flex items-center">
+            <div class="w-full">
+              <div class="font-semibold text-gray-600">Note:</div>
+              <div th:text="${appointment.note}" class="text-gray-800">
+                <!-- Appointment Note -->
+              </div>
+            </div>
+          </div>
+          <div class="flex items-center">
+            <div class="w-full">
+              <div class="font-semibold text-gray-600">Type:</div>
+              <div th:text="${appointment.visitType}" class="text-gray-800">
+                <!-- Appointment Type -->
+              </div>
+            </div>
+          </div>
+          <div class="flex items-center">
+            <div class="w-full">
+              <div class="font-semibold text-gray-600">Urgency:</div>
+              <div th:text="${appointment.urgenza}" class="text-gray-800">
+                <!-- Appointment Urgency -->
+              </div>
+            </div>
+          </div>
+          <div class="flex items-center">
+            <div class="w-full">
+              <div class="font-semibold text-gray-600">Medico:</div>
+              <div
+                th:text="${appointment.medico.fullName()}"
+                class="text-gray-800"
+              >
+                <!-- Medico's Full Name -->
+              </div>
+            </div>
+          </div>
+          <div class="flex items-center">
+            <div class="w-full">
+              <div class="font-semibold text-gray-600">Patient:</div>
+              <div
+                th:text="${appointment.patient.fullName()}"
+                class="text-gray-800"
+              >
+                <!-- Patient's Full Name -->
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
