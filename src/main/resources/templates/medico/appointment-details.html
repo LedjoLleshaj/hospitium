@@ -85,8 +85,11 @@
           </div>
         </div>
 
-        <!-- Result Note Form 
-        <form th:action="" method="post">-->
+        <!-- Result Note Form -->
+        <form
+          th:action="@{'/medico/appointment/saveResult/' + ${appointment.id}}"
+          method="post"
+        >
           <div class="mt-6">
             <label
               for="resultNote"
@@ -109,6 +112,7 @@
               Save Result
             </button>
           </div>
+        </form>
       </div>
     </div>
   </body>
