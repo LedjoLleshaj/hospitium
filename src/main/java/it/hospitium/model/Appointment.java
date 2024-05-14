@@ -54,4 +54,19 @@ public class Appointment {
                 medico.fullName(), patient.fullName(), visitType.toString());
     }
 
+    public static String formattedType(VisitType type) {
+        switch (type) {
+            case ROUTINE_CHECKUP:
+                return "Routine Checkup";
+            case SPECIALIST_CONSULTATION:
+                return "Specialist Consultation";
+            case URGENT_VISIT:
+                return "Urgent Visit";
+            case PEDIATRIC_VISIT:
+                return "Pediatric Visit";
+            default:
+                return "Unknown";
+        }
+    }
+
 }

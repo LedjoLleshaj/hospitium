@@ -48,7 +48,7 @@
           <div class="flex items-center">
             <div class="w-full">
               <div class="font-semibold text-gray-600">Type:</div>
-              <div th:text="${appointment.visitType}" class="text-gray-800">
+              <div th:text="${appointment.formattedType(appointment.visitType)}" class="text-gray-800">
                 <!-- Appointment Type -->
               </div>
             </div>

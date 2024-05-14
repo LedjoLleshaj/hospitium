@@ -44,7 +44,7 @@
         <div class="flex flex-row justify-items-center gap-5">
           <i class="fa fa-calendar fa-2x"></i>
           <a
-            th:text="${appointment.visitType}"
+            th:text="${appointment.formattedType(appointment.visitType)}"
             th:href="'/medico/appointment/' + ${appointment.id}"
             class="et-name text-2xl font-bold"
           ></a>
