@@ -1,5 +1,6 @@
 package it.hospitium.controller.patient;
 
+import it.hospitium.controller.EmailService;
 import it.hospitium.model.*;
 import it.hospitium.utils.Breadcrumb;
 import it.hospitium.utils.Utils;
@@ -29,6 +30,8 @@ public class PatientController {
     private MedicoRepository medicoRepository;
     @Autowired
     private AppointmentRepository appointmentRepository;
+    @Autowired
+    private EmailService emailService;
 
     @GetMapping("patient/home")
     public String home(Model model, HttpServletRequest request, RedirectAttributes redirectAttributes) {
@@ -141,6 +144,9 @@ public class PatientController {
 
         // Save the appointment
         appointmentRepository.save(appointment);
+        String emailSubject = "Registration Confirmation";
+        String emailText = "Dear " + user.fullName() + ",\n\nYour appointment was successfully registered.\n\nBest regards,\nHospitium Team";
+        emailService.sendSimpleMessage("ledjo.lleshaj@gmail.com", emailSubject, emailText);
 
         // Go to the profile page
         return "redirect:/patient/profile";
