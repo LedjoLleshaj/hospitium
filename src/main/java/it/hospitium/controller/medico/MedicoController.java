@@ -101,9 +101,40 @@ public class MedicoController {
         // Save the new visit
         visitaRepository.save(newVisit);
         String emailSubject = "Visit Results are Available";
-        String emailText = "Dear " + appointment.getPatient().fullName() + ",\n\nThe result of your visit have been saved on your hospitium profile by clicking the link below.\n http://localhost:8080/patient/visit/"+newVisit.getId() + "\n\nBest regards,\nHospitium Team";
+        String emailText = "Dear " + appointment.getPatient().fullName()
+                + ",\n\nThe result of your visit have been saved on your hospitium profile by clicking the link below.\n http://localhost:8080/patient/visit/"
+                + newVisit.getId() + "\n\nBest regards,\nHospitium Team";
         emailService.sendSimpleMessage("ledjo.lleshaj@gmail.com", emailSubject, emailText);
 
         return "redirect:/medico/home";
     }
+
+    @GetMapping("/medico/profile")
+    public String viewProfile(Model model, HttpServletRequest request, RedirectAttributes redirectAttributes) {
+        User user = Utils.loggedUser(request);
+
+        if (user == null) {
+            return "redirect:/login";
+        }
+
+        Optional<Medico> maybeMedico = medicoRepository.findByUser(user);
+
+        if (maybeMedico.isEmpty()) {
+            Utils.addRedirectionError(redirectAttributes, "No such medico");
+            return "redirect:/login";
+        }
+
+        Medico medico = maybeMedico.get();
+
+        // Add attributes
+        model.addAttribute("user", medico);
+        model.addAttribute("email", medico.getUser().getEmail());
+        model.addAttribute("data_di_nascita", medico.getUser().getData_di_nascita());
+        model.addAttribute("luogo_di_nascita", medico.getUser().getLuogo_di_nascita());
+        model.addAttribute("role", medico.getUser().getRole());
+        model.addAttribute("CF" , medico.getUser().getCF());
+
+        return "/medico/profile";
+    }
+
 }
