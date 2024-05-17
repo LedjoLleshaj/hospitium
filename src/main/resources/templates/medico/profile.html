@@ -21,10 +21,10 @@
         <div class="et-name text-2xl font-bold mb-4">Medico Data:</div>
         <div class="et-card-body">
           <p th:text="'Name: ' + ${user.fullName()}" class="mb-2"></p>
-          <p th:text="'Email: ' + ${email}" class="mb-2"></p>
-          <p th:text="'Birthdate: ' + ${data_di_nascita}" class="mb-2"></p>
-          <p th:text="'Fiscal Code: ' + ${CF}" class="mb-2"></p>
-          <p th:text="'Address: ' + ${luogo_di_nascita}" class="mb-2"></p>
+          <p th:text="'Email: ' + ${user.getEmail()}" class="mb-2"></p>
+          <p th:text="'Birthdate: ' + ${user.getData_di_nascita()}" class="mb-2"></p>
+          <p th:text="'Fiscal Code: ' + ${user.getCF()}" class="mb-2"></p>
+          <p th:text="'Address: ' + ${user.getLuogo_di_nascita()}" class="mb-2"></p>
           <!-- Add more fields if needed -->
         </div>
       </div>

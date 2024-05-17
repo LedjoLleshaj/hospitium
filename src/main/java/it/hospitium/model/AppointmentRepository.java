@@ -13,5 +13,6 @@ public interface AppointmentRepository extends CrudRepository<Appointment, Long>
     List<Appointment> findByMedico(Medico medico);
     @Query("SELECT a.data FROM Appointment a WHERE a.medico = ?1")
     List<String> findDataByMedico(Medico medico);
+    Void deleteById(long id);
 
 }
