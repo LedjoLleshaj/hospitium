@@ -28,15 +28,15 @@ public class Child {
     //one patient can have multiple children
     @ManyToOne
     @JoinColumn(name = "patient_id")
-    private Patient patient;
+    private Patient parent;
 
 
 
-    public Child(String CS, User user, Medico medico, Patient patient) {
+    public Child(String CS, User user, Medico medico, Patient parent) {
         this.CS = CS;
         this.user = user;
         this.medico = medico;
-        this.patient = patient;
+        this.parent = parent;
     }
 
     public String fullName() {

@@ -96,6 +96,7 @@ public class MedicoController {
                 appointment.getUrgenza(),
                 appointment.getMedico(),
                 appointment.getPatient(),
+                null,
                 null); // Nurse is set to null
 
         // Save the new visit

@@ -36,9 +36,12 @@ public class Appointment {
     @ManyToOne
     @JoinColumn(name = "patient_id")
     private Patient patient;
+    @ManyToOne
+    @JoinColumn(name = "child_id")
+    private Child child;
 
     public Appointment(String data, String time, String note, VisitType visitType, Integer urgenza, Medico medico,
-            Patient patient) {
+            Patient patient, Child child) {
         this.data = data;
         this.time = time;
         this.note = note;
@@ -46,6 +49,12 @@ public class Appointment {
         this.urgenza = urgenza;
         this.medico = medico;
         this.patient = patient;
+        if (child != null) {
+            this.child = child;
+        }
+        else {
+            this.child = null;
+        }
     }
 
     @Override

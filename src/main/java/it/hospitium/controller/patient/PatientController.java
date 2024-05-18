@@ -140,7 +140,7 @@ public class PatientController {
 
         // add the new appointment to the database
         Appointment appointment = new Appointment(date, time, note, Visita.fromString(visitType), urgency, medico,
-                patient);
+                patient, null );
 
         // Save the appointment
         appointmentRepository.save(appointment);

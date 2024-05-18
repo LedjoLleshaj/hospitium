@@ -35,16 +35,20 @@ public class Visita {
     @JoinColumn(name = "patient_id")
     private Patient patient;
     @ManyToOne
+    @JoinColumn(name = "child_id")
+    private Child child;
+    @ManyToOne
     @JoinColumn(name = "nurse_id")
     private Nurse nurse;
 
-    public Visita(String data, String Result, VisitType type, Integer insertedBy, Medico medico, Patient patient, Nurse nurse) {
+    public Visita(String data, String Result, VisitType type, Integer insertedBy, Medico medico, Patient patient,Child child, Nurse nurse) {
         this.data = data;
         this.Result = Result;
         this.type = type;
         this.insertedBy = insertedBy;
         this.medico = medico;
         this.patient = patient;
+        this.child = child;
         this.nurse = nurse;
     }
 
