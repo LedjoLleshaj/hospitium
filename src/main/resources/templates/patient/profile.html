@@ -20,7 +20,7 @@
       <div class="et-card mb-8 text-center">
         <div class="et-name text-2xl font-bold mb-4">Patient Data:</div>
         <div class="et-card-body">
-          <p th:text="'Name: ' + ${user.fullName()}" class="mb-2"></p>
+          <p th:text="'Name: ' + ${patient.fullName()}" class="mb-2"></p>
           <p th:text="'Email: ' + ${patient.user.email}" class="mb-2"></p>
           <p th:text="'Birthdate: ' + ${patient.user.data_di_nascita}" class="mb-2"></p>
           <p th:text="'Fiscal Code: ' + ${patient.user.CF}" class="mb-2"></p>

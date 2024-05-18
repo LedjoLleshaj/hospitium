@@ -29,6 +29,8 @@ public class PatientController {
     @Autowired
     private MedicoRepository medicoRepository;
     @Autowired
+    private ChildRepository repoChildren;
+    @Autowired
     private AppointmentRepository appointmentRepository;
     @Autowired
     private EmailService emailService;
@@ -80,6 +82,52 @@ public class PatientController {
         model.addAttribute("visitTypes", categories);
 
         return "/patient/new_appointment";
+    }
+
+    @GetMapping("patient/child_list")
+    public String child_list(Model model, HttpServletRequest request, RedirectAttributes redirectAttributes) {
+        User user = Utils.loggedUser(request);
+        Optional<Patient> maybe_patient = patientRepository.findByUser(user);
+        if (maybe_patient.isEmpty()) {
+            Utils.addRedirectionError(redirectAttributes, "No such patient");
+            return "redirect:/login";
+        }
+        Patient patient = maybe_patient.get();
+        List<Child> children = repoChildren.findByParent(patient);
+
+        model.addAttribute("children", children);
+
+        return "/patient/child_list";
+    }
+
+    @GetMapping("patient/child/{id}")
+    public String child(@PathVariable Long id, Model model, HttpServletRequest request, RedirectAttributes redirectAttributes) {
+        User user = Utils.loggedUser(request);
+        Optional<Patient> maybe_patient = patientRepository.findByUser(user);
+        if (maybe_patient.isEmpty()) {
+            Utils.addRedirectionError(redirectAttributes, "No such patient");
+            return "redirect:/login";
+        }
+        Patient patient = maybe_patient.get();
+        Optional<Child> maybe_child = repoChildren.findById(id);
+        if (maybe_child.isEmpty()) {
+            Utils.addRedirectionError(redirectAttributes, "No such child");
+            return "redirect:/patient/child_list";
+        }
+        Child child = maybe_child.get();
+        if (!child.getParent().equals(patient)) {
+            Utils.addRedirectionError(redirectAttributes, "No such child");
+            return "redirect:/patient/child_list";
+        }
+
+        List<Appointment> appointments = appointmentRepository.findByChild(child);
+
+
+        model.addAttribute("patient", child);
+        model.addAttribute("appointments", appointments);
+
+
+        return "/patient/profile";
     }
 
     // New API endpoint to retrieve only the 'orari' data
