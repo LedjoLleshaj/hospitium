@@ -135,4 +135,20 @@ public class SecretaryController {
 
         return "redirect:/secretary/home";
     }
+    @GetMapping("/secretary/profile")
+    public String viewProfile(Model model, HttpServletRequest request, RedirectAttributes redirectAttributes) {
+        User user = Utils.loggedUser(request);
+
+        Optional<Secretary> maybeSecretary = repoSecretary.findByUser(user);
+
+        if (maybeSecretary.isEmpty()) {
+            Utils.addRedirectionError(redirectAttributes, "No such secretary");
+            return "redirect:/secretary/home";
+        }
+
+        Secretary secretary = maybeSecretary.get();
+        model.addAttribute("user", secretary.getUser());
+
+        return "secretary/profile";
+    }
 }

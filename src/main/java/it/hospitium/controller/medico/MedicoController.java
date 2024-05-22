@@ -5,6 +5,8 @@ import it.hospitium.controller.EmailService;
 import it.hospitium.model.*;
 import it.hospitium.utils.Utils;
 import it.hospitium.utils.Breadcrumb;
+import java.util.List;
+
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -52,7 +54,7 @@ public class MedicoController {
         model.addAttribute("user", medico);
         model.addAttribute("breadcrumbs", List.of(new Breadcrumb("home", "/medico/home")));
         model.addAttribute("appointments", appointments);
-        model.addAttribute("categories", Visita.getVisitCategories());
+        model.addAttribute("categories", Visita.getVisitCategories().subList(0,Visita.getVisitCategories().size()-2));
 
         return "/medico/home";
     }
