@@ -242,7 +242,7 @@
             },
             success: function (data) {
               // Extract the available dates and times for the selected medico
-              orari = Object.entries(data)
+              orari = Object.entries(data["medici"])
                 .filter(([key, value]) => key.includes(`id=${medicoId}`))
                 .map(([key, value]) => value);
               // Ensure functionality is triggered for initial load
