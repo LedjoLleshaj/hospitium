@@ -128,8 +128,7 @@
               <option value="3">High</option>
             </select>
           </div>
-          <!-- Medico //// TODO: to take the medico base and to be first seleted -->
-          <div class="mb-4">
+          <div id="medicoContainer" class="mb-4">
             <label
               for="medico"
               class="block text-gray-700 text-sm font-bold mb-2"
@@ -149,6 +148,28 @@
               </option>
             </select>
           </div>
+
+          <div id="nurseContainer" style="display: none" class="mb-4">
+            <label
+              for="nurse"
+              class="block text-gray-700 text-sm font-bold mb-2"
+              >Nurse:</label
+            >
+            <select
+              name="nurse"
+              id="nurse"
+              class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring focus:border-blue-500"
+            >
+              <option
+                th:each="nurse : ${nurses}"
+                th:value="${nurse.id}"
+                th:text="${nurse.fullName()}"
+              >
+                Medico
+              </option>
+            </select>
+          </div>
+
           <div class="flex justify-end">
             <button type="submit" class="et-button-secondary w-full h-12">
               Submit
@@ -285,6 +306,24 @@
         // Fetch orari data for the initially selected medico when the page loads
         medicoId = $("#medico").val();
         fetchOrariData(medicoId);
+      });
+    </script>
+
+    <script>
+      $(document).ready(function () {
+        $("#visitType").change(function () {
+          let visitType = $(this).val();
+          let medicoContainer = $("#medicoContainer");
+          let nurseContainer = $("#nurseContainer");
+
+          if (visitType === "Prelievi" || visitType === "Medication") {
+            medicoContainer.hide();
+            nurseContainer.show();
+          } else {
+            medicoContainer.show();
+            nurseContainer.hide();
+          }
+        });
       });
     </script>
   </body>

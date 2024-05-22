@@ -34,6 +34,8 @@ public class PatientController {
     private AppointmentRepository appointmentRepository;
     @Autowired
     private EmailService emailService;
+    @Autowired
+    private NurseRepository nurseRepository;
 
     @GetMapping("patient/home")
     public String home(Model model, HttpServletRequest request, RedirectAttributes redirectAttributes) {
@@ -75,9 +77,14 @@ public class PatientController {
         // add medico di base in top of medici in a set
         medici.add(0, medico_di_base);
 
+
+        // Retrive all nurses
+        List<Nurse> nurses = (List<Nurse>) nurseRepository.findAll();
+
         // All visit types
         List<String> categories = Visita.getVisitCategories();
 
+        model.addAttribute("nurses", nurses);
         model.addAttribute("medici", medici);
         model.addAttribute("visitTypes", categories);
 
