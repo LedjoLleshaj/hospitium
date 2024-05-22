@@ -192,16 +192,13 @@
           const selectedDate = new Date(dateInput.val());
 
           // Check if the selected date is a weekend
-          const isWeekend =
-            selectedDate.getDay() === 0 || selectedDate.getDay() === 6;
+          const isWeekend = selectedDate.getDay() === 0 || selectedDate.getDay() === 6;
 
           if (!dateInput.val() || isWeekend) {
             // If no date is selected or it's a weekend, disable time options, change their color to transparent, and show error message
             timeSelect.prop("disabled", true);
             timeSelect.css("color", "transparent");
-            errorMessage.text(
-              "Please select a valid date (weekends are not allowed)"
-            );
+            errorMessage.text("Please select a valid date (weekends are not allowed)");
             errorMessage.show();
           } else {
             // If date is selected and it's not a weekend, enable time options, reset their style, and hide error message
@@ -221,102 +218,95 @@
       });
     </script>
 
+
+
     <script>
       $(document).ready(function () {
         let orari = [];
         let medicoId = null;
-        let nurseId = null;
         let getDate = null;
         let time = [];
+        let initialized = false;
+
+        // Get the select element
         const timeSelect = $("#time")[0];
 
-        function fetchOrariData(id, type) {
+        // Function to fetch orari data based on selected medico
+        function fetchOrariData(medicoId) {
           $.ajax({
             url: "/patient/orari", // Endpoint to fetch orari data
             type: "GET",
-            data: { id: id, type: type },
+            data: {
+              medicoId: medicoId,
+            },
             success: function (data) {
-              if (type === "medico") {
-                orari = Object.entries(data["medici"])
-                  .filter(([key, value]) => key.includes(`id=${id}`))
-                  .map(([key, value]) => value);
-              } else{
-                orari = Object.entries(data["nurses"])
-                  .filter(([key, value]) => key.includes(`id=${id}`))
-                  .map(([key, value]) => value);
-
-              }
+              // Extract the available dates and times for the selected medico
+              orari = Object.entries(data)
+                      .filter(([key, value]) => key.includes(`id=${medicoId}`))
+                      .map(([key, value]) => value);
+              // Ensure functionality is triggered for initial load
               triggerFunctionality();
             },
             error: function (xhr, status, error) {
+              // Handle errors
               console.error(error);
             },
           });
         }
 
+        // Function to trigger functionality on medico or date change
         function triggerFunctionality() {
+          // Empty the time array
           time = [];
+
+          // Iterate over each entry in the orari array
           orari.forEach((entry) => {
+            // Iterate over the keys and values of each entry
             Object.entries(entry).forEach(([date, times]) => {
+              // If the date matches the selected date, add the times to the time array
               if (date === getDate) {
                 time.push(...times);
               }
             });
           });
 
+          // Show all options in the select element
           for (let i = 0; i < timeSelect.options.length; i++) {
-            timeSelect.options[i].style.display = "block";
+            const option = timeSelect.options[i];
+            option.style.display = "block";
           }
 
-          time.forEach((timeValue) => {
+          // Iterate through each option in the select element
+          for (let i = 0; i < time.length; i++) {
+            const timeValue = time[i];
+            // Iterate through each option in the select element
             for (let j = 0; j < timeSelect.options.length; j++) {
-              if (timeSelect.options[j].value === timeValue) {
-                timeSelect.options[j].style.display = "none";
+              const option = timeSelect.options[j];
+              // Check if the value of the option matches the time value
+              if (option.value === timeValue) {
+                option.style.display = "none";
               }
             }
-          });
+          }
         }
 
+        // Event listener for medico selection change
         $("#medico").change(function () {
           medicoId = $(this).val();
-          fetchOrariData(medicoId, "medico");
+          document.getElementById("time").selectedIndex = 0;
+          fetchOrariData(medicoId);
+
         });
 
-        $("#nurse").change(function () {
-          nurseId = $(this).val();
-          fetchOrariData(nurseId, "nurse");
-        });
-
+        // Event listener for date input change
         $("#date").change(function () {
           getDate = $(this).val();
           triggerFunctionality();
         });
 
+        // Fetch orari data for the initially selected medico when the page loads
         medicoId = $("#medico").val();
-        if (medicoId) {
-          fetchOrariData(medicoId, "medico");
-        } else {
-          nurseId = $("#nurse").val();
-          fetchOrariData(nurseId, "nurse");
-        }
-      });
-    </script>
-
-    <script>
-      $(document).ready(function () {
-        $("#visitType").change(function () {
-          let visitType = $(this).val();
-          let medicoContainer = $("#medicoContainer");
-          let nurseContainer = $("#nurseContainer");
-
-          if (visitType === "Prelievi" || visitType === "Medication") {
-            medicoContainer.hide();
-            nurseContainer.show();
-          } else {
-            medicoContainer.show();
-            nurseContainer.hide();
-          }
-        });
+        fetchOrariData(medicoId);
       });
     </script>
   </body>

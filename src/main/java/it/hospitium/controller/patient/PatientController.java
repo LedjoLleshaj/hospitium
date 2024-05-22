@@ -79,6 +79,7 @@ public class PatientController {
 
         // Retrieve all medics
         List<Medico> medici = (List<Medico>) medicoRepository.findAll();
+        medici.remove(medico_di_base);
         // add medico di base in top of medici in a set
         medici.add(0, medico_di_base);
 
@@ -167,25 +168,7 @@ public class PatientController {
             orari.put(medico, date_time);
         }
 
-        List<Nurse> nurses = (List<Nurse>) nurseRepository.findAll();
-        Set<Nurse> nurses_set = Set.copyOf(nurses);
-
-        Map<Nurse, Map<String, ArrayList<String>>> orari_nurses = new HashMap<>();
-        for (Nurse nurse : nurses_set) {
-            List<String> allDates = appointmentRepository.findDataByNurse(nurse);
-            Map<String, ArrayList<String>> date_time = new HashMap<>();
-            for (String date_time_str : allDates) {
-                String[] date_time_arr = date_time_str.split("T");
-                String date = date_time_arr[0];
-                String time = date_time_arr[1];
-                date_time.computeIfAbsent(date, k -> new ArrayList<>()).add(time);
-            }
-            orari_nurses.put(nurse, date_time);
-        }
-         
-
-
-        return ResponseEntity.ok(Map.of("medici", orari, "nurses", orari_nurses));
+        return ResponseEntity.ok(orari);
     }
 
     @GetMapping("/patient/child/register")
