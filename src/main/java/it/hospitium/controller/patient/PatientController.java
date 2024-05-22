@@ -187,7 +187,7 @@ public class PatientController {
         date = date + "T" + time;
 
         // add the new appointment to the database
-        Appointment appointment = new Appointment(date, time, note, Visita.fromString(visitType), urgency, medico,
+        Appointment appointment = new Appointment(date, time, note, Visita.fromString(visitType), urgency, medico,null,
                 patient, null );
 
         // Save the appointment

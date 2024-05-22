@@ -121,21 +121,21 @@ public class DbBootstrapper {
 
 
         // Create a couple of Appointments
-        Appointment appointment1 = new Appointment("2021-06-01T9:00", "9:00","Note 1", Visita.VisitType.ROUTINE_CHECKUP, 1, doctor1, patient1,null);
-        Appointment appointment2 = new Appointment("2021-06-02T9:30","09:30", "Note 2", Visita.VisitType.SPECIALIST_CONSULTATION, 2, doctor2, patient2,null);
-        Appointment appointment3 = new Appointment("2021-06-03T10:00", "10:00", "Note 3", Visita.VisitType.URGENT_VISIT, 3, doctor1, patient3,null);
-        Appointment appointment4 = new Appointment("2021-06-04T15:00", "15:00", "Note 4", Visita.VisitType.PEDIATRIC_VISIT, 4, doctor2, patient4,null);
-        Appointment appointment5 = new Appointment("2021-06-04T15:30","15:30", "Note 5", Visita.VisitType.ROUTINE_CHECKUP, 4, doctor2, patient1,null);
+        Appointment appointment1 = new Appointment("2021-06-01T9:00", "9:00","Note 1", Visita.VisitType.ROUTINE_CHECKUP, 1, doctor1, null,patient1,null);
+        Appointment appointment2 = new Appointment("2021-06-02T9:30","09:30", "Note 2", Visita.VisitType.SPECIALIST_CONSULTATION, 2, doctor2, null,patient2,null);
+        Appointment appointment3 = new Appointment("2021-06-03T10:00", "10:00", "Note 3", Visita.VisitType.URGENT_VISIT, 3, doctor1, null,patient3,null);
+        Appointment appointment4 = new Appointment("2021-06-04T15:00", "15:00", "Note 4", Visita.VisitType.PEDIATRIC_VISIT, 4, doctor2, null,patient4,null);
+        Appointment appointment5 = new Appointment("2021-06-04T15:30","15:30", "Note 5", Visita.VisitType.ROUTINE_CHECKUP, 4, doctor2, null,patient1,null);
         repoAppointment.saveAll(List.of(appointment1, appointment2, appointment3, appointment4, appointment5));
         for (Appointment appointment : List.of(appointment1, appointment2, appointment3, appointment4, appointment5)) {
             System.out.println(appointment);
         }
 
         // Create a couple of Appointments for children
-        Appointment appointment11 = new Appointment("2021-06-01T9:00", "9:00","Note 1", Visita.VisitType.ROUTINE_CHECKUP, 1, doctor1, patient1,child11);
-        Appointment appointment12 = new Appointment("2021-06-02T9:30","09:30", "Note 2", Visita.VisitType.SPECIALIST_CONSULTATION, 2, doctor2, patient1,child12);
-        Appointment appointment13 = new Appointment("2021-06-03T10:00", "10:00", "Note 3", Visita.VisitType.URGENT_VISIT, 3, doctor1, patient2,child13);
-        Appointment appointment14 = new Appointment("2021-06-04T15:00", "15:00", "Note 4", Visita.VisitType.PEDIATRIC_VISIT, 4, doctor2, patient2,child14);
+        Appointment appointment11 = new Appointment("2021-06-01T9:00", "9:00","Note 1", Visita.VisitType.ROUTINE_CHECKUP, 1, doctor1, null,patient1,child11);
+        Appointment appointment12 = new Appointment("2021-06-02T9:30","09:30", "Note 2", Visita.VisitType.SPECIALIST_CONSULTATION, 2, doctor2, null,patient1,child12);
+        Appointment appointment13 = new Appointment("2021-06-03T10:00", "10:00", "Note 3", Visita.VisitType.URGENT_VISIT, 3, doctor1, null,patient2,child13);
+        Appointment appointment14 = new Appointment("2021-06-04T15:00", "15:00", "Note 4", Visita.VisitType.PEDIATRIC_VISIT, 4, doctor2, null,patient2,child14);
         repoAppointment.saveAll(List.of(appointment11, appointment12, appointment13, appointment14));
         for (Appointment appointment : List.of(appointment11, appointment12, appointment13, appointment14)) {
             System.out.println(appointment);

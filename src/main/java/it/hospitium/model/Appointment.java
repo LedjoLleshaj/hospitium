@@ -34,13 +34,16 @@ public class Appointment {
     @JoinColumn(name = "medico_id")
     private Medico medico;
     @ManyToOne
+    @JoinColumn(name = "nurse_id")
+    private Nurse nurse;
+    @ManyToOne
     @JoinColumn(name = "patient_id")
     private Patient patient;
     @ManyToOne
     @JoinColumn(name = "child_id")
     private Child child;
 
-    public Appointment(String data, String time, String note, VisitType visitType, Integer urgenza, Medico medico,
+    public Appointment(String data, String time, String note, VisitType visitType, Integer urgenza, Medico medico,Nurse nurse,
             Patient patient, Child child) {
         this.data = data;
         this.time = time;
@@ -48,6 +51,7 @@ public class Appointment {
         this.visitType = visitType;
         this.urgenza = urgenza;
         this.medico = medico;
+        this.nurse = nurse;
         this.patient = patient;
         if (child != null) {
             this.child = child;

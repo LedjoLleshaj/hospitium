@@ -61,7 +61,9 @@ public class Visita {
         ROUTINE_CHECKUP,
         SPECIALIST_CONSULTATION,
         URGENT_VISIT,
-        PEDIATRIC_VISIT;
+        PEDIATRIC_VISIT,
+        PRELIEVI,
+        MEDICATION
     }
 
     public static String formattedType(VisitType type) {
@@ -74,6 +76,10 @@ public class Visita {
                  return "Urgent Visit";
              case PEDIATRIC_VISIT:
                  return "Pediatric Visit";
+             case PRELIEVI:
+                 return "Prelievi";
+             case MEDICATION:
+                 return "Medication";
              default:
                  return "Unknown";
          }
@@ -89,6 +95,10 @@ public class Visita {
                 return VisitType.URGENT_VISIT;
             case "Pediatric Visit":
                 return VisitType.PEDIATRIC_VISIT;
+            case "Prelievi":
+                return VisitType.PRELIEVI;
+            case "Medication":
+                return VisitType.MEDICATION;
             default:
                 return null;
         }
