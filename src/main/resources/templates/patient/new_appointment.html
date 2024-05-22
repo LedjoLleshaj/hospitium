@@ -33,7 +33,7 @@
               id="date"
               class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring focus:border-blue-500"
             />
-            <p id="errorMessage" style="color: red; display:none"></p>
+            <p id="errorMessage" style="color: red; display: none"></p>
           </div>
           <div class="mb-4">
             <!-- Time Dropdown -->
@@ -136,8 +136,6 @@
               >Medico:</label
             >
             <select
-                    th:if= "${visitType == 'Routine checkup'}"
-
               name="medico"
               id="medico"
               class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring focus:border-blue-500"
@@ -166,20 +164,23 @@
       $(document).ready(function () {
         const timeSelect = $("#time");
         const errorMessage = $("#errorMessage");
-    
+
         function disableTimeOptions() {
           const dateInput = $("#date");
           // Get the selected date
           const selectedDate = new Date(dateInput.val());
-          
+
           // Check if the selected date is a weekend
-          const isWeekend = selectedDate.getDay() === 0 || selectedDate.getDay() === 6;
-    
+          const isWeekend =
+            selectedDate.getDay() === 0 || selectedDate.getDay() === 6;
+
           if (!dateInput.val() || isWeekend) {
             // If no date is selected or it's a weekend, disable time options, change their color to transparent, and show error message
             timeSelect.prop("disabled", true);
             timeSelect.css("color", "transparent");
-            errorMessage.text("Please select a valid date (weekends are not allowed)");
+            errorMessage.text(
+              "Please select a valid date (weekends are not allowed)"
+            );
             errorMessage.show();
           } else {
             // If date is selected and it's not a weekend, enable time options, reset their style, and hide error message
@@ -188,18 +189,16 @@
             errorMessage.hide();
           }
         }
-    
+
         // Disable time options on page load
         disableTimeOptions();
-    
+
         // Event listener for date input change
         $("#date").change(function () {
           disableTimeOptions();
         });
       });
     </script>
-    
-    
 
     <script>
       $(document).ready(function () {
@@ -208,7 +207,6 @@
         let getDate = null;
         let time = [];
         let initialized = false;
-        let 
 
         // Get the select element
         const timeSelect = $("#time")[0];
