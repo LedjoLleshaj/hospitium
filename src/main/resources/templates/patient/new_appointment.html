@@ -225,87 +225,91 @@
       $(document).ready(function () {
         let orari = [];
         let medicoId = null;
+        let nurseId = null;
         let getDate = null;
         let time = [];
-        let initialized = false;
-
-        // Get the select element
         const timeSelect = $("#time")[0];
 
-        // Function to fetch orari data based on selected medico
-        function fetchOrariData(medicoId) {
+        function fetchOrariData(id, type) {
           $.ajax({
             url: "/patient/orari", // Endpoint to fetch orari data
             type: "GET",
-            data: {
-              medicoId: medicoId,
-            },
+            data: { id: id, type: type },
             success: function (data) {
-              // Extract the available dates and times for the selected medico
-              orari = Object.entries(data["medici"])
-                .filter(([key, value]) => key.includes(`id=${medicoId}`))
-                .map(([key, value]) => value);
-              // Ensure functionality is triggered for initial load
+              if (type === "medico") {
+                orari = Object.entries(data["medici"])
+                  .filter(([key, value]) => key.includes(`id=${id}`))
+                  .map(([key, value]) => value);
+              } else if (type === "nurse") {
+                orari = Object.entries(data["nurses"])
+                  .filter(([key, value]) => key.includes(`id=${id}`))
+                  .map(([key, value]) => value);
+              }
+
               triggerFunctionality();
             },
             error: function (xhr, status, error) {
-              // Handle errors
               console.error(error);
             },
           });
         }
 
-        // Function to trigger functionality on medico or date change
         function triggerFunctionality() {
-          // Empty the time array
           time = [];
-
-          // Iterate over each entry in the orari array
           orari.forEach((entry) => {
-            // Iterate over the keys and values of each entry
             Object.entries(entry).forEach(([date, times]) => {
-              // If the date matches the selected date, add the times to the time array
               if (date === getDate) {
                 time.push(...times);
               }
             });
           });
 
-          // Show all options in the select element
           for (let i = 0; i < timeSelect.options.length; i++) {
-            const option = timeSelect.options[i];
-            option.style.display = "block";
+            timeSelect.options[i].style.display = "block";
           }
 
-          // Iterate through each option in the select element
-          for (let i = 0; i < time.length; i++) {
-            const timeValue = time[i];
-            // Iterate through each option in the select element
+          time.forEach((timeValue) => {
             for (let j = 0; j < timeSelect.options.length; j++) {
-              const option = timeSelect.options[j];
-              // Check if the value of the option matches the time value
-              if (option.value === timeValue) {
-                option.style.display = "none";
+              if (timeSelect.options[j].value === timeValue) {
+                timeSelect.options[j].style.display = "none";
               }
             }
-          }
+          });
         }
 
-        // Event listener for medico selection change
-        $("#medico").change(function () {
-          medicoId = $(this).val();
-          fetchOrariData(medicoId);
+        $("#visitType").change(function () {
+          let visitType = $(this).val();
+          let medicoContainer = $("#medicoContainer");
+          let nurseContainer = $("#nurseContainer");
+
+          if (visitType === "Prelievi" || visitType === "Medication") {
+            medicoContainer.hide();
+            nurseContainer.show();
+          } else {
+            medicoContainer.show();
+            nurseContainer.hide();
+          }
         });
 
-        // Event listener for date input change
+        $("#medico").change(function () {
+          medicoId = $(this).val();
+          fetchOrariData(medicoId, "medico");
+        });
+
+        $("#nurse").change(function () {
+          nurseId = $(this).val();
+          fetchOrariData(nurseId, "nurse");
+        });
+
         $("#date").change(function () {
           getDate = $(this).val();
           triggerFunctionality();
         });
 
-        // Fetch orari data for the initially selected medico when the page loads
         medicoId = $("#medico").val();
-        fetchOrariData(medicoId);
+        if (medicoId) {
+          fetchOrariData(medicoId, "medico");
+        }
       });
     </script>
 
