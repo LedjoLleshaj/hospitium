@@ -240,12 +240,12 @@
                 orari = Object.entries(data["medici"])
                   .filter(([key, value]) => key.includes(`id=${id}`))
                   .map(([key, value]) => value);
-              } else if (type === "nurse") {
+              } else{
                 orari = Object.entries(data["nurses"])
                   .filter(([key, value]) => key.includes(`id=${id}`))
                   .map(([key, value]) => value);
-              }
 
+              }
               triggerFunctionality();
             },
             error: function (xhr, status, error) {
@@ -277,20 +277,6 @@
           });
         }
 
-        $("#visitType").change(function () {
-          let visitType = $(this).val();
-          let medicoContainer = $("#medicoContainer");
-          let nurseContainer = $("#nurseContainer");
-
-          if (visitType === "Prelievi" || visitType === "Medication") {
-            medicoContainer.hide();
-            nurseContainer.show();
-          } else {
-            medicoContainer.show();
-            nurseContainer.hide();
-          }
-        });
-
         $("#medico").change(function () {
           medicoId = $(this).val();
           fetchOrariData(medicoId, "medico");
@@ -309,6 +295,9 @@
         medicoId = $("#medico").val();
         if (medicoId) {
           fetchOrariData(medicoId, "medico");
+        } else {
+          nurseId = $("#nurse").val();
+          fetchOrariData(nurseId, "nurse");
         }
       });
     </script>
