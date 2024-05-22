@@ -149,10 +149,10 @@ public class DbBootstrapper {
 
 
         // Create a couple of Visits
-        Visita visit1 = new Visita("2021-06-01T9:00", "Result", Visita.VisitType.ROUTINE_CHECKUP, 5, doctor1, patient1,null, nurse1);
-        Visita visit2 = new Visita("2021-06-02T9:00", "Result", Visita.VisitType.SPECIALIST_CONSULTATION, 6, doctor2, patient2,null, nurse2);
-        Visita visit3 = new Visita("2021-06-03T9:00", "Result", Visita.VisitType.URGENT_VISIT, 5, doctor1, patient3,null, nurse3);
-        Visita visit4 = new Visita("2021-06-04T9:00", "Result", Visita.VisitType.PEDIATRIC_VISIT, 6, doctor2, patient4,null, nurse2);
+        Visita visit1 = new Visita("2021-06-01T9:00", "Result", Visita.VisitType.ROUTINE_CHECKUP, 5, doctor1, patient1,null, null);
+        Visita visit2 = new Visita("2021-06-02T9:00", "Result", Visita.VisitType.SPECIALIST_CONSULTATION, 6, doctor2, patient2,null, null);
+        Visita visit3 = new Visita("2021-06-03T9:00", "Result", Visita.VisitType.URGENT_VISIT, 5, doctor1, patient3,null, null);
+        Visita visit4 = new Visita("2021-06-04T9:00", "Result", Visita.VisitType.PEDIATRIC_VISIT, 6, doctor2, patient4,null, null);
         repoVisita.saveAll(List.of(visit1, visit2, visit3, visit4));
 //        for (Visita visit : List.of(visit1, visit2, visit3, visit4)) {
 //            System.out.println(visit);

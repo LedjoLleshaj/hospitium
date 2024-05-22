@@ -77,6 +77,10 @@ public class Appointment {
                 return "Urgent Visit";
             case PEDIATRIC_VISIT:
                 return "Pediatric Visit";
+            case PRELIEVI:
+                return "Prelievi";
+            case MEDICATION:
+                return "Medication";
             default:
                 return "Unknown";
         }
