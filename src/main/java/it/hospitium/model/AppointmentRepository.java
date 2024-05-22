@@ -14,6 +14,8 @@ public interface AppointmentRepository extends CrudRepository<Appointment, Long>
     List<Appointment> findByChild(Child child);
     @Query("SELECT a.data FROM Appointment a WHERE a.medico = ?1")
     List<String> findDataByMedico(Medico medico);
+    @Query("SELECT a.data FROM Appointment a WHERE a.nurse = ?1")
+    List<String> findDataByNurse(Nurse nurse);
     Void deleteById(long id);
 
 }

@@ -141,6 +141,13 @@ public class DbBootstrapper {
             System.out.println(appointment);
         }
 
+        // Create a couple of appintmets for nurses
+        Appointment appointment21 = new Appointment("2021-06-01T9:00", "9:00","Note 1", Visita.VisitType.PRELIEVI, 1,null, nurse1,patient1,null);
+        Appointment appointment22 = new Appointment("2021-06-02T9:30","09:30", "Note 2", Visita.VisitType.MEDICATION, 2,null, nurse1,patient2,null);
+
+        repoAppointment.saveAll(List.of(appointment21, appointment22));
+
+
         // Create a couple of Visits
         Visita visit1 = new Visita("2021-06-01T9:00", "Result", Visita.VisitType.ROUTINE_CHECKUP, 5, doctor1, patient1,null, nurse1);
         Visita visit2 = new Visita("2021-06-02T9:00", "Result", Visita.VisitType.SPECIALIST_CONSULTATION, 6, doctor2, patient2,null, nurse2);
@@ -150,6 +157,12 @@ public class DbBootstrapper {
 //        for (Visita visit : List.of(visit1, visit2, visit3, visit4)) {
 //            System.out.println(visit);
 //        }
+
+        // nurse visit
+        Visita visit5 = new Visita("2021-06-01T9:00", "Result", Visita.VisitType.PRELIEVI, 5, null, patient1,null, nurse1);
+        Visita visit6 = new Visita("2021-06-02T9:00", "Result", Visita.VisitType.MEDICATION, 6, null, patient2,null, nurse1);
+
+        repoVisita.saveAll(List.of(visit5, visit6));
 
         // Create a couple of Visits for children
         Visita visit11 = new Visita("2021-06-01T9:00", "Result1", Visita.VisitType.ROUTINE_CHECKUP, 5, doctor1, patient1,child11, nurse1);
