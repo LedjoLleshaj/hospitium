@@ -5,6 +5,7 @@ import it.hospitium.model.*;
 import it.hospitium.utils.Breadcrumb;
 import it.hospitium.utils.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -30,6 +31,10 @@ public class PatientController {
     private MedicoRepository medicoRepository;
     @Autowired
     private ChildRepository repoChildren;
+    @Autowired
+    private PatientRepository repoPatient;
+    @Autowired
+    private MedicoRepository repoMedico;
     @Autowired
     private AppointmentRepository appointmentRepository;
     @Autowired
@@ -181,6 +186,75 @@ public class PatientController {
 
 
         return ResponseEntity.ok(Map.of("medici", orari, "nurses", orari_nurses));
+    }
+
+    @GetMapping("/patient/child/register")
+    public String registerPage(Model model, HttpServletRequest request, RedirectAttributes redirectAttributes) {
+        // get all medico
+        model.addAttribute("medici", repoMedico.findAll());
+        return "patient/child_register";
+    }
+
+    @PostMapping("/patient/child/register")
+    public String register(
+            @RequestParam(name = "first_name", required = true) String firstName,
+            @RequestParam(name = "last_name", required = true) String lastName,
+            @RequestParam(name = "codice_fiscale", required = true) String codice_fiscale,
+            @RequestParam(name = "data_di_nascita", required = true) String data_di_nascita,
+            @RequestParam(name = "luogo_di_nascita", required = true) String luogo_di_nascita,
+            @RequestParam(name = "medico_di_base", required = false) Long medico_id,
+            @RequestParam(name = "codice_sanitario", required = false) String codice_sanitario,
+            Model model,
+            HttpServletRequest request,RedirectAttributes redirectAttributes
+    ) {
+        model.addAttribute("medici", repoMedico.findAll());
+        System.out.println("data di nascita:"+data_di_nascita);
+
+        //get logged in parent info
+        User logged_user = Utils.loggedUser(request);
+        Optional<Patient> maybe_patient = patientRepository.findByUser(logged_user);
+        if (maybe_patient.isEmpty()) {
+            Utils.addRedirectionError(redirectAttributes, "No such patient");
+            return "redirect:/login";
+        }
+        Patient parent = maybe_patient.get();
+
+        User user = null;
+        try {
+            String tempo_psw = User.generatePsw();
+            user = new User(firstName, lastName,"","", codice_fiscale,data_di_nascita,luogo_di_nascita,User.Role.PATIENT);
+            System.out.println(user);
+            repoUser.save(user);
+
+
+            String emailSubject = "Registration Confirmation";
+            String emailText = "Dear " + firstName + ",\n\nYour child registration was successful.Please check your child list\n\nBest regards,\nHospitium Team";
+            emailService.sendSimpleMessage("ledjo.lleshaj@gmail.com", emailSubject, emailText);
+
+        } catch (Exception exc) {
+            if (Utils.IsCause(exc, DataIntegrityViolationException.class)) {
+                Utils.addError(model, "The child could not be saved!");
+                //pass the data back to the form
+
+                return "patient/child_register";
+            }
+            // Unhandled exception
+            throw exc;
+        }
+
+
+        Optional<Medico> maybeMedico = repoMedico.findById(medico_id);
+
+
+        if (maybeMedico.isEmpty()) {
+             Utils.addError(model, "No such medico");
+             return "patient/child_register";
+        }
+        Child child = new Child(codice_sanitario,user,maybeMedico.get(), parent);
+        repoChildren.save(child);
+        System.out.println("Child Saved "+child.fullName());
+
+        return "redirect:/patient/child_list";
     }
 
     // Post the new appointment

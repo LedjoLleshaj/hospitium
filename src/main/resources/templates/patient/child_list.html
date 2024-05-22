@@ -17,6 +17,7 @@
     <!-- Content -->
     <div class="max-w-4xl mx-auto mt-8 px-4">
 
+      <button style="margin-bottom: 20px;" class="et-button-secondary w-full h-12" id="btn-goto-register" onclick="document.location = '/patient/child/register'">Add child</button>
       <!-- Loop through appointments -->
       <div th:each="child : ${children}" class="appointment-card">
         <a th:href="@{'/patient/child/' + ${child.id}}" class="no-underline">
