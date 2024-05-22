@@ -35,16 +35,20 @@ public class Visita {
     @JoinColumn(name = "patient_id")
     private Patient patient;
     @ManyToOne
+    @JoinColumn(name = "child_id")
+    private Child child;
+    @ManyToOne
     @JoinColumn(name = "nurse_id")
     private Nurse nurse;
 
-    public Visita(String data, String Result, VisitType type, Integer insertedBy, Medico medico, Patient patient, Nurse nurse) {
+    public Visita(String data, String Result, VisitType type, Integer insertedBy, Medico medico, Patient patient,Child child, Nurse nurse) {
         this.data = data;
         this.Result = Result;
         this.type = type;
         this.insertedBy = insertedBy;
         this.medico = medico;
         this.patient = patient;
+        this.child = child;
         this.nurse = nurse;
     }
 
@@ -57,7 +61,9 @@ public class Visita {
         ROUTINE_CHECKUP,
         SPECIALIST_CONSULTATION,
         URGENT_VISIT,
-        PEDIATRIC_VISIT;
+        PEDIATRIC_VISIT,
+        PRELIEVI,
+        MEDICATION
     }
 
     public static String formattedType(VisitType type) {
@@ -70,6 +76,10 @@ public class Visita {
                  return "Urgent Visit";
              case PEDIATRIC_VISIT:
                  return "Pediatric Visit";
+             case PRELIEVI:
+                 return "Prelievi";
+             case MEDICATION:
+                 return "Medication";
              default:
                  return "Unknown";
          }
@@ -85,6 +95,10 @@ public class Visita {
                 return VisitType.URGENT_VISIT;
             case "Pediatric Visit":
                 return VisitType.PEDIATRIC_VISIT;
+            case "Prelievi":
+                return VisitType.PRELIEVI;
+            case "Medication":
+                return VisitType.MEDICATION;
             default:
                 return null;
         }

@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <title>Register</title>
+    <meta th:replace="common/meta" />
+
+    <style>
+      .flex {
+        display: flex;
+      }
+
+      .flex-col {
+        flex-direction: column;
+      }
+
+      .mt-2 {
+        margin-top: 8px;
+      }
+
+      .text-sm {
+        font-size: 14px;
+        color: #333;
+      }
+
+      input[type="date"] {
+        width: 345px;
+        padding: 8px;
+        border-radius: 4px;
+        border: 1px solid #ccc;
+        box-sizing: border-box; /* Include padding and border in the element's total width */
+      }
+
+      #medic {
+        width: 345px;
+        padding: 8px;
+        border-radius: 4px;
+        border: 1px solid #ccc;
+        box-sizing: border-box; /* Include padding and border in the element's total width */
+      }
+    </style>
+  </head>
+
+  <body>
+    <div th:replace="common/header"></div>
+    <div class="et-flex-centered flex-col h-full w-full" onload="updateForm()">
+      <div th:replace="common/errors" />
+      <div class="et-card et-flex-centered flex-col p-12">
+        <h1 class="et-logo">Hospitium</h1>
+        <span class="et-subtitle">Child REGISTER</span>
+        <form
+          class="et-flex-centered flex-col mt-8"
+          method="post"
+          action="/patient/child/register"
+        >
+          <div class="flex flex-col">
+            <label class="text-sm">First name</label>
+            <input type="text" name="first_name" oninput="updateForm()" />
+          </div>
+          <div class="flex flex-col mt-2">
+            <label class="text-sm">Last name</label>
+            <input type="text" name="last_name" oninput="updateForm()" />
+          </div>
+
+          <div class="flex flex-col mt-2">
+            <label class="text-sm">Codice Fiscale</label>
+            <input type="text" name="codice_fiscale" oninput="updateForm()" />
+          </div>
+          <span
+            style="display: none"
+            class="text-red-700 self-start"
+            id="invalid-cf-format"
+            >Invalid Codice Fiscale format</span
+          >
+          <div class="flex flex-col mt-2">
+            <label class="text-sm">Data di nascita</label>
+            <input type="date" name="data_di_nascita" oninput="updateForm()" />
+          </div>
+          <div class="flex flex-col mt-2">
+            <label class="text-sm">Luogo di Nascita</label>
+            <input type="text" name="luogo_di_nascita" oninput="updateForm()" />
+          </div>
+
+          <div id="codiceSanitario" class="flex flex-col mt-2">
+            <label class="text-sm">Codice Sanitario</label>
+            <input type="text" name="codice_sanitario" oninput="updateForm()" />
+          </div>
+          <span
+            style="display: none"
+            class="text-red-700 self-start"
+            id="invalid-cs-format"
+            >Invalid Codice Sanitario format</span
+          >
+          <!-- Medico di base -->
+          <div class="flex flex-col mt-2" id="medico_di_base">
+            <label
+              id="textMedic"
+              for="medic"
+              class="block text-gray-700 text-sm font-bold mb-2"
+              >Medico di base:</label
+            >
+            <select
+              name="medico_di_base"
+              id="medic"
+              class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring focus:border-blue-500"
+            >
+              <option
+                th:each="medico : ${medici}"
+                th:value="${medico.getId()}"
+                th:text="${medico.fullName()}"
+              >
+                Medico di base
+              </option>
+            </select>
+          </div>
+
+          <hr class="w-2/3 my-8 bg-text-light" />
+
+          <button
+            class="et-button-primary et-button-disabled w-full h-12 mt-2"
+            id="btn-register"
+          >
+            Register
+          </button>
+        </form>
+
+        <script>
+          // validation
+          let isCFUntouched = true;
+          let isCSUntouched = true;
+
+          // error
+          let invalidCFFormatMsg = document.querySelector("#invalid-cf-format");
+          let invalidCSFormatMsg = document.querySelector("#invalid-cs-format");
+
+
+          // Updates the clickable status of the register button and the visibility of the error messages
+          function updateForm() {
+
+            if (
+              document.querySelector("input[name='codice_fiscale']").value !==
+              ""
+            ) {
+              isCFUntouched = false;
+            }
+
+            if (
+              document.querySelector("input[name='codice_sanitario']").value !==
+              ""
+            ) {
+              isCSUntouched = false;
+            }
+
+            let registerButton = document.querySelector("#btn-register");
+            if (canRegister()) {
+              registerButton.classList.remove("et-button-disabled");
+            } else {
+              registerButton.classList.add("et-button-disabled");
+            }
+
+            // This check is also done server-side, but we do it client-side first for better interactivity
+
+            if (isCFUntouched || isCFValid()) {
+              invalidCFFormatMsg.style.display = "none";
+            } else {
+              invalidCFFormatMsg.style.display = "";
+            }
+
+              if (isCSUntouched || !isCSValid()) {
+                invalidCSFormatMsg.style.display = "";
+              } else {
+                invalidCSFormatMsg.style.display = "none";
+              }
+          }
+
+
+          // Returns true if the register button should be clickable
+          function canRegister() {
+            // These must have a non-empty value
+            let textInputs = ["first_name", "last_name"];
+            for (let i = 0; i < textInputs.length; i++) {
+              if (
+                document.querySelector("input[name='" + textInputs[i] + "']")
+                  .value === ""
+              ) {
+                return false;
+              }
+            }
+            return (
+               isCFValid() && isCSValid()
+            );
+          }
+
+          function isCFValid() {
+            let value = document.querySelector(
+              "input[name='codice_fiscale']"
+            ).value;
+            return /^[A-Z]{6}\d{2}[A-Z]\d{2}[A-Z]\d{3}[A-Z]$/.test(value);
+          }
+
+          function isCSValid() {
+            let value = document.querySelector(
+              "input[name='codice_sanitario']"
+            ).value;
+            return /^\d{20}$/.test(value);
+          }
+        </script>
+      </div>
+    </div>
+  </body>
+</html>

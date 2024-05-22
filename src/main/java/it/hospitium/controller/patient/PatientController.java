@@ -1,9 +1,13 @@
 package it.hospitium.controller.patient;
 
+import it.hospitium.controller.EmailService;
 import it.hospitium.model.*;
 import it.hospitium.utils.Breadcrumb;
 import it.hospitium.utils.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,7 +30,17 @@ public class PatientController {
     @Autowired
     private MedicoRepository medicoRepository;
     @Autowired
+    private ChildRepository repoChildren;
+    @Autowired
+    private PatientRepository repoPatient;
+    @Autowired
+    private MedicoRepository repoMedico;
+    @Autowired
     private AppointmentRepository appointmentRepository;
+    @Autowired
+    private EmailService emailService;
+    @Autowired
+    private NurseRepository nurseRepository;
 
     @GetMapping("patient/home")
     public String home(Model model, HttpServletRequest request, RedirectAttributes redirectAttributes) {
@@ -65,51 +79,165 @@ public class PatientController {
 
         // Retrieve all medics
         List<Medico> medici = (List<Medico>) medicoRepository.findAll();
+        medici.remove(medico_di_base);
         // add medico di base in top of medici in a set
         medici.add(0, medico_di_base);
-        Set<Medico> medici_set = Set.copyOf(medici);
-        for (Medico medico : medici_set) {
-            System.out.println(medico);
-        }
+
+
+        // Retrive all nurses
+        List<Nurse> nurses = (List<Nurse>) nurseRepository.findAll();
+
         // All visit types
         List<String> categories = Visita.getVisitCategories();
 
-        //get from database all the datetimes of the appointments of all the medics and save it in a hashset where the key is the medico id
-        //as value ts another hashset that has the key as the date and the value as a set of the times in string
-        Map<Medico,Map<String,ArrayList<String>>> orari = new HashMap<>();
-        for (Medico medico : medici_set) {
-            System.out.println("medico: " + medico);
-            List<String> allDates = appointmentRepository.findDataByMedico(medico);
-            System.out.println(allDates);
-            // separate the date and time by using the "T" char as separator
-            //and save it in a hashmap with date as key and time as value
-            Map<String,ArrayList<String>> date_time = new HashMap<>();
-            for (String date_time_str : allDates) {
-                String[] date_time_arr = date_time_str.split("T");
-                String date = date_time_arr[0];
-                String time = date_time_arr[1];
-                if (date_time.containsKey(date)) {
-                    System.out.println("date_time.get(date): " + date_time.get(date));
-
-                    date_time.get(date).add(time);
-                } else {
-                    date_time.put(date, new ArrayList<String>());
-                    date_time.get(date).add(time);
-                }
-            }
-            System.out.println("HashMap of date and time:");
-            System.out.println(date_time);
-            orari.put(medico,date_time);
-        }
-
-        System.out.println("HashMap of medico and date and time:");
-        System.out.println(orari);
-        // Add attributes
-        model.addAttribute("orari", orari);
+        model.addAttribute("nurses", nurses);
         model.addAttribute("medici", medici);
         model.addAttribute("visitTypes", categories);
 
         return "/patient/new_appointment";
+    }
+
+    @GetMapping("patient/child_list")
+    public String child_list(Model model, HttpServletRequest request, RedirectAttributes redirectAttributes) {
+        User user = Utils.loggedUser(request);
+        Optional<Patient> maybe_patient = patientRepository.findByUser(user);
+        if (maybe_patient.isEmpty()) {
+            Utils.addRedirectionError(redirectAttributes, "No such patient");
+            return "redirect:/login";
+        }
+        Patient patient = maybe_patient.get();
+        List<Child> children = repoChildren.findByParent(patient);
+
+        model.addAttribute("children", children);
+
+        return "/patient/child_list";
+    }
+
+    @GetMapping("patient/child/{id}")
+    public String child(@PathVariable Long id, Model model, HttpServletRequest request, RedirectAttributes redirectAttributes) {
+        User user = Utils.loggedUser(request);
+        Optional<Patient> maybe_patient = patientRepository.findByUser(user);
+        if (maybe_patient.isEmpty()) {
+            Utils.addRedirectionError(redirectAttributes, "No such patient");
+            return "redirect:/login";
+        }
+        Patient patient = maybe_patient.get();
+        Optional<Child> maybe_child = repoChildren.findById(id);
+        if (maybe_child.isEmpty()) {
+            Utils.addRedirectionError(redirectAttributes, "No such child");
+            return "redirect:/patient/child_list";
+        }
+        Child child = maybe_child.get();
+        if (!child.getParent().equals(patient)) {
+            Utils.addRedirectionError(redirectAttributes, "No such child");
+            return "redirect:/patient/child_list";
+        }
+
+        List<Appointment> appointments = appointmentRepository.findByChild(child);
+
+
+        model.addAttribute("patient", child);
+        model.addAttribute("appointments", appointments);
+
+
+        return "/patient/profile";
+    }
+
+    // New API endpoint to retrieve only the 'orari' data
+    @GetMapping("/patient/orari")
+    public ResponseEntity<?> getOrari(HttpServletRequest request, RedirectAttributes redirectAttributes) {
+
+        List<Medico> medici = (List<Medico>) medicoRepository.findAll();
+
+        Set<Medico> medici_set = Set.copyOf(medici);
+
+        // Your logic to fetch 'orari' data
+        // This will return only the 'orari' data in JSON format
+        // You can reuse the logic used in the previous endpoint to fetch 'orari' data
+
+        Map<Medico, Map<String, ArrayList<String>>> orari = new HashMap<>();
+        for (Medico medico : medici_set) {
+            List<String> allDates = appointmentRepository.findDataByMedico(medico);
+            Map<String, ArrayList<String>> date_time = new HashMap<>();
+            for (String date_time_str : allDates) {
+                String[] date_time_arr = date_time_str.split("T");
+                String date = date_time_arr[0];
+                String time = date_time_arr[1];
+                date_time.computeIfAbsent(date, k -> new ArrayList<>()).add(time);
+            }
+            orari.put(medico, date_time);
+        }
+
+        return ResponseEntity.ok(orari);
+    }
+
+    @GetMapping("/patient/child/register")
+    public String registerPage(Model model, HttpServletRequest request, RedirectAttributes redirectAttributes) {
+        // get all medico
+        model.addAttribute("medici", repoMedico.findAll());
+        return "patient/child_register";
+    }
+
+    @PostMapping("/patient/child/register")
+    public String register(
+            @RequestParam(name = "first_name", required = true) String firstName,
+            @RequestParam(name = "last_name", required = true) String lastName,
+            @RequestParam(name = "codice_fiscale", required = true) String codice_fiscale,
+            @RequestParam(name = "data_di_nascita", required = true) String data_di_nascita,
+            @RequestParam(name = "luogo_di_nascita", required = true) String luogo_di_nascita,
+            @RequestParam(name = "medico_di_base", required = false) Long medico_id,
+            @RequestParam(name = "codice_sanitario", required = false) String codice_sanitario,
+            Model model,
+            HttpServletRequest request,RedirectAttributes redirectAttributes
+    ) {
+        model.addAttribute("medici", repoMedico.findAll());
+        System.out.println("data di nascita:"+data_di_nascita);
+
+        //get logged in parent info
+        User logged_user = Utils.loggedUser(request);
+        Optional<Patient> maybe_patient = patientRepository.findByUser(logged_user);
+        if (maybe_patient.isEmpty()) {
+            Utils.addRedirectionError(redirectAttributes, "No such patient");
+            return "redirect:/login";
+        }
+        Patient parent = maybe_patient.get();
+
+        User user = null;
+        try {
+            String tempo_psw = User.generatePsw();
+            user = new User(firstName, lastName,"","", codice_fiscale,data_di_nascita,luogo_di_nascita,User.Role.PATIENT);
+            System.out.println(user);
+            repoUser.save(user);
+
+
+            String emailSubject = "Registration Confirmation";
+            String emailText = "Dear " + firstName + ",\n\nYour child registration was successful.Please check your child list\n\nBest regards,\nHospitium Team";
+            emailService.sendSimpleMessage("ledjo.lleshaj@gmail.com", emailSubject, emailText);
+
+        } catch (Exception exc) {
+            if (Utils.IsCause(exc, DataIntegrityViolationException.class)) {
+                Utils.addError(model, "The child could not be saved!");
+                //pass the data back to the form
+
+                return "patient/child_register";
+            }
+            // Unhandled exception
+            throw exc;
+        }
+
+
+        Optional<Medico> maybeMedico = repoMedico.findById(medico_id);
+
+
+        if (maybeMedico.isEmpty()) {
+             Utils.addError(model, "No such medico");
+             return "patient/child_register";
+        }
+        Child child = new Child(codice_sanitario,user,maybeMedico.get(), parent);
+        repoChildren.save(child);
+        System.out.println("Child Saved "+child.fullName());
+
+        return "redirect:/patient/child_list";
     }
 
     // Post the new appointment
@@ -138,11 +266,17 @@ public class PatientController {
         }
         Medico medico = maybe_medico.get();
 
+        date = date + "T" + time;
+
         // add the new appointment to the database
-        Appointment appointment = new Appointment(date, time, note, Visita.fromString(visitType), urgency, medico, patient);
+        Appointment appointment = new Appointment(date, time, note, Visita.fromString(visitType), urgency, medico,null,
+                patient, null );
 
         // Save the appointment
         appointmentRepository.save(appointment);
+        String emailSubject = "Appointment Registered";
+        String emailText = "Dear " + user.fullName() + ",\n\nYour appointment was successfully registered.\n\nBest regards,\nHospitium Team";
+        emailService.sendSimpleMessage("ledjo.lleshaj@gmail.com", emailSubject, emailText);
 
         // Go to the profile page
         return "redirect:/patient/profile";

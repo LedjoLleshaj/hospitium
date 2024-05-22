@@ -14,11 +14,11 @@ public class MailConfig {
     public JavaMailSender javaMailSender() {
         JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
 
-        mailSender.setHost("smtp.mail.yahoo.com");
+        mailSender.setHost("live.smtp.mailtrap.io");
         mailSender.setPort(587);
 
-        mailSender.setUsername("email@email.com");
-        mailSender.setPassword("XXXXXXXXXXXXX");
+        mailSender.setUsername("api");
+        mailSender.setPassword("390ef9aa4c4c1a3beed8fb87fcb6cd32");
 
         Properties props = mailSender.getJavaMailProperties();
         props.put("mail.transport.protocol", "smtp");

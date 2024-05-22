@@ -48,9 +48,9 @@
           </div>
           <div class="flex items-center">
             <div class="w-full">
-              <div class="font-semibold text-gray-600">Medico:</div>
-              <div th:text="${visit.medico.fullName()}" class="text-gray-800">
-                Medico
+              <div class="font-semibold text-gray-600" th:if="${visit.medico != null}" >Medico:</div>
+              <div class="font-semibold text-gray-600" th:if="${visit.nurse != null}" >Nurse:</div>
+              <div th:text="(${visit.medico?.fullName() ?: visit.nurse?.fullName()})" class="text-gray-800">
               </div>
             </div>
           </div>

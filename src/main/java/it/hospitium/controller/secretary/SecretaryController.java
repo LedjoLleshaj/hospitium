@@ -11,9 +11,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Optional;
@@ -137,5 +134,21 @@ public class SecretaryController {
         }
 
         return "redirect:/secretary/home";
+    }
+    @GetMapping("/secretary/profile")
+    public String viewProfile(Model model, HttpServletRequest request, RedirectAttributes redirectAttributes) {
+        User user = Utils.loggedUser(request);
+
+        Optional<Secretary> maybeSecretary = repoSecretary.findByUser(user);
+
+        if (maybeSecretary.isEmpty()) {
+            Utils.addRedirectionError(redirectAttributes, "No such secretary");
+            return "redirect:/secretary/home";
+        }
+
+        Secretary secretary = maybeSecretary.get();
+        model.addAttribute("user", secretary.getUser());
+
+        return "secretary/profile";
     }
 }

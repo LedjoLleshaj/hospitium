@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <title>Nurse Profile</title>
+    <meta th:replace="common/meta" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"
+      rel="stylesheet"
+    />
+    <!-- Include Tailwind CSS -->
+  </head>
+
+  <body class="bg-gray-100">
+    <div th:replace="common/errors"></div>
+    <!-- Header with logo, logout, and breadcrumbs -->
+    <div th:replace="common/header"></div>
+    <!-- Content -->
+    <div class="max-w-4xl mx-auto mt-8 px-4">
+      <!-- Medico Data Card -->
+      <div class="et-card mb-8 text-center">
+        <div class="et-name text-2xl font-bold mb-4">Nurse Data:</div>
+        <div class="et-card-body">
+          <p th:text="'Name: ' + ${user.fullName()}" class="mb-2"></p>
+          <p th:text="'Email: ' + ${user.getEmail()}" class="mb-2"></p>
+          <p th:text="'Birthdate: ' + ${user.getData_di_nascita()}" class="mb-2"></p>
+          <p th:text="'Fiscal Code: ' + ${user.getCF()}" class="mb-2"></p>
+          <p th:text="'Address: ' + ${user.getLuogo_di_nascita()}" class="mb-2"></p>
+          <p th:text="'Medico responsabile: ' + ${medico}" class="mb-2"></p>
+          <!-- Add more fields if needed -->
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

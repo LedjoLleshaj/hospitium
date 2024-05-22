@@ -22,7 +22,6 @@ public class User {
     private String firstName;
     @Column(nullable = false)
     private String lastName;
-    @Column(unique = true, nullable = false)
     private String email;
     @Column(nullable = false)
     private String pswHash;
@@ -38,7 +37,7 @@ public class User {
     public User(String firstName, String lastName, String email,String psw ,String CF,String data_di_nascita,String luogo_di_nascita, Role role) {
         this.firstName = firstName;
         this.lastName = lastName;
-        assertEmail(email);
+        // assertEmail(email);
         this.email = email;
         if (psw == "") {
             this.pswHash = hashPsw(generatePsw());
