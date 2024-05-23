@@ -73,11 +73,16 @@
           <p th:text="'('+${visit.getData()}+')'" class="et-period text-xl">
             (00/00/0000)
           </p>
+          <p
+                  th:text="${visit.child != null ? 'Pediatric visit' : 'Adult visit'}"
+                  class="et-period text-xl font-semibold justify-self-end"
+          ></p>
         </div>
         <!-- TODO: Description th:text="${course.description}" -->
         <p th:text="${visit.getResult()}" class="et-description mt-4">
           Visita di come avere una vita piu lunga
         </p>
+
       </div>
     </div>
 

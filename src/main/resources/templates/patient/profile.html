@@ -72,6 +72,10 @@
                     class="mb-2"
             ></p>
             <p
+                    th:text="${appointment.child != null ? 'Tipo visita : Pediatric visit' : 'Tipo Visita : Adult visit'}"
+                    class="et-period text-xl"
+            ></p>
+            <p
                     th:text="'Urgenza: ' + ${appointment.urgenza}"
                     class="mb-2"
             ></p>

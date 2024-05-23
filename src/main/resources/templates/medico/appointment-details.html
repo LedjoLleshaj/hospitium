@@ -83,6 +83,17 @@
               </div>
             </div>
           </div>
+          <div class="flex items-center">
+            <div class="w-full">
+              <div class="font-semibold text-gray-600">Type of visit:</div>
+              <div
+                      th:text="${appointment.child != null ? 'Pediatric visit' : 'Adult visit'}"
+                      class="text-gray-800"
+              >
+                <!-- Pediatric visit if child not null -->
+              </div>
+            </div>
+          </div>
         </div>
 
         <!-- Result Note Form -->

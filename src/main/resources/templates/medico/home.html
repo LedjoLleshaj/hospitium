@@ -52,6 +52,10 @@
             th:text="'('+ ${appointment.data} +')'"
             class="et-period text-xl"
           ></p>
+          <p
+          th:text="${appointment.child != null ? 'Pediatric visit' : 'Adult visit'}"
+            class="et-period text-xl font-semibold justify-self-end"
+          ></p>
         </div>
         <div class="flex flex-row justify-between">
           <div class="flex flex-col">
