@@ -28,6 +28,75 @@
           <!-- Add more fields if needed -->
         </div>
       </div>
-    </div>
+        <div class="flex items-center justify-center mb-4">
+          <hr class="border-gray-400 border-solid border-t-2 flex-grow mr-4">
+          <span class="text-2xl font-bold text-gray-700">Visits History</span>
+          <hr class="border-gray-400 border-solid border-t-2 flex-grow ml-4">
+        </div>
+
+        <!-- Search for visits -->
+        <div class="mb-4">
+          <input
+                  type="text"
+                  style="width:100%;"
+                  id="searchInput"
+                  placeholder="Search visits..."
+                  class="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500"
+          />
+        </div>
+
+        <!-- Loop through visits -->
+        <div th:each="visit : ${visits}" class="appointment-card" style="margin-bottom: 30px;">
+          <div class="et-card mb-4">
+            <div style="padding-left: 10px" class="et-card-body">
+              <div
+                      class="et-name text-2xl font-bold text-center mb-4"
+                      th:text="${visit.formattedType(visit.type)}"
+              ></div>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <p th:text="'Data: ' + ${visit.data.replace('T',' at ')}" class="mb-2"></p>
+                  <p
+                          th:text="${visit.child != null ? 'Child: ' + visit.child.fullName() : 'Adult: ' + visit.patient.fullName()}"
+                          class="mb-2"
+                  ></p>
+                </div>
+                <div>
+
+                  <p
+                          th:text="'Note: ' + ${visit.result}"
+                          class="mb-2"
+                  ></p>
+                  <p
+                          th:text="${visit.child != null ? 'Tipo visita : Pediatric visit' : 'Tipo Visita : Adult visit'}"
+                          class="et-period text-xl"
+                  ></p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <script>
+        // Get the input field
+        var input = document.getElementById("searchInput");
+
+        input.addEventListener("input", function () {
+          var filter, cards, visit, i, txtValue;
+          filter = input.value.toUpperCase();
+          cards = document.querySelectorAll(".appointment-card");
+
+          for (i = 0; i < cards.length; i++) {
+            visit = cards[i];
+            txtValue = visit.textContent || visit.innerText;
+            if (txtValue.toUpperCase().indexOf(filter) > -1) {
+              visit.style.display = "";
+            } else {
+              visit.style.display = "none";
+            }
+          }
+        });
+      </script>
   </body>
 </html>

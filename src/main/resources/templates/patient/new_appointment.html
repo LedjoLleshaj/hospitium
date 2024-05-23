@@ -21,6 +21,79 @@
         </h2>
         <!-- Form that ridiract to /appointments page -->
         <form action="/patient/new_appointment" method="post">
+          <!-- Visit types -->
+          <div class="mb-4">
+            <label
+              for="visitType"
+              class="block text-gray-700 text-sm font-bold mb-2"
+              >Visit Type:</label
+            >
+            <select
+              name="visitType"
+              id="visitType"
+              class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring focus:border-blue-500"
+            >
+              <option
+                th:each="category : ${visitTypes}"
+                th:value="${category}"
+                th:text="${category}"
+              >
+                Visit Type
+              </option>
+            </select>
+            <p id="typeError" style="color: red">
+              <strong>First:</strong>Select the visit type.
+            </p>
+          </div>
+
+          <div id="medicoContainer" class="mb-4">
+            <label
+              for="medico"
+              class="block text-gray-700 text-sm font-bold mb-2"
+              >Medico:</label
+            >
+            <select
+              name="medico"
+              id="medico"
+              class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring focus:border-blue-500"
+            >
+              <option
+                th:each="medico : ${medici}"
+                th:value="${medico.id}"
+                th:text="${medico.fullName()}"
+              >
+                Medico
+              </option>
+            </select>
+            <p id="medicoError" style="color: red">
+              <strong>Second: </strong>Select medico(the first on the menu list
+              is medico di base)
+            </p>
+          </div>
+
+          <div id="nurseContainer" style="display: none" class="mb-4">
+            <label
+              for="nurse"
+              class="block text-gray-700 text-sm font-bold mb-2"
+              >Nurse:</label
+            >
+            <select
+              name="nurse"
+              id="nurse"
+              class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring focus:border-blue-500"
+            >
+              <option
+                th:each="nurse : ${nurses}"
+                th:value="${nurse.id}"
+                th:text="${nurse.fullName()}"
+              >
+                Nurse
+              </option>
+            </select>
+            <p id="nurseError" style="color: red">
+              <strong>Second:</strong>Select the nurse.
+            </p>
+          </div>
           <div class="mb-4">
             <!-- Date Field -->
             <label for="date" class="block text-gray-700 text-sm font-bold mb-2"
@@ -89,28 +162,6 @@
               class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring focus:border-blue-500"
             ></textarea>
           </div>
-
-          <!-- Visit types -->
-          <div class="mb-4">
-            <label
-              for="visitType"
-              class="block text-gray-700 text-sm font-bold mb-2"
-              >Visit Type:</label
-            >
-            <select
-              name="visitType"
-              id="visitType"
-              class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring focus:border-blue-500"
-            >
-              <option
-                th:each="category : ${visitTypes}"
-                th:value="${category}"
-                th:text="${category}"
-              >
-                Visit Type
-              </option>
-            </select>
-          </div>
           <!-- Urgency -->
           <div class="mb-4">
             <label
@@ -128,47 +179,6 @@
               <option value="3">High</option>
             </select>
           </div>
-          <div id="medicoContainer" class="mb-4">
-            <label
-              for="medico"
-              class="block text-gray-700 text-sm font-bold mb-2"
-              >Medico:</label
-            >
-            <select
-              name="medico"
-              id="medico"
-              class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring focus:border-blue-500"
-            >
-              <option
-                th:each="medico : ${medici}"
-                th:value="${medico.id}"
-                th:text="${medico.fullName()}"
-              >
-                Medico
-              </option>
-            </select>
-          </div>
-
-          <div id="nurseContainer" style="display: none" class="mb-4">
-            <label
-              for="nurse"
-              class="block text-gray-700 text-sm font-bold mb-2"
-              >Nurse:</label
-            >
-            <select
-              name="nurse"
-              id="nurse"
-              class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring focus:border-blue-500"
-            >
-              <option
-                th:each="nurse : ${nurses}"
-                th:value="${nurse.id}"
-                th:text="${nurse.fullName()}"
-              >
-                Medico
-              </option>
-            </select>
-          </div>
 
           <div class="flex justify-end">
             <button type="submit" class="et-button-secondary w-full h-12">
@@ -182,29 +192,75 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
     <script>
+      const medicoError = $("#medicoError");
+      const nurseError = $("#nurseError");
+      const typeError = $("#typeError");
+
+      $("#medico").click(function () {
+        medicoError.hide();
+      });
+
+      $("#nurse").click(function () {
+        nurseError.hide();
+      });
+
+      $("#visitType").click(function () {
+        typeError.hide();
+      });
+    </script>
+
+    <script>
       $(document).ready(function () {
         const timeSelect = $("#time");
         const errorMessage = $("#errorMessage");
 
         function disableTimeOptions() {
           const dateInput = $("#date");
-          // Get the selected date
           const selectedDate = new Date(dateInput.val());
+          const currentDate = new Date();
+          currentDate.setHours(0, 0, 0, 0); // Reset time part of current date to compare only dates
 
           // Check if the selected date is a weekend
-          const isWeekend = selectedDate.getDay() === 0 || selectedDate.getDay() === 6;
+          const isWeekend =
+            selectedDate.getDay() === 0 || selectedDate.getDay() === 6;
+          // Check if the selected date is in the past
+          const isPastDate = selectedDate < currentDate;
 
-          if (!dateInput.val() || isWeekend) {
-            // If no date is selected or it's a weekend, disable time options, change their color to transparent, and show error message
+          if (!dateInput.val() || isWeekend || isPastDate) {
+            let errorText = "Please select a valid date.";
+            if (isWeekend) {
+              errorText = "Weekends are not allowed.";
+            } else if (isPastDate) {
+              errorText = "Past dates are not allowed.";
+            }
             timeSelect.prop("disabled", true);
             timeSelect.css("color", "transparent");
-            errorMessage.text("Please select a valid date (weekends are not allowed)");
+            errorMessage.text(errorText);
             errorMessage.show();
           } else {
-            // If date is selected and it's not a weekend, enable time options, reset their style, and hide error message
             timeSelect.prop("disabled", false);
             timeSelect.css("color", ""); // Reset color to default
             errorMessage.hide();
+
+            if (selectedDate.toDateString() === currentDate.toDateString()) {
+              // If the selected date is today, disable past times
+              const currentTime =
+                new Date().getHours() * 60 + new Date().getMinutes();
+              timeSelect.children("option").each(function () {
+                const [hours, minutes] = $(this).val().split(":").map(Number);
+                const optionTime = hours * 60 + minutes;
+                if (optionTime < currentTime) {
+                  $(this).prop("disabled", true).css("color", "gray");
+                } else {
+                  $(this).prop("disabled", false).css("color", "");
+                }
+              });
+            } else {
+              // Enable all times for future dates
+              timeSelect.children("option").each(function () {
+                $(this).prop("disabled", false).css("color", "");
+              });
+            }
           }
         }
 
@@ -215,37 +271,32 @@
         $("#date").change(function () {
           disableTimeOptions();
         });
-      });
-    </script>
 
-
-
-    <script>
-      $(document).ready(function () {
-        let orari = [];
+        let orariMedico = [];
+        let orariNurse = [];
         let medicoId = null;
+        let nurseId = null;
         let getDate = null;
-        let time = [];
-        let initialized = false;
+        let timeMedico = [];
+        let timeNurse = [];
 
-        // Get the select element
-        const timeSelect = $("#time")[0];
+        // Get the select elements
+        const timeSelectMedico = $("#time")[0];
+        const timeSelectNurse = $("#time")[0];
 
         // Function to fetch orari data based on selected medico
         function fetchOrariData(medicoId) {
           $.ajax({
             url: "/patient/orari", // Endpoint to fetch orari data
             type: "GET",
-            data: {
-              medicoId: medicoId,
-            },
+            data: { medicoId: medicoId },
             success: function (data) {
               // Extract the available dates and times for the selected medico
-              orari = Object.entries(data)
-                      .filter(([key, value]) => key.includes(`id=${medicoId}`))
-                      .map(([key, value]) => value);
+              orariMedico = Object.entries(data)
+                .filter(([key, value]) => key.includes(`id=${medicoId}`))
+                .map(([key, value]) => value);
               // Ensure functionality is triggered for initial load
-              triggerFunctionality();
+              triggerFunctionalityMedico();
             },
             error: function (xhr, status, error) {
               // Handle errors
@@ -255,34 +306,35 @@
         }
 
         // Function to trigger functionality on medico or date change
-        function triggerFunctionality() {
+        function triggerFunctionalityMedico() {
           // Empty the time array
-          time = [];
+          timeMedico = [];
+          nurseId = null;
 
-          // Iterate over each entry in the orari array
-          orari.forEach((entry) => {
+          // Iterate over the orari data
+          orariMedico.forEach((entry) => {
             // Iterate over the keys and values of each entry
             Object.entries(entry).forEach(([date, times]) => {
-              // If the date matches the selected date, add the times to the time array
+              // select the date and add the times of that date to the time array
               if (date === getDate) {
-                time.push(...times);
+                timeMedico.push(...times);
               }
             });
           });
 
-          // Show all options in the select element
-          for (let i = 0; i < timeSelect.options.length; i++) {
-            const option = timeSelect.options[i];
+          // Show all options
+          for (let i = 0; i < timeSelectMedico.options.length; i++) {
+            const option = timeSelectMedico.options[i];
             option.style.display = "block";
           }
 
-          // Iterate through each option in the select element
-          for (let i = 0; i < time.length; i++) {
-            const timeValue = time[i];
-            // Iterate through each option in the select element
-            for (let j = 0; j < timeSelect.options.length; j++) {
-              const option = timeSelect.options[j];
-              // Check if the value of the option matches the time value
+          // Iterate in each time value
+          for (let i = 0; i < timeMedico.length; i++) {
+            const timeValue = timeMedico[i];
+            // Iterate in each option
+            for (let j = 0; j < timeSelectMedico.options.length; j++) {
+              const option = timeSelectMedico.options[j];
+              // Check all the options with the array times values
               if (option.value === timeValue) {
                 option.style.display = "none";
               }
@@ -290,23 +342,156 @@
           }
         }
 
-        // Event listener for medico selection change
+        // Function to fetch orari data based on selected nurse
+        function fetchOrariNurseData(nurseId) {
+          $.ajax({
+            url: "/patient/orari_nurse", // Endpoint to fetch orari data
+            type: "GET",
+            data: { nurseId: nurseId },
+            success: function (data) {
+              // Extract the available dates and times for the selected nurse
+              orariNurse = Object.entries(data)
+                .filter(([key, value]) => key.includes(`id=${nurseId}`))
+                .map(([key, value]) => value);
+              // Ensure functionality is triggered for initial load
+              triggerFunctionalityNurse();
+            },
+            error: function (xhr, status, error) {
+              // Handle errors
+              console.error(error);
+            },
+          });
+        }
+
+        // Function to trigger functionality on nurse or date change
+        function triggerFunctionalityNurse() {
+          // Empty the time array
+          timeNurse = [];
+          medicoId = null;
+
+          // Iterate over the orari data
+          orariNurse.forEach((entry) => {
+            // Iterate over the keys and values of each entry
+            Object.entries(entry).forEach(([date, times]) => {
+              // select the date and add the times of that date to the time array
+              if (date === getDate) {
+                timeNurse.push(...times);
+              }
+            });
+          });
+
+          // Show all options
+          for (let i = 0; i < timeSelectNurse.options.length; i++) {
+            const option = timeSelectNurse.options[i];
+            option.style.display = "block";
+          }
+
+          // Iterate in each time value
+          for (let i = 0; i < timeNurse.length; i++) {
+            const timeValue = timeNurse[i];
+            // Iterate in each option
+            for (let j = 0; j < timeSelectNurse.options.length; j++) {
+              const option = timeSelectNurse.options[j];
+              // Check all the options with the array times values
+              if (option.value === timeValue) {
+                option.style.display = "none";
+              }
+            }
+          }
+        }
+
+        // Listen for medico change
         $("#medico").change(function () {
           medicoId = $(this).val();
+          nurseId = null; // Reset nurseId
+          $("#nurse").val(null); // Reset nurse selector value
           document.getElementById("time").selectedIndex = 0;
           fetchOrariData(medicoId);
-
         });
 
-        // Event listener for date input change
+        // Listen for nurse change
+        $("#nurse").change(function () {
+          nurseId = $(this).val();
+          medicoId = null; // Reset medicoId
+          $("#medico").val(null); // Reset medico selector value
+          document.getElementById("time").selectedIndex = 0;
+          fetchOrariNurseData(nurseId);
+        });
+
+        // Listen for date change
         $("#date").change(function () {
           getDate = $(this).val();
-          triggerFunctionality();
+          if (
+            $("#visitType").val() === "Prelievi" ||
+            $("#visitType").val() === "Medication"
+          ) {
+            triggerFunctionalityNurse();
+          } else {
+            triggerFunctionalityMedico();
+          }
         });
 
-        // Fetch orari data for the initially selected medico when the page loads
-        medicoId = $("#medico").val();
-        fetchOrariData(medicoId);
+        // Handle visit type change
+        $("#visitType").change(function () {
+          const visitType = $(this).val();
+          if (visitType === "Prelievi" || visitType === "Medication") {
+            $("#medicoContainer").hide();
+            $("#nurseContainer").show();
+
+            $("#nurse").val(null); // Reset nurse selector value
+            nurseId = null;
+            if ($("#nurse").is(":visible")) {
+              nurseId = $("#nurse").val();
+              if (nurseId) {
+                fetchOrariNurseData(nurseId);
+              }
+            }
+          } else {
+            $("#medicoContainer").show();
+            $("#nurseContainer").hide();
+
+            $("#medico").val(null); // Reset medico selector value
+            medicoId = null;
+            if ($("#medico").is(":visible")) {
+              medicoId = $("#medico").val();
+              if (medicoId) {
+                fetchOrariData(medicoId);
+              }
+            }
+          }
+          getDate = $("#date").val();
+          disableTimeOptions();
+        });
+
+        // Initial load
+        const visitType = $("#visitType").val();
+        if (visitType === "Prelievi" || visitType === "Medication") {
+          $("#medicoContainer").hide();
+          $("#nurseContainer").show();
+
+          $("#nurse").val(null); // Reset nurse selector value
+          nurseId = null;
+          if ($("#nurse").is(":visible")) {
+            nurseId = $("#nurse").val();
+            if (nurseId) {
+              fetchOrariNurseData(nurseId);
+            }
+          }
+        } else {
+          $("#medicoContainer").show();
+          $("#nurseContainer").hide();
+
+          $("#medico").val(null); // Reset medico selector value
+          medicoId = null;
+          if ($("#medico").is(":visible")) {
+            medicoId = $("#medico").val();
+            if (medicoId) {
+              fetchOrariData(medicoId);
+            }
+          }
+        }
+        getDate = $("#date").val();
+        disableTimeOptions();
       });
     </script>
   </body>

@@ -53,17 +53,12 @@ public class Appointment {
         this.medico = medico;
         this.nurse = nurse;
         this.patient = patient;
-        if (child != null) {
-            this.child = child;
-        }
-        else {
-            this.child = null;
-        }
+        this.child = child;
     }
 
     @Override
     public String toString() {
-        return String.format("Visit{id=%d, data_di_nascita=%s, medico=%s, patient=%s, type=%s}", id, data,
+        return String.format("Appointment{id=%d, data_di_nascita=%s, medico=%s, patient=%s, type=%s}", id, data,
                 medico.fullName(), patient.fullName(), visitType.toString());
     }
 

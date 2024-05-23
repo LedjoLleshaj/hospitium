@@ -24,7 +24,7 @@
           <div class="flex items-center">
             <div class="w-full">
               <div class="font-semibold text-gray-600">Date:</div>
-              <div th:text="${appointment.data}" class="text-gray-800">
+              <div th:text="${appointment.data.split('T')[0]}" class="text-gray-800">
                 <!-- Appointment Date -->
               </div>
             </div>
@@ -80,6 +80,17 @@
                 class="text-gray-800"
               >
                 <!-- Patient's Full Name -->
+              </div>
+            </div>
+          </div>
+          <div class="flex items-center">
+            <div class="w-full">
+              <div class="font-semibold text-gray-600">Type of visit:</div>
+              <div
+                      th:text="${appointment.child != null ? 'Pediatric visit' : 'Adult visit'}"
+                      class="text-gray-800"
+              >
+                <!-- Pediatric visit if child not null -->
               </div>
             </div>
           </div>

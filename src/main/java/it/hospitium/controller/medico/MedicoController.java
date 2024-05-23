@@ -129,9 +129,11 @@ public class MedicoController {
         }
 
         Medico medico = maybeMedico.get();
-
+        List<Visita> visits = (List<Visita>) visitaRepository.findByMedico(medico);
         // Add attributes
         model.addAttribute("user", medico.getUser());
+        model.addAttribute("medico", medico);
+        model.addAttribute("visits", visits);
 
         return "/medico/profile";
     }

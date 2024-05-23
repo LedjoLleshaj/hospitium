@@ -13,7 +13,96 @@
     <!-- Header with logo, logout and breadcrumbs -->
     <div th:replace="common/header_nurse"></div>
     <!-- Content -->
+    <div class="et-content">
+      <!-- Search input -->
+      <div class="flex flex-row items-center gap-2 h-11 items-stretch">
+        <select
+        id="categorySelect"
+        class="text-xl font-medium flex-1 min-w-0"
+        name="category"
+        onchange="filterElements()"
+        >
+        <option value="">All Categories</option>
+        <option
+                th:each="category : ${categories}"
+                th:value="${category}"
+                th:text="${category}"
+        ></option>
+        </select>
+      <input
+              id="searchInput"
+              class="et-squared-input text-xl font-medium flex-2 min-w-0"
+              name="text"
+              type="text"
+              placeholder="Search by name/data ..."
+              oninput="filterElements()"
+      />
+    </div>
+    <!-- Appointments -->
+    <div th:each="appointment: ${appointments}" class="et-card p-5 w-100">
+      <div class="flex flex-row justify-items-center gap-5">
+        <i class="fa fa-calendar fa-2x"></i>
+        <a
+                th:text="${appointment.formattedType(appointment.visitType)}"
+                th:href="'/nurse/appointment/' + ${appointment.id}"
+                class="et-name text-2xl font-bold"
+        ></a>
+        <p
+                th:text="'('+ ${appointment.data.replace('T',' at ')} +')'"
+                class="et-period text-xl"
+        ></p>
+        <p
+                th:text="${appointment.child != null ? 'Pediatric visit' : 'Adult visit'}"
+                class="et-period text-xl font-semibold justify-self-end"
+        ></p>
+      </div>
+      <div class="flex flex-row justify-between">
+        <div class="flex flex-col">
+          <!-- Displaying patient's username -->
+          <p
+                  th:text="${appointment.patient.user.fullName()}"
+                  class="et-description mt-4"
+          ></p>
+        </div>
+        <div class="flex flex-col items-center">
+          <!-- Displaying appointment note -->
+          <p th:text="${appointment.note}" class="et-description mt-4"></p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Script for filtering appointments -->
+  <script>
+    function filterElements() {
+      let input, category, filter, visits, visit, name, data, i;
+      input = document.getElementById("searchInput");
+      category = document
+              .getElementById("categorySelect")
+              .value.trim()
+              .toLowerCase(); // Convert to lowercase for case-insensitive comparison
+      filter = input.value.trim().toLowerCase(); // Convert to lowercase for case-insensitive comparison
+      visits = document.getElementsByClassName("et-card");
 
+      for (i = 0; i < visits.length; i++) {
+        visit = visits[i];
+        name = visit
+                .getElementsByClassName("et-name")[0]
+                .innerText.trim()
+                .toLowerCase(); // Convert to lowercase for case-insensitive comparison
+        data = visit
+                .getElementsByClassName("et-period")[0]
+                .innerText.trim()
+                .toLowerCase(); // Convert to lowercase for case-insensitive comparison
+        let categoryMatch = category === "" || name.includes(category);
+        let filterMatch = name.includes(filter) || data.includes(filter);
 
+        if (categoryMatch && filterMatch) {
+          visit.style.display = ""; // Display the appointment
+        } else {
+          visit.style.display = "none"; // Hide the appointment
+        }
+      }
+    }
+  </script>
   </body>
 </html>

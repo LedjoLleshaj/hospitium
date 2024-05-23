@@ -16,6 +16,15 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.PostMapping;
 
+import com.itextpdf.text.Document;
+import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.Paragraph;
+import com.itextpdf.text.pdf.PdfWriter;
+
+
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+
 import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 
@@ -83,7 +92,6 @@ public class PatientController {
         // add medico di base in top of medici in a set
         medici.add(0, medico_di_base);
 
-
         // Retrive all nurses
         List<Nurse> nurses = (List<Nurse>) nurseRepository.findAll();
 
@@ -114,7 +122,8 @@ public class PatientController {
     }
 
     @GetMapping("patient/child/{id}")
-    public String child(@PathVariable Long id, Model model, HttpServletRequest request, RedirectAttributes redirectAttributes) {
+    public String child(@PathVariable Long id, Model model, HttpServletRequest request,
+            RedirectAttributes redirectAttributes) {
         User user = Utils.loggedUser(request);
         Optional<Patient> maybe_patient = patientRepository.findByUser(user);
         if (maybe_patient.isEmpty()) {
@@ -135,10 +144,8 @@ public class PatientController {
 
         List<Appointment> appointments = appointmentRepository.findByChild(child);
 
-
         model.addAttribute("patient", child);
         model.addAttribute("appointments", appointments);
-
 
         return "/patient/profile";
     }
@@ -171,6 +178,33 @@ public class PatientController {
         return ResponseEntity.ok(orari);
     }
 
+    @GetMapping("/patient/orari_nurse")
+    public ResponseEntity<?> getOrariNurse(HttpServletRequest request, RedirectAttributes redirectAttributes) {
+
+        List<Nurse> nurses = (List<Nurse>) nurseRepository.findAll();
+
+        Set<Nurse> nurses_set = Set.copyOf(nurses);
+
+        // Your logic to fetch 'orari' data
+        // This will return only the 'orari' data in JSON format
+        // You can reuse the logic used in the previous endpoint to fetch 'orari' data
+
+        Map<Nurse, Map<String, ArrayList<String>>> orari = new HashMap<>();
+        for (Nurse nurse : nurses_set) {
+            List<String> allDates = appointmentRepository.findDataByNurse(nurse);
+            Map<String, ArrayList<String>> date_time = new HashMap<>();
+            for (String date_time_str : allDates) {
+                String[] date_time_arr = date_time_str.split("T");
+                String date = date_time_arr[0];
+                String time = date_time_arr[1];
+                date_time.computeIfAbsent(date, k -> new ArrayList<>()).add(time);
+            }
+            orari.put(nurse, date_time);
+        }
+
+        return ResponseEntity.ok(orari);
+    }
+
     @GetMapping("/patient/child/register")
     public String registerPage(Model model, HttpServletRequest request, RedirectAttributes redirectAttributes) {
         // get all medico
@@ -188,12 +222,11 @@ public class PatientController {
             @RequestParam(name = "medico_di_base", required = false) Long medico_id,
             @RequestParam(name = "codice_sanitario", required = false) String codice_sanitario,
             Model model,
-            HttpServletRequest request,RedirectAttributes redirectAttributes
-    ) {
+            HttpServletRequest request, RedirectAttributes redirectAttributes) {
         model.addAttribute("medici", repoMedico.findAll());
-        System.out.println("data di nascita:"+data_di_nascita);
+        System.out.println("data di nascita:" + data_di_nascita);
 
-        //get logged in parent info
+        // get logged in parent info
         User logged_user = Utils.loggedUser(request);
         Optional<Patient> maybe_patient = patientRepository.findByUser(logged_user);
         if (maybe_patient.isEmpty()) {
@@ -205,19 +238,20 @@ public class PatientController {
         User user = null;
         try {
             String tempo_psw = User.generatePsw();
-            user = new User(firstName, lastName,"","", codice_fiscale,data_di_nascita,luogo_di_nascita,User.Role.PATIENT);
+            user = new User(firstName, lastName, "", "", codice_fiscale, data_di_nascita, luogo_di_nascita,
+                    User.Role.PATIENT);
             System.out.println(user);
             repoUser.save(user);
 
-
             String emailSubject = "Registration Confirmation";
-            String emailText = "Dear " + firstName + ",\n\nYour child registration was successful.Please check your child list\n\nBest regards,\nHospitium Team";
+            String emailText = "Dear " + firstName
+                    + ",\n\nYour child registration was successful.Please check your child list\n\nBest regards,\nHospitium Team";
             emailService.sendSimpleMessage("ledjo.lleshaj@gmail.com", emailSubject, emailText);
 
         } catch (Exception exc) {
             if (Utils.IsCause(exc, DataIntegrityViolationException.class)) {
                 Utils.addError(model, "The child could not be saved!");
-                //pass the data back to the form
+                // pass the data back to the form
 
                 return "patient/child_register";
             }
@@ -225,31 +259,28 @@ public class PatientController {
             throw exc;
         }
 
-
         Optional<Medico> maybeMedico = repoMedico.findById(medico_id);
 
-
         if (maybeMedico.isEmpty()) {
-             Utils.addError(model, "No such medico");
-             return "patient/child_register";
+            Utils.addError(model, "No such medico");
+            return "patient/child_register";
         }
-        Child child = new Child(codice_sanitario,user,maybeMedico.get(), parent);
+        Child child = new Child(codice_sanitario, user, maybeMedico.get(), parent);
         repoChildren.save(child);
-        System.out.println("Child Saved "+child.fullName());
+        System.out.println("Child Saved " + child.fullName());
 
         return "redirect:/patient/child_list";
     }
 
-    // Post the new appointment
     @PostMapping("patient/new_appointment")
     public String submitAppointment(
-            // get all the parameters from the form
             @RequestParam("date") String date,
             @RequestParam("time") String time,
             @RequestParam("note") String note,
             @RequestParam("visitType") String visitType,
             @RequestParam("urgency") int urgency,
-            @RequestParam("medico") long medicoId,
+            @RequestParam(value = "medico", required = false) Long medicoId,
+            @RequestParam(value = "nurse", required = false) Long nurseId,
             HttpServletRequest request, RedirectAttributes redirectAttributes) {
 
         User user = Utils.loggedUser(request);
@@ -259,26 +290,49 @@ public class PatientController {
             return "redirect:/login";
         }
         Patient patient = maybe_patient.get();
-        Optional<Medico> maybe_medico = medicoRepository.findById(medicoId);
-        if (maybe_medico.isEmpty()) {
-            Utils.addRedirectionError(redirectAttributes, "No such medico");
+        Medico medico = null;
+        Nurse nurse = null;
+
+        // Validate Medico
+        if (medicoId != null) {
+            Optional<Medico> maybe_medico = medicoRepository.findById(medicoId);
+            if (maybe_medico.isEmpty()) {
+                Utils.addRedirectionError(redirectAttributes, "No such medico");
+                return "redirect:/login";
+            }
+            medico = maybe_medico.get();
+        }
+
+        // Validate Nurse
+        if (nurseId != null) {
+            Optional<Nurse> maybe_nurse = nurseRepository.findById(nurseId);
+            if (maybe_nurse.isEmpty()) {
+                Utils.addRedirectionError(redirectAttributes, "No such nurse");
+                return "redirect:/login";
+            }
+            nurse = maybe_nurse.get();
+        }
+
+        // Check that at least one of medico or nurse is provided
+        if (medico == null && nurse == null) {
+            Utils.addRedirectionError(redirectAttributes, "Either medico or nurse must be specified");
             return "redirect:/login";
         }
-        Medico medico = maybe_medico.get();
 
         date = date + "T" + time;
 
-        // add the new appointment to the database
-        Appointment appointment = new Appointment(date, time, note, Visita.fromString(visitType), urgency, medico,null,
-                patient, null );
-
-        // Save the appointment
+        // Create and save the new appointment
+        Appointment appointment = new Appointment(date, time, note, Visita.fromString(visitType), urgency, medico,
+                nurse, patient, null);
         appointmentRepository.save(appointment);
+
+        // Send confirmation email
         String emailSubject = "Appointment Registered";
-        String emailText = "Dear " + user.fullName() + ",\n\nYour appointment was successfully registered.\n\nBest regards,\nHospitium Team";
+        String emailText = "Dear " + user.fullName()
+                + ",\n\nYour appointment was successfully registered.\n\nBest regards,\nHospitium Team";
         emailService.sendSimpleMessage("ledjo.lleshaj@gmail.com", emailSubject, emailText);
 
-        // Go to the profile page
+        // Redirect to the profile page
         return "redirect:/patient/profile";
     }
 
@@ -299,6 +353,40 @@ public class PatientController {
 
         return "/patient/visit";
     }
+
+
+
+
+    @GetMapping("/patient/visit/pdf/{id}")
+    public void generatePdf(@PathVariable Long id, HttpServletResponse response) throws DocumentException, IOException {
+        Optional<Visita> maybeVisit = visitaRepository.findById(id);
+        if (maybeVisit.isEmpty()) {
+            response.sendRedirect("/patient/home");
+            return;
+        }
+
+        Visita visit = maybeVisit.get();
+        response.setContentType("application/pdf");
+        response.setHeader("Content-Disposition", "attachment; filename=visit_" + visit.getId() + ".pdf");
+
+        Document document = new Document();
+        PdfWriter.getInstance(document, response.getOutputStream());
+
+        document.open();
+        document.add(new Paragraph("Visit Details"));
+        document.add(new Paragraph("Date: " + visit.getData().replace('T',' ')));
+        document.add(new Paragraph("Result: " + visit.getResult()));
+        document.add(new Paragraph("Type: " + Visita.formattedType(visit.getType())));
+        if (visit.getMedico() != null) {
+            document.add(new Paragraph("Medico: " + visit.getMedico().fullName()));
+        }
+        if (visit.getNurse() != null) {
+            document.add(new Paragraph("Nurse: " + visit.getNurse().fullName()));
+        }
+        document.add(new Paragraph("Patient: " + visit.getPatient().fullName()));
+        document.close();
+    }
+
 
     @GetMapping("/patient/profile")
     public String viewProfile(Model model, HttpServletRequest request, RedirectAttributes redirectAttributes) {

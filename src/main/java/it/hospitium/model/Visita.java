@@ -54,7 +54,7 @@ public class Visita {
 
     @Override
     public String toString() {
-        return String.format("Visit{id=%d, data_di_nascita=%s, medico=%s, patient=%s, nurse=%s, type=%s}", id, data, medico.fullName(), patient.fullName(), nurse.fullName(), type.toString());
+        return String.format("Visit{id=%d, data_di_nascita=%s, patient=%s, type=%s}", id, data,  patient.fullName(),  type.toString());
     }
 
     public enum VisitType {
@@ -111,9 +111,9 @@ public class Visita {
         for (VisitType value : VisitType.values()) {
             enumStrings.add(formattedType(value));
         }
-        for (String s : enumStrings) {
-            System.out.println(s);
-        }
+//        for (String s : enumStrings) {
+//            System.out.println(s);
+//        }
         return enumStrings;
 
     }
