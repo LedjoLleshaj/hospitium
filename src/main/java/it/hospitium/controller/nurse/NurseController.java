@@ -1,5 +1,6 @@
 package it.hospitium.controller.nurse;
 
+import it.hospitium.controller.EmailService;
 import it.hospitium.model.*;
 import it.hospitium.utils.Breadcrumb;
 import it.hospitium.utils.Utils;
@@ -19,8 +20,10 @@ public class NurseController {
     private UserRepository repoUser;
     @Autowired
     private NurseRepository nurseRepository;
-
-
+    @Autowired
+    private AppointmentRepository appointmentRepository;
+    @Autowired
+    private EmailService emailService;
 
     @GetMapping("nurse/home")
     public String home(Model model, HttpServletRequest request, RedirectAttributes redirectAttributes) {
@@ -33,10 +36,15 @@ public class NurseController {
             return "redirect:/login";
         }
         Nurse nurse = maybe_nurse.get();
+        List<Appointment> appointments = (List<Appointment>) appointmentRepository.findByNurse(nurse);
+
+
 
         // Add attributes
         model.addAttribute("user", nurse);
         model.addAttribute("breadcrumbs", List.of(new Breadcrumb("home", "/nurse/home")));
+        model.addAttribute("appointments", appointments);
+        model.addAttribute("categories", Visita.getVisitCategories().subList(Visita.getVisitCategories().size()-2, Visita.getVisitCategories().size()));
 
         return "/nurse/home";
     }

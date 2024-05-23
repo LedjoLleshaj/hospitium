@@ -11,6 +11,7 @@ public interface AppointmentRepository extends CrudRepository<Appointment, Long>
     Optional<Appointment> findById(long id);
     List<Appointment> findByPatient(Patient patient);
     List<Appointment> findByMedico(Medico medico);
+    List<Appointment> findByNurse(Nurse nurse);
     List<Appointment> findByChild(Child child);
     @Query("SELECT a.data FROM Appointment a WHERE a.medico = ?1")
     List<String> findDataByMedico(Medico medico);
