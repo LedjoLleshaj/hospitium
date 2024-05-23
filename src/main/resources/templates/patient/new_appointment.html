@@ -7,6 +7,37 @@
       href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"
       rel="stylesheet"
     />
+
+    <style>
+      .toggle-checkbox:checked + .toggle-slider {
+        background-color: #4caf50;
+      }
+
+      .toggle-checkbox:checked + .toggle-slider::before {
+        transform: translateX(26px);
+      }
+
+      .toggle-slider {
+        width: 50px;
+        height: 24px;
+        background-color: #ccc;
+        border-radius: 34px;
+        position: relative;
+        transition: background-color 0.2s;
+      }
+
+      .toggle-slider::before {
+        content: "";
+        position: absolute;
+        width: 20px;
+        height: 20px;
+        background-color: white;
+        border-radius: 50%;
+        top: 2px;
+        left: 2px;
+        transition: transform 0.2s;
+      }
+    </style>
   </head>
 
   <body>
@@ -16,11 +47,49 @@
     <!-- Content -->
     <div class="et-content">
       <div class="et-card p-5 w-100">
-        <h2 class="text-2xl font-semibold text-gray-800 mb-2">
-          Appointment Details
-        </h2>
+        <div class="flex justify-between items-start">
+          <div class="w-1/2">
+            <h2 class="text-2xl font-semibold text-gray-800 mb-2">
+              Appointment Details
+            </h2>
+          </div>
+          <div class="w-1/2 flex justify-end items-end">
+            <label class="flex items-center cursor-pointer">
+              <span class="mr-2">Register Child</span>
+              <input type="checkbox" class="toggle-checkbox hidden" />
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+        </div>
+
         <!-- Form that ridiract to /appointments page -->
         <form action="/patient/new_appointment" method="post">
+          <!-- child selector -->
+          <div
+            id="child-selector"
+            style="display: none; margin-bottom: 10px"
+            class="mb-4"
+          >
+            <label
+              for="child"
+              class="block text-gray-700 text-sm font-bold mb-2"
+              >Child:</label
+            >
+            <select
+              name="child"
+              id="child"
+              class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring focus:border-blue-500"
+            >
+              <option
+                th:each="child : ${children}"
+                th:value="${child.id}"
+                th:text="${child.fullName()}"
+              >
+                Child
+              </option>
+            </select>
+          </div>
+
           <!-- Visit types -->
           <div class="mb-4">
             <label
@@ -190,6 +259,21 @@
     </div>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const toggleCheckbox = document.querySelector(".toggle-checkbox");
+        const childSelector = document.querySelector("#child-selector");
+
+        toggleCheckbox.addEventListener("change", function () {
+          if (toggleCheckbox.checked) {
+            childSelector.style.display = "block";
+          } else {
+            childSelector.style.display = "none";
+          }
+        });
+      });
+    </script>
 
     <script>
       const medicoError = $("#medicoError");

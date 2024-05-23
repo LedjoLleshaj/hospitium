@@ -95,9 +95,13 @@ public class PatientController {
         // Retrive all nurses
         List<Nurse> nurses = (List<Nurse>) nurseRepository.findAll();
 
+        // retrive all children
+        List<Child> children = repoChildren.findByParent(patient);
+
         // All visit types
         List<String> categories = Visita.getVisitCategories();
 
+        model.addAttribute("children", children);
         model.addAttribute("nurses", nurses);
         model.addAttribute("medici", medici);
         model.addAttribute("visitTypes", categories);
