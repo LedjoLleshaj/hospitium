@@ -232,7 +232,7 @@
         let timeMedico = [];
         let timeNurse = [];
 
-        // Get the select element
+        // Get the select elements
         const timeSelectMedico = $("#time")[0];
         const timeSelectNurse = $("#time")[0];
 
@@ -261,6 +261,7 @@
         function triggerFunctionalityMedico() {
           // Empty the time array
           timeMedico = [];
+          nurseId = null;
 
           // Iterate over the orari data
           orariMedico.forEach((entry) => {
@@ -318,6 +319,7 @@
         function triggerFunctionalityNurse() {
           // Empty the time array
           timeNurse = [];
+          medicoId = null;
 
           // Iterate over the orari data
           orariNurse.forEach((entry) => {
@@ -353,6 +355,8 @@
         // Listen for medico change
         $("#medico").change(function () {
           medicoId = $(this).val();
+          nurseId = null; // Reset nurseId
+          $("#nurse").val(null); // Reset nurse selector value
           document.getElementById("time").selectedIndex = 0;
           fetchOrariData(medicoId);
         });
@@ -360,6 +364,8 @@
         // Listen for nurse change
         $("#nurse").change(function () {
           nurseId = $(this).val();
+          medicoId = null; // Reset medicoId
+          $("#medico").val(null); // Reset medico selector value
           document.getElementById("time").selectedIndex = 0;
           fetchOrariNurseData(nurseId);
         });
@@ -384,16 +390,25 @@
             $("#medicoContainer").hide();
             $("#nurseContainer").show();
 
-            nurseId = $("#nurse").val();
-            if (nurseId) {
-              fetchOrariNurseData(nurseId);
+            $("#nurse").val(null); // Reset nurse selector value
+            nurseId = null;
+            if ($("#nurse").is(":visible")) {
+              nurseId = $("#nurse").val();
+              if (nurseId) {
+                fetchOrariNurseData(nurseId);
+              }
             }
           } else {
             $("#medicoContainer").show();
             $("#nurseContainer").hide();
-            medicoId = $("#medico").val();
-            if (medicoId) {
-              fetchOrariData(medicoId);
+
+            $("#medico").val(null); // Reset medico selector value
+            medicoId = null;
+            if ($("#medico").is(":visible")) {
+              medicoId = $("#medico").val();
+              if (medicoId) {
+                fetchOrariData(medicoId);
+              }
             }
           }
           getDate = $("#date").val();
@@ -405,16 +420,26 @@
         if (visitType === "Prelievi" || visitType === "Medication") {
           $("#medicoContainer").hide();
           $("#nurseContainer").show();
-          nurseId = $("#nurse").val();
-          if (nurseId) {
-            fetchOrariNurseData(nurseId);
+
+          $("#nurse").val(null); // Reset nurse selector value
+          nurseId = null;
+          if ($("#nurse").is(":visible")) {
+            nurseId = $("#nurse").val();
+            if (nurseId) {
+              fetchOrariNurseData(nurseId);
+            }
           }
         } else {
           $("#medicoContainer").show();
           $("#nurseContainer").hide();
-          medicoId = $("#medico").val();
-          if (medicoId) {
-            fetchOrariData(medicoId);
+
+          $("#medico").val(null); // Reset medico selector value
+          medicoId = null;
+          if ($("#medico").is(":visible")) {
+            medicoId = $("#medico").val();
+            if (medicoId) {
+              fetchOrariData(medicoId);
+            }
           }
         }
         getDate = $("#date").val();
