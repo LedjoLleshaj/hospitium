@@ -58,13 +58,13 @@
             <p th:text="'Data: ' + ${appointment.data.split('T')[0]}" class="mb-2"></p>
             <p th:text="'Ora: ' + ${appointment.time}" class="mb-2"></p>
             <p
-                    th:text="'Medico: ' + (${appointment.medico?.fullName() ?: appointment.nurse?.fullName()})"
+                    th:text="${appointment.medico != null ? 'Medico: ' + appointment.medico.fullName() : 'Nurse: ' + appointment.nurse.fullName()}"
                     class="mb-2"
             ></p>
           </div>
           <div>
             <p
-                    th:text="'Medico email: ' + (${appointment.medico?.user?.email ?: appointment.nurse?.user?.email})"
+                    th:text="${appointment.medico != null ? 'Medico email: ' + appointment.medico.user.email : 'Nurse email: ' + appointment.nurse.user.email}"
                     class="mb-2"
             ></p>
             <p

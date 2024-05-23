@@ -65,11 +65,16 @@ public class NurseController {
             return "redirect:/login";
         }
 
+
         Nurse nurse = maybeNurse.get();
+        List<Visita> visits = (List<Visita>) visitaRepository.findByNurse(nurse);
+
 
         // Add attributes
         model.addAttribute("user", nurse.getUser());
         model.addAttribute("medico", nurse.getMedico().fullName());
+        model.addAttribute("visits", visits);
+
 
         return "/nurse/profile";
     }
