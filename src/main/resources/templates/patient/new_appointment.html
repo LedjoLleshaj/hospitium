@@ -241,6 +241,26 @@
             timeSelect.prop("disabled", false);
             timeSelect.css("color", ""); // Reset color to default
             errorMessage.hide();
+
+            if (selectedDate.toDateString() === currentDate.toDateString()) {
+              // If the selected date is today, disable past times
+              const currentTime =
+                new Date().getHours() * 60 + new Date().getMinutes();
+              timeSelect.children("option").each(function () {
+                const [hours, minutes] = $(this).val().split(":").map(Number);
+                const optionTime = hours * 60 + minutes;
+                if (optionTime < currentTime) {
+                  $(this).prop("disabled", true).css("color", "gray");
+                } else {
+                  $(this).prop("disabled", false).css("color", "");
+                }
+              });
+            } else {
+              // Enable all times for future dates
+              timeSelect.children("option").each(function () {
+                $(this).prop("disabled", false).css("color", "");
+              });
+            }
           }
         }
 
