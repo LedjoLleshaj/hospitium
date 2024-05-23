@@ -188,23 +188,28 @@
 
         function disableTimeOptions() {
           const dateInput = $("#date");
-          // Get the selected date
           const selectedDate = new Date(dateInput.val());
+          const currentDate = new Date();
+          currentDate.setHours(0, 0, 0, 0); // Reset time part of current date to compare only dates
 
           // Check if the selected date is a weekend
           const isWeekend =
             selectedDate.getDay() === 0 || selectedDate.getDay() === 6;
+          // Check if the selected date is in the past
+          const isPastDate = selectedDate < currentDate;
 
-          if (!dateInput.val() || isWeekend) {
-            // If no date is selected or it's a weekend, disable time options, change their color to transparent, and show error message
+          if (!dateInput.val() || isWeekend || isPastDate) {
+            let errorText = "Please select a valid date.";
+            if (isWeekend) {
+              errorText = "Weekends are not allowed.";
+            } else if (isPastDate) {
+              errorText = "Past dates are not allowed.";
+            }
             timeSelect.prop("disabled", true);
             timeSelect.css("color", "transparent");
-            errorMessage.text(
-              "Please select a valid date (weekends are not allowed)"
-            );
+            errorMessage.text(errorText);
             errorMessage.show();
           } else {
-            // If date is selected and it's not a weekend, enable time options, reset their style, and hide error message
             timeSelect.prop("disabled", false);
             timeSelect.css("color", ""); // Reset color to default
             errorMessage.hide();
