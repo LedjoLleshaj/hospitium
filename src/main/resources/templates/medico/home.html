@@ -49,7 +49,7 @@
             class="et-name text-2xl font-bold"
           ></a>
           <p
-            th:text="'('+ ${appointment.data} +')'"
+            th:text="'('+ ${appointment.data.replace('T',' at ')} +')'"
             class="et-period text-xl"
           ></p>
           <p

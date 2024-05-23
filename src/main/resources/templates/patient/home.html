@@ -70,7 +70,7 @@
             >Sangue
           </a>
           <!-- TODO: Year th:text="${course.formatPeriod()}" -->
-          <p th:text="'('+${visit.getData()}+')'" class="et-period text-xl">
+          <p th:text="'('+${visit.getData().replace('T',' at ')}+')'" class="et-period text-xl">
             (00/00/0000)
           </p>
           <p

@@ -374,7 +374,7 @@ public class PatientController {
 
         document.open();
         document.add(new Paragraph("Visit Details"));
-        document.add(new Paragraph("Date: " + visit.getData()));
+        document.add(new Paragraph("Date: " + visit.getData().replace('T',' ')));
         document.add(new Paragraph("Result: " + visit.getResult()));
         document.add(new Paragraph("Type: " + Visita.formattedType(visit.getType())));
         if (visit.getMedico() != null) {

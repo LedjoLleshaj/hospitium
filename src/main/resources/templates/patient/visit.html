@@ -22,7 +22,7 @@
           <div class="flex items-center">
             <div class="w-full">
               <div class="font-semibold text-gray-600">Date:</div>
-              <div th:text="${visit.data}" class="text-gray-800">
+              <div th:text="${visit.data.replace('T',' ')}" class="text-gray-800">
                 Visit Date
               </div>
             </div>
