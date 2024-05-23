@@ -60,16 +60,9 @@
                           th:text="${visit.child != null ? 'Child: ' + visit.child.fullName() : 'Adult: ' + visit.patient.fullName()}"
                           class="mb-2"
                   ></p>
-                  <p
-                          th:text="${visit.medico != null ? 'Medico: ' + visit.medico.fullName() : 'Nurse: ' + visit.nurse.fullName()}"
-                          class="mb-2"
-                  ></p>
                 </div>
                 <div>
-                  <p
-                          th:text="${visit.medico != null ? 'Medico email: ' + visit.medico.user.email : 'Nurse email: ' + visit.nurse.user.email}"
-                          class="mb-2"
-                  ></p>
+
                   <p
                           th:text="'Note: ' + ${visit.result}"
                           class="mb-2"
