@@ -110,6 +110,9 @@
                 Visit Type
               </option>
             </select>
+            <p id="typeError" style="color: red">
+              <strong>First:</strong>Select the visit type.
+            </p>
           </div>
           <!-- Urgency -->
           <div class="mb-4">
@@ -147,6 +150,10 @@
                 Medico
               </option>
             </select>
+            <p id="medicoError" style="color: red">
+              <strong>Second: </strong>Select medico(the first on the menu list
+              is medico di base)
+            </p>
           </div>
 
           <div id="nurseContainer" style="display: none" class="mb-4">
@@ -165,9 +172,12 @@
                 th:value="${nurse.id}"
                 th:text="${nurse.fullName()}"
               >
-                Medico
+                Nurse
               </option>
             </select>
+            <p id="nurseError" style="color: red">
+              <strong>Second:</strong>Select the nurse.
+            </p>
           </div>
 
           <div class="flex justify-end">
@@ -180,6 +190,24 @@
     </div>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <script>
+      const medicoError = $("#medicoError");
+      const nurseError = $("#nurseError");
+      const typeError = $("#typeError");
+
+      $("#medico").click(function () {
+        medicoError.hide();
+      });
+
+      $("#nurse").click(function () {
+        nurseError.hide();
+      });
+
+      $("#visitType").click(function () {
+        typeError.hide();
+      });
+    </script>
 
     <script>
       $(document).ready(function () {
