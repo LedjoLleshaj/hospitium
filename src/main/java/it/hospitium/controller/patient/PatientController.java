@@ -310,7 +310,6 @@ public class PatientController {
             return "redirect:/login";
         }
 
-
         System.out.println("--------------------------------");
         System.out.println("medicoId: " + medicoId);
         System.out.println("nurseId: " + nurseId);
@@ -323,13 +322,11 @@ public class PatientController {
                 nurse, patient, null);
         appointmentRepository.save(appointment);
 
-        /* 
         // Send confirmation email
         String emailSubject = "Appointment Registered";
         String emailText = "Dear " + user.fullName()
                 + ",\n\nYour appointment was successfully registered.\n\nBest regards,\nHospitium Team";
         emailService.sendSimpleMessage("ledjo.lleshaj@gmail.com", emailSubject, emailText);
-         */
 
         // Redirect to the profile page
         return "redirect:/patient/profile";
