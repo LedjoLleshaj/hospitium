@@ -23,6 +23,8 @@ dependencies {
     runtimeOnly 'com.h2database:h2'
     implementation 'org.springframework.boot:spring-boot-starter-mail'
 
+    // PDF Generation
+    implementation 'com.itextpdf:itextpdf:5.5.13.2'
 
     // Testing
     testImplementation 'junit:junit:4.12'

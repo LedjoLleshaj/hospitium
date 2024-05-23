@@ -16,6 +16,18 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.PostMapping;
 
+import com.itextpdf.text.Document;
+import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.Paragraph;
+import com.itextpdf.text.pdf.PdfWriter;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+
 import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 
@@ -310,11 +322,6 @@ public class PatientController {
             return "redirect:/login";
         }
 
-        System.out.println("--------------------------------");
-        System.out.println("medicoId: " + medicoId);
-        System.out.println("nurseId: " + nurseId);
-        System.out.println("--------------------------------");
-
         date = date + "T" + time;
 
         // Create and save the new appointment
@@ -349,6 +356,40 @@ public class PatientController {
 
         return "/patient/visit";
     }
+
+
+
+
+    @GetMapping("/patient/visit/pdf/{id}")
+    public void generatePdf(@PathVariable Long id, HttpServletResponse response) throws DocumentException, IOException {
+        Optional<Visita> maybeVisit = visitaRepository.findById(id);
+        if (maybeVisit.isEmpty()) {
+            response.sendRedirect("/patient/home");
+            return;
+        }
+
+        Visita visit = maybeVisit.get();
+        response.setContentType("application/pdf");
+        response.setHeader("Content-Disposition", "attachment; filename=visit_" + visit.getId() + ".pdf");
+
+        Document document = new Document();
+        PdfWriter.getInstance(document, response.getOutputStream());
+
+        document.open();
+        document.add(new Paragraph("Visit Details"));
+        document.add(new Paragraph("Date: " + visit.getData()));
+        document.add(new Paragraph("Result: " + visit.getResult()));
+        document.add(new Paragraph("Type: " + Visita.formattedType(visit.getType())));
+        if (visit.getMedico() != null) {
+            document.add(new Paragraph("Medico: " + visit.getMedico().fullName()));
+        }
+        if (visit.getNurse() != null) {
+            document.add(new Paragraph("Nurse: " + visit.getNurse().fullName()));
+        }
+        document.add(new Paragraph("Patient: " + visit.getPatient().fullName()));
+        document.close();
+    }
+
 
     @GetMapping("/patient/profile")
     public String viewProfile(Model model, HttpServletRequest request, RedirectAttributes redirectAttributes) {
