@@ -95,6 +95,24 @@ public class NurseController {
         return "/nurse/appointment-details";
     }
 
+    @GetMapping("/nurse/visit/{id}")
+    public String viewVisitDetails(@PathVariable Long id, Model model) {
+        // Retrieve the visit by id
+        Optional<Visita> maybeVisit = visitaRepository.findById(id);
+        if (maybeVisit.isEmpty()) {
+            return "redirect:/nurse/home";
+        }
+
+        // Get the visit
+        Visita visit = maybeVisit.get();
+
+        // Add attributes
+        model.addAttribute("visit", visit);
+
+        return "/nurse/visit-details";
+    }
+
+
     @PostMapping("/nurse/appointment/saveResult/{id}")
     public String saveResult(@PathVariable Long id,
                              @RequestParam("resultNote") String resultNote,

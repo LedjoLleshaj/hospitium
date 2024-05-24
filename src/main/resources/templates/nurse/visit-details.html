@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <title>Appointment Details</title>
+    <meta th:replace="common/meta" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"
+      rel="stylesheet"
+    />
+    <!-- Include Tailwind CSS -->
+  </head>
+
+  <body>
+    <div th:replace="common/errors" />
+    <!-- Header with logo, logout, and breadcrumbs -->
+    <div th:replace="common/header_nurse"></div>
+    <!-- Content -->
+    <div class="et-content">
+      <div class="et-card p-5 w-full">
+        <h2 class="text-2xl font-semibold text-gray-800 mb-4">
+          Visit Details
+        </h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div class="flex items-center">
+            <div class="w-full">
+              <div class="font-semibold text-gray-600">Date:</div>
+              <div th:text="${visit.data.split('T')[0]}" class="text-gray-800">
+                <!-- Visit Date -->
+              </div>
+            </div>
+          </div>
+          <div class="flex items-center">
+            <div class="w-full">
+              <div class="font-semibold text-gray-600">Note:</div>
+              <div th:text="${visit.result}" class="text-gray-800">
+                <!-- Visit Note -->
+              </div>
+            </div>
+          </div>
+          <div class="flex items-center">
+            <div class="w-full">
+              <div class="font-semibold text-gray-600">Type:</div>
+              <div th:text="${visit.formattedType(visit.type)}" class="text-gray-800">
+                <!-- Visit Type -->
+              </div>
+            </div>
+          </div>
+          <div class="flex items-center">
+            <div class="w-full">
+              <div class="font-semibold text-gray-600">Patient:</div>
+              <div
+                th:text="${visit.patient.fullName()}"
+                class="text-gray-800"
+              >
+                <!-- Patient's Full Name -->
+              </div>
+            </div>
+          </div>
+          <div class="flex items-center">
+            <div class="w-full">
+              <div class="font-semibold text-gray-600">Type of visit:</div>
+              <div
+                      th:text="${visit.child != null ? 'Pediatric visit' : 'Adult visit'}"
+                      class="text-gray-800"
+              >
+                <!-- Pediatric visit if child not null -->
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

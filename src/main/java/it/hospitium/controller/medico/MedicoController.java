@@ -76,6 +76,23 @@ public class MedicoController {
         return "/medico/appointment-details";
     }
 
+    @GetMapping("/medico/visit/{id}")
+    public String viewVisitDetails(@PathVariable Long id, Model model) {
+        // Retrieve the visit by id
+        Optional<Visita> maybeVisit = visitaRepository.findById(id);
+        if (maybeVisit.isEmpty()) {
+            return "redirect:/medico/home";
+        }
+
+        // Get the visit
+        Visita visit = maybeVisit.get();
+
+        // Add attributes
+        model.addAttribute("visit", visit);
+
+        return "/medico/visit-details";
+    }
+
     @PostMapping("/medico/appointment/saveResult/{id}")
     public String saveResult(@PathVariable Long id,
             @RequestParam("resultNote") String resultNote,
