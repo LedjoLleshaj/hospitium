@@ -52,10 +52,11 @@
     <div th:each="visit : ${visits}" class="appointment-card " style="margin-bottom: 30px;">
       <div class="et-card mb-4">
         <div style="padding-left: 10px" class="et-card-body">
-          <div
-                  class="et-name text-2xl font-bold text-center mb-4"
+          <a
                   th:text="${visit.formattedType(visit.type)}"
-          ></div>
+                  th:href="'/nurse/visit/' + ${visit.getId()}"
+                  class="et-name text-2xl font-bold"
+          ></a>
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <p th:text="'Data: ' + ${visit.data.replace('T',' at ')}" class="mb-2"></p>
