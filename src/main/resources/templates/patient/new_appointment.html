@@ -88,6 +88,7 @@
                 Child
               </option>
             </select>
+            <p id="chlidError" style="color: red">Select a child</p>
           </div>
 
           <!-- Visit types -->
@@ -261,15 +262,25 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
     <script>
+      const childError = $("#chlidError");
+
+      $("#child").click(function () {
+        childError.hide();
+      });
+
       document.addEventListener("DOMContentLoaded", function () {
         const toggleCheckbox = document.querySelector(".toggle-checkbox");
         const childSelector = document.querySelector("#child-selector");
 
+        $("#child").val(null); // Reset nurse selector value
+
         toggleCheckbox.addEventListener("change", function () {
           if (toggleCheckbox.checked) {
             childSelector.style.display = "block";
+            $("#child").val(null); // Reset nurse selector value
           } else {
             childSelector.style.display = "none";
+            $("#child").val(null); // Reset nurse selector value
           }
         });
       });
