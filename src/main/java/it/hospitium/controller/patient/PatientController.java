@@ -21,7 +21,6 @@ import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.pdf.PdfWriter;
 
-
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
@@ -95,9 +94,13 @@ public class PatientController {
         // Retrive all nurses
         List<Nurse> nurses = (List<Nurse>) nurseRepository.findAll();
 
+        // retrive all children
+        List<Child> children = repoChildren.findByParent(patient);
+
         // All visit types
         List<String> categories = Visita.getVisitCategories();
 
+        model.addAttribute("children", children);
         model.addAttribute("nurses", nurses);
         model.addAttribute("medici", medici);
         model.addAttribute("visitTypes", categories);
@@ -281,6 +284,7 @@ public class PatientController {
             @RequestParam("urgency") int urgency,
             @RequestParam(value = "medico", required = false) Long medicoId,
             @RequestParam(value = "nurse", required = false) Long nurseId,
+            @RequestParam(value = "child", required = false) Long childId,
             HttpServletRequest request, RedirectAttributes redirectAttributes) {
 
         User user = Utils.loggedUser(request);
@@ -292,6 +296,7 @@ public class PatientController {
         Patient patient = maybe_patient.get();
         Medico medico = null;
         Nurse nurse = null;
+        Child child = null;
 
         // Validate Medico
         if (medicoId != null) {
@@ -313,6 +318,16 @@ public class PatientController {
             nurse = maybe_nurse.get();
         }
 
+        if (childId != null) {
+            Optional<Child> maybe_child = repoChildren.findById(childId);
+            if (maybe_child.isEmpty()) {
+                Utils.addRedirectionError(redirectAttributes, "No such child");
+                return "redirect:/login";
+            }
+
+            child = maybe_child.get();
+        }
+
         // Check that at least one of medico or nurse is provided
         if (medico == null && nurse == null) {
             Utils.addRedirectionError(redirectAttributes, "Either medico or nurse must be specified");
@@ -321,10 +336,17 @@ public class PatientController {
 
         date = date + "T" + time;
 
-        // Create and save the new appointment
-        Appointment appointment = new Appointment(date, time, note, Visita.fromString(visitType), urgency, medico,
-                nurse, patient, null);
-        appointmentRepository.save(appointment);
+        if (childId != null) {
+            // Create and save the new appointment
+            Appointment appointment = new Appointment(date, time, note, Visita.fromString(visitType), urgency, medico,
+                    nurse, patient, child);
+            appointmentRepository.save(appointment);
+        } else {
+            // Create and save the new appointment
+            Appointment appointment = new Appointment(date, time, note, Visita.fromString(visitType), urgency, medico,
+                    nurse, patient, null);
+            appointmentRepository.save(appointment);
+        }
 
         // Send confirmation email
         String emailSubject = "Appointment Registered";
@@ -354,9 +376,6 @@ public class PatientController {
         return "/patient/visit";
     }
 
-
-
-
     @GetMapping("/patient/visit/pdf/{id}")
     public void generatePdf(@PathVariable Long id, HttpServletResponse response) throws DocumentException, IOException {
         Optional<Visita> maybeVisit = visitaRepository.findById(id);
@@ -374,7 +393,7 @@ public class PatientController {
 
         document.open();
         document.add(new Paragraph("Visit Details"));
-        document.add(new Paragraph("Date: " + visit.getData().replace('T',' ')));
+        document.add(new Paragraph("Date: " + visit.getData().replace('T', ' ')));
         document.add(new Paragraph("Result: " + visit.getResult()));
         document.add(new Paragraph("Type: " + Visita.formattedType(visit.getType())));
         if (visit.getMedico() != null) {
@@ -386,7 +405,6 @@ public class PatientController {
         document.add(new Paragraph("Patient: " + visit.getPatient().fullName()));
         document.close();
     }
-
 
     @GetMapping("/patient/profile")
     public String viewProfile(Model model, HttpServletRequest request, RedirectAttributes redirectAttributes) {
