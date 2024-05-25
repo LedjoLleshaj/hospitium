@@ -336,18 +336,10 @@ public class PatientController {
 
         date = date + "T" + time;
 
-
-        // print chilld id 
-
-        System.out.println("----------------_-__-__-_-_-_-_-_-----__-_-________");
-        System.err.println(childId);
-        System.out.println("----------------_-__-__-_-_-_-_-_-----__-_-________");
-
-
         if (childId != null) {
             // Create and save the new appointment
             Appointment appointment = new Appointment(date, time, note, Visita.fromString(visitType), urgency, medico,
-                    nurse, null, child);
+                    nurse, patient, child);
             appointmentRepository.save(appointment);
         } else {
             // Create and save the new appointment
