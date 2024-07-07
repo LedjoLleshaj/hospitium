@@ -73,7 +73,7 @@ public class User {
         }
     }
 
-    static void assertPassword(String psw) {
+    public static void assertPassword(String psw) {
         if (psw.length() < 8) {
             throw new IllegalArgumentException("Password is too short");
         }
