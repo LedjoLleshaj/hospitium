@@ -23,7 +23,7 @@
       }
 
       input[type="date"] {
-        width: 345px;
+        width: 330px;
         padding: 8px;
         border-radius: 4px;
         border: 1px solid #ccc;
@@ -31,7 +31,7 @@
       }
 
       #medic {
-        width: 345px;
+        width: 330px;
         padding: 8px;
         border-radius: 4px;
         border: 1px solid #ccc;
@@ -132,10 +132,8 @@
           let invalidCFFormatMsg = document.querySelector("#invalid-cf-format");
           let invalidCSFormatMsg = document.querySelector("#invalid-cs-format");
 
-
           // Updates the clickable status of the register button and the visibility of the error messages
           function updateForm() {
-
             if (
               document.querySelector("input[name='codice_fiscale']").value !==
               ""
@@ -165,13 +163,12 @@
               invalidCFFormatMsg.style.display = "";
             }
 
-              if (isCSUntouched || !isCSValid()) {
-                invalidCSFormatMsg.style.display = "";
-              } else {
-                invalidCSFormatMsg.style.display = "none";
-              }
+            if (isCSUntouched || !isCSValid()) {
+              invalidCSFormatMsg.style.display = "";
+            } else {
+              invalidCSFormatMsg.style.display = "none";
+            }
           }
-
 
           // Returns true if the register button should be clickable
           function canRegister() {
@@ -185,9 +182,7 @@
                 return false;
               }
             }
-            return (
-               isCFValid() && isCSValid()
-            );
+            return isCFValid() && isCSValid();
           }
 
           function isCFValid() {
