@@ -35,7 +35,6 @@ public class AuthInterceptor implements HandlerInterceptor {
         if (user.isEmpty() || !user.get().getPswHash().equals(pswHash)) {
             return Optional.empty();
         }
-
         return user;
     }
 

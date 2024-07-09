@@ -124,7 +124,7 @@ public class MedicoController {
         String emailText = "Dear " + appointment.getPatient().fullName()
                 + ",\n\nThe result of your visit have been saved on your hospitium profile by clicking the link below.\n http://localhost:8080/patient/visit/"
                 + newVisit.getId() + "\n\nBest regards,\nHospitium Team";
-        emailService.sendSimpleMessage("ledjo.lleshaj@gmail.com", emailSubject, emailText);
+        emailService.sendSimpleMessage("kristirakipaj1@gmail.com", emailSubject, emailText);
 
         // Delete the appointment
         appointmentRepository.deleteById(id);

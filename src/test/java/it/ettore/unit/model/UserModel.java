@@ -153,7 +153,5 @@ public class UserModel {
         String invalidPassword = "short";
         IllegalArgumentException illegalArgumentException = assertThrows(IllegalArgumentException.class, () -> user.setPassword(invalidPassword));
     }
-
-
 }
 

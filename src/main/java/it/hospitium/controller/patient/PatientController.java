@@ -249,7 +249,7 @@ public class PatientController {
             String emailSubject = "Registration Confirmation";
             String emailText = "Dear " + firstName
                     + ",\n\nYour child registration was successful.Please check your child list\n\nBest regards,\nHospitium Team";
-            emailService.sendSimpleMessage("ledjo.lleshaj@gmail.com", emailSubject, emailText);
+            emailService.sendSimpleMessage("kristirakipaj1@gmail.com", emailSubject, emailText);
 
         } catch (Exception exc) {
             if (Utils.IsCause(exc, DataIntegrityViolationException.class)) {
@@ -352,7 +352,7 @@ public class PatientController {
         String emailSubject = "Appointment Registered";
         String emailText = "Dear " + user.fullName()
                 + ",\n\nYour appointment was successfully registered.\n\nBest regards,\nHospitium Team";
-        emailService.sendSimpleMessage("ledjo.lleshaj@gmail.com", emailSubject, emailText);
+        emailService.sendSimpleMessage("kristirakipaj1@gmail.com", emailSubject, emailText);
 
         // Redirect to the profile page
         return "redirect:/patient/profile";
